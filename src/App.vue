@@ -13,8 +13,21 @@
           <img src="/csu-logo.png" alt="CSU Logo" class="h-45 w-40 object-contain drop-shadow-lg" />
         </div>
         <div class="text-center">
-          <h1 class="text-5xl font-extrabold tracking-wide drop-shadow-md">CARAGA STATE UNIVERSITY</h1>
-          <h2 class="text-3xl font-bold mt-2 text-green-100">H.E.R.O LEARNING COMMONS</h2>
+          <h1
+  class="text-7xl uppercase leading-none drop-shadow-md
+         bg-[linear-gradient(90deg,#66bb6a_0%,#ffffff_50%,#66bb6a_100%)]
+         bg-clip-text text-transparent"
+  style="font-family: Impact, 'Arial Black', sans-serif; letter-spacing: -0.01em;"
+>
+  CARAGA STATE UNIVERSITY
+</h1>
+          <h2
+  class="text-3xl uppercase leading-none text-green-100"
+  style="font-family: Impact, 'Arial Black', sans-serif; letter-spacing: -0.01em;"
+>
+  H.E.R.O LEARNING COMMONS
+</h2>
+<br>
           <div class="mt-5 inline-block bg-white/10 backdrop-blur-sm border border-white/20 px-8 py-3 rounded-md text-lg font-bold shadow-md">
             LIBRARY OCCUPANCY AND ATTENDANCE MONITORING SYSTEM
           </div>
