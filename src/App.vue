@@ -10,11 +10,24 @@
       
       <div class="flex items-center justify-center pt-8 pb-6 px-10 relative">
         <div class="absolute left-10">
-          <img src="/csu-logo.png" alt="CSU Logo" class="h-45 w-40 object-contain drop-shadow-lg" />
+          <img src="/csu-logo.png" alt="CSU Logo" class="h-50 w-40 object-contain drop-shadow-lg" />
         </div>
         <div class="text-center">
-          <h1 class="text-5xl font-extrabold tracking-wide drop-shadow-md">CARAGA STATE UNIVERSITY</h1>
-          <h2 class="text-3xl font-bold mt-2 text-green-100">H.E.R.O LEARNING COMMONS</h2>
+        <h1
+  class="text-7xl uppercase leading-none drop-shadow-md
+         bg-[linear-gradient(90deg,#FFC300_0%,#ffffff_50%,#1b5e20_100%)]
+         bg-clip-text text-transparent"
+  style="font-family: Impact, 'Poppins', sans-serif; letter-spacing: -0.01em;"
+>
+  CARAGA STATE UNIVERSITY
+</h1>
+          <h2
+  class="text-3xl uppercase leading-none text-green-100"
+  style="font-family: Impact, 'Poppins', sans-serif; letter-spacing: -0.01em;"
+>
+  H.E.R.O LEARNING COMMONS
+</h2>
+<br>
           <div class="mt-5 inline-block bg-white/10 backdrop-blur-sm border border-white/20 px-8 py-3 rounded-md text-lg font-bold shadow-md">
             LIBRARY OCCUPANCY AND ATTENDANCE MONITORING SYSTEM
           </div>
@@ -75,6 +88,21 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div class="pt-3 mt-4 flex justify-start">
+            <a 
+              href="https://carsu-library.vercel.app/" 
+              class="group flex items-center gap-3 px-8 py-3
+                    bg-white/5 hover:bg-[#1b5e20]
+                    border border-white/20
+                    rounded-lg text-sm font-black tracking-[0.2em] uppercase
+                    transition-all duration-300
+                    !text-white hover:!text-white
+                    shadow-lg"
+            >
+              See More Records
+              <span class="!text-white transform group-hover:translate-x-2 transition-transform duration-300">→</span>
+            </a>
           </div>
         </div>
       </div>
