@@ -3,9 +3,9 @@
 
     <!-- HEADER -->
     <div class="text-center pt-8 pb-6">
-      <h1 class="text-5xl font-extrabold tracking-wide">
+      <!-- <h1 class="text-5xl font-extrabold tracking-wide">
         CARAGA STATE UNIVERSITY
-      </h1>
+      </h1> -->
 
       <h2 class="text-3xl font-bold mt-2">
         H.E.R.O LEARNING COMMONS
