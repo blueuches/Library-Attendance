@@ -21,7 +21,7 @@
         </div>
       </div>
 
-      <div class="flex-1 flex px-10 pb-15 gap-10 overflow-hidden">
+      <div class="flex-1 flex px-10 pb-10 gap-10 overflow-hidden">
         
         <div class="w-[350px] flex flex-col justify-center gap-6">
           
