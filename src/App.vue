@@ -23,7 +23,7 @@
   class="text-3xl uppercase leading-none text-green-100"
   style="font-family: Impact, 'Poppins', sans-serif; letter-spacing: -0.01em;"
 >
-  H.E.R.O LEARNING COMMONS
+  HERO LEARNING COMMONS
 </h2>
 <br>
           <div class="mt-5 inline-block bg-white/10 backdrop-blur-sm border border-white/20 px-8 py-3 rounded-md text-lg font-bold shadow-md">
@@ -34,6 +34,15 @@
 
       <div class="flex-1 flex flex-row-reverse px-10 pb-15 gap-10 overflow-hidden">
         <div class="w-[350px] flex flex-col justify-center gap-6">
+<<<<<<< HEAD
+=======
+          
+        <div class="bg-black/30 border border-white/10 text-white w-full px-5 py-6 rounded-2xl shadow-xl text-center">
+            <div class="text-2xl opacity-70 tracking-widest uppercase text-bold">{{ formattedDate }}</div>
+            <div class="text-4xl font-mono font-bold text-green-400 mt-1">{{ formattedTime }}</div>
+          </div>
+
+>>>>>>> 48266d42b78d023ed7e2e14979142e317cac7c1c
           <div class="w-full bg-white/10 p-6 rounded-2xl border border-white/20 shadow-2xl">
             <div class="flex flex-col items-center gap-4">
               <label
@@ -57,12 +66,16 @@
             </div>
           </div>
 
+<<<<<<< HEAD
           <div
             class="bg-black/30 border border-white/10 text-white w-full px-5 py-6 rounded-2xl shadow-xl text-center"
           >
             <div class="text-sm opacity-70 tracking-widest uppercase">{{ formattedDate }}</div>
             <div class="text-4xl font-mono font-bold text-green-400 mt-1">{{ formattedTime }}</div>
           </div>
+=======
+
+>>>>>>> 48266d42b78d023ed7e2e14979142e317cac7c1c
         </div>
 
         <div class="flex-1 flex flex-col min-h-0">
@@ -99,9 +112,13 @@
                   <td class="p-3 border border-white/10 font-bold text-lg">{{ student.name }}</td>
                   <td class="p-3 border border-white/10 font-bold text-lg">{{ student.course }}</td>
                   <td class="p-3 border border-white/10 font-bold text-lg">{{ student.year }}</td>
+<<<<<<< HEAD
                   <td class="p-3 border border-white/10 text-green-300 font-bold font-bold text-lg">
                     {{ student.logTime }}
                   </td>
+=======
+                  <td class="p-3 border border-white/10 font-bold font-bold text-lg">{{ student.logTime }}</td>
+>>>>>>> 48266d42b78d023ed7e2e14979142e317cac7c1c
                 </tr>
               </tbody>
             </table>
