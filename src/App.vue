@@ -29,7 +29,7 @@
             </h2>
             <br>
           <div class="mt-5 inline-block bg-white/10 backdrop-blur-sm border border-white/20 px-8 py-3 rounded-md font-semibold text-2xl text-[#ffffff] shadow-md">
-            LIBRARY OCCUPANCY AND ATTENDANCE MONITORING SYSTEM
+            ATTENDANCE AND CAPACITY CSU ENTRY SURVEILLANCE SYSTEM(ACCESS)
           </div>
         </div>
       </div>
