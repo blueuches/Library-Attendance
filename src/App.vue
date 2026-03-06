@@ -1,5 +1,5 @@
 <template>
-  <div class="relative h-screen w-screen text-white flex flex-col">
+  <div class="relative h-screen w-screen text-white flex flex-col overflow-hidden bg-[#0b3d1f]">
     
     <div 
       class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-20"
