@@ -10,7 +10,8 @@ export const getAttendanceLogs = async () => {
         id_number,
         first_name,
         last_name,
-        program
+        program,
+        year_level
       )
     `)
     .order("time_in", { ascending: false })

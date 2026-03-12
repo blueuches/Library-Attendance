@@ -1,7 +1,9 @@
 <template>
-  <div class="relative h-screen w-screen text-white flex flex-col overflow-hidden bg-[#0b3d1f]">
-    <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-20"
-         style="background-image: url('/hero-outside.jpg');"></div>
+  <div class="relative h-screen w-screen text-white flex flex-col overflow-hidden">
+    <div
+      class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-20"
+      style="background-image: url('/hero-outside.jpg');"
+    ></div>
 
     <div class="relative z-10 flex flex-col h-full w-full">
       <!-- Header -->
@@ -10,31 +12,43 @@
           <img src="/csu-logo.png" alt="Logo" class="h-32 w-32 object-contain" />
         </div>
         <div class="text-center">
-          <h1 class="text-6xl uppercase leading-none font-black drop-shadow-md bg-[linear-gradient(90deg,#FFC300_0%,#ffffff_50%,#1b5e20_100%)] bg-clip-text text-transparent"
-              style="font-family: Impact;">CARAGA STATE UNIVERSITY</h1>
-          <h2 class="text-2xl uppercase text-green-100 font-bold">HERO LEARNING COMMONS</h2>
+          <h1
+            class="text-6xl uppercase leading-none font-black drop-shadow-md bg-[linear-gradient(90deg,#FFC300_0%,#ffffff_50%,#1b5e20_100%)] bg-clip-text text-transparent"
+            style="font-family: Impact;"
+          >
+            CARAGA STATE UNIVERSITY
+          </h1>
+          <h2 
+          class="pb-4 text-2xl uppercase text-green-100 font-bold"
+          style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;"
+          >
+          HERO LEARNING COMMONS</h2>
           <div
-            class="mt-4 inline-block bg-white/10 backdrop-blur-sm border border-white/20 px-6 py-2 rounded-md font-semibold text-xl">
-            LIBRARY ATTENDANCE MONITORING (ACCESS)</div>
+            class="mt-4 inline-block bg-white/10 border border-white/20 px-6 py-2 rounded-md font-semibold text-LG opacity-100"
+          >
+          ATTENDANCE AND CAPACITY CSU ENTRY SURVEILLANCE SYSTEM (ACCESS)
+          </div>
         </div>
       </div>
 
       <div class="flex-1 flex flex-row-reverse px-10 pb-10 gap-8 overflow-hidden">
-
         <!-- Left Column: Camera + Manual Entry -->
         <div class="w-[400px] flex flex-col gap-4">
-          <div class="bg-black/40 border border-white/10 p-6 rounded-2xl text-center backdrop-blur-md">
+          <div class="bg-white/40 border border-white/10 p-6 rounded-2xl text-center">
             <div class="text-xl opacity-70 uppercase font-bold">{{ formattedDate }}</div>
             <div class="text-4xl font-mono font-bold text-green-400 mt-1">{{ formattedTime }}</div>
           </div>
 
-          <div class="flex-1 bg-black/60 rounded-2xl border-2 border-green-600 overflow-hidden relative flex flex-col shadow-2xl">
-            <div class="p-3 bg-green-900/50 flex justify-between items-center px-4">
+          <div
+            class="flex-1 bg-white/10 border rounded-2xl overflow-hidden relative flex flex-col shadow-2xl"
+          >
+            <div class="p-3 bg-white/10 flex justify-between items-center px-4">
               <span class="text-xs font-black tracking-widest uppercase">Live Camera Feed</span>
-              <button 
-                v-if="isScannerRunning" 
+              <button
+                v-if="isScannerRunning"
                 @click="stopScanner"
-                class="text-[10px] bg-red-600 hover:bg-red-700 px-3 py-1 rounded font-bold transition-all border border-red-400 shadow-lg">
+                class="text-[10px] bg-red-600 hover:bg-red-700 px-3 py-1 rounded font-bold transition-all border border-red-400 shadow-lg"
+              >
                 STOP CAMERA
               </button>
             </div>
@@ -47,15 +61,19 @@
                 type="text"
                 placeholder="Manual Entry..."
                 @keyup.enter="(e: KeyboardEvent) => handleLogin()"
-                class="w-full p-2 rounded border border-white/20 text-black"
+                class="w-full p-2 rounded border border-white/80 text-white"
               />
-              <button 
+              <button
                 v-if="!isScannerRunning"
-                @click="startScanner" 
-                class="w-full py-3 rounded-lg font-bold transition-all bg-green-700 hover:bg-green-600 border border-green-500 shadow-md">
+                @click="startScanner"
+                class="w-full py-3 rounded-lg font-bold transition-all bg-green-700 hover:bg-green-600 border border-green-500 shadow-md"
+              >
                 START CAMERA
               </button>
-              <div v-else class="w-full py-3 text-center text-green-400 font-bold animate-pulse text-sm tracking-widest">
+              <div
+                v-else
+                class="w-full py-3 text-center text-green-400 font-bold animate-pulse text-sm tracking-widest"
+              >
                 SCANNER IS ACTIVE...
               </div>
             </div>
@@ -64,28 +82,56 @@
 
         <!-- Right Column: Attendance Table -->
         <div class="flex-1 flex flex-col min-h-0">
-          <div class="flex-1 bg-white/10 rounded-2xl overflow-auto border border-white/20 backdrop-blur-sm shadow-2xl">
+          <div
+            class="flex-1 bg-white/10 rounded-2xl overflow-y-auto overflow-x-hidden hidden-scroll border border-white/20 shadow-2xl"
+          >
             <table class="w-full text-white border-collapse">
-              <thead class="bg-green-900/80 sticky top-0 z-20">
-                <tr class="text-left">
-                  <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">ID Number</th>
-                  <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">Name</th>
-                  <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">Course</th>
-                  <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">Log Time</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-white/5">
-                <tr v-for="log in attendanceLogs" :key="log.id" class="hover:bg-white/5 transition-colors">
-                  <td class="p-4 font-bold text-xl">{{ log.student_id }}</td>
-                  <td class="p-4 font-bold text-xl uppercase">{{ log.student?.first_name }} {{ log.student?.last_name }}</td>
-                  <td class="p-4 text-lg opacity-80">{{ log.student?.program }}</td>
-                  <td class="p-4 font-mono text-green-400 font-bold">{{ log.log_time }}</td>
-                </tr>
-              </tbody>
-            </table>
+<thead class="sticky top-0 z-20 bg-white/40 backdrop-blur-md">    <tr class="text-left">
+      <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">ID Number</th>
+      <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">Name</th>
+      <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">Course</th>
+      <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">Year Level</th>
+      <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">Time-In</th>
+      <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">Time-Out</th>
+    </tr>
+  </thead>
+  <tbody class="divide-y divide-white/5">
+    <tr
+      v-for="log in attendanceLogs"
+      :key="log.id"
+      class="hover:bg-white/5 transition-colors"
+    >
+      <td class="p-4 font-bold text-xl">{{ log.student_id }}</td>
+      <td class="p-4 font-bold text-xl uppercase">
+        {{ log.students?.first_name }} {{ log.students?.last_name }}
+      </td>
+      <td class="p-4 text-lg opacity-80">{{ log.students?.program }}</td>
+      <td class="p-4 text-lg opacity-80">{{ log.students?.year_level || '—' }}</td>
+      <td class="p-4 font-mono text-lg opacity-80 font-bold">
+        {{
+          log.time_in
+            ? new Date(log.time_in).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              })
+            : '—'
+        }}
+      </td>
+      <td class="p-4 font-mono text-lg opacity-80 font-bold">
+        {{
+          log.time_out
+            ? new Date(log.time_out).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              })
+            : '—'
+        }}
+      </td>
+    </tr>
+  </tbody>
+</table>
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -119,10 +165,25 @@ const fetchLogs = async () => {
           console.warn("Student not found for ID:", log.student_id)
         }
         return {
-          ...log,
-          student: studentData,
-          log_time: new Date(log.time_in).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
-        }
+  ...log,
+  student: studentData,
+  log_time: new Date(log.time_in).toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+  }),
+  time_in_formatted: log.time_in
+    ? new Date(log.time_in).toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    : null,
+  time_out_formatted: log.time_out
+    ? new Date(log.time_out).toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    : null
+}
       })
     )
     attendanceLogs.value = logsWithStudent
@@ -157,15 +218,16 @@ const handleLogin = async (decodedText?: string) => {
     // refresh table
     await fetchLogs()
 
-    const audio = new Audio('/beep.mp3')
+    const audio = new Audio("/beep.mp3")
     audio.play().catch(() => {})
 
     idInput.value = ""
-
   } catch (err) {
     console.error("Attendance error:", err)
   } finally {
-    setTimeout(() => { isProcessing.value = false }, 2000)
+    setTimeout(() => {
+      isProcessing.value = false
+    }, 2000)
   }
 }
 
@@ -173,12 +235,17 @@ const handleLogin = async (decodedText?: string) => {
 const startScanner = async () => {
   if (!html5QrCode) return
   isScannerRunning.value = true
-  html5QrCode.start(
-    { facingMode: "environment" },
-    { fps: 15, qrbox: { width: 250, height: 250 } },
-    (decodedText) => handleLogin(decodedText),
-    () => {}
-  ).catch(err => { console.error("Camera start error:", err); isScannerRunning.value = false })
+  html5QrCode
+    .start(
+      { facingMode: "environment" },
+      { fps: 15, qrbox: { width: 250, height: 250 } },
+      (decodedText) => handleLogin(decodedText),
+      () => {}
+    )
+    .catch((err) => {
+      console.error("Camera start error:", err)
+      isScannerRunning.value = false
+    })
 }
 
 const stopScanner = async () => {
@@ -192,7 +259,7 @@ const stopScanner = async () => {
 onMounted(() => {
   fetchLogs()
   html5QrCode = new Html5Qrcode("qr-reader")
-  timer = setInterval(() => currentTime.value = new Date(), 1000)
+  timer = setInterval(() => (currentTime.value = new Date()), 1000)
 })
 
 onUnmounted(() => {
@@ -201,21 +268,43 @@ onUnmounted(() => {
 })
 
 // FORMATTED DATE/TIME
-const formattedDate = computed(() => currentTime.value.toLocaleDateString("en-US", {
-  weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-}))
+const formattedDate = computed(() =>
+  currentTime.value.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  })
+)
 
-const formattedTime = computed(() => currentTime.value.toLocaleTimeString("en-US", {
-  hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
-}))
+const formattedTime = computed(() =>
+  currentTime.value.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  })
+)
 </script>
 
 <style>
-#qr-reader img { display: none; }
+#qr-reader img {
+  display: none;
+}
+
 #qr-reader video {
   object-fit: cover !important;
   width: 100% !important;
   height: 100% !important;
   border-radius: 12px;
+}
+
+/* Hide scrollbar but keep scroll working */
+.hidden-scroll {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.hidden-scroll::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
 }
 </style>
