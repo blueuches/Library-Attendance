@@ -7,48 +7,31 @@
 
     <div class="relative z-10 flex flex-col h-full w-full">
       <!-- Header -->
-<div class="flex items-center justify-center pt-8 pb-4 px-10 relative">
-  <!-- Left Logo -->
-  <div class="absolute left-10">
-    <img src="/csu-logo.png" alt="Logo" class="h-32 w-32 object-contain" />
-  </div>
+      <div class="flex items-center justify-center pt-8 pb-4 px-10 relative">
+        <div class="absolute left-10">
+          <img src="/csu-logo.png" alt="Logo" class="h-32 w-32 object-contain" />
+        </div>
+        <div class="text-center">
+          <h1
+            class="text-6xl uppercase leading-none font-black drop-shadow-md bg-[linear-gradient(90deg,#FFC300_0%,#ffffff_50%,#1b5e20_100%)] bg-clip-text text-transparent"
+            style="font-family: Impact;"
+          >
+            CARAGA STATE UNIVERSITY
+          </h1>
+          <h2 
+          class="pb-4 text-2xl uppercase text-green-100 font-bold"
+          style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;"
+          >
+          HERO LEARNING COMMONS</h2>
+          <div
+            class="mt-4 inline-block bg-white/10 border border-white/20 px-6 py-2 rounded-md font-semibold text-LG opacity-100"
+          >
+          ATTENDANCE AND CAPACITY CSU ENTRY SURVEILLANCE SYSTEM (ACCESS)
+          </div>
+        </div>
+        <h1>hello</h1>
+      </div>
 
-  <!-- Center Title -->
-  <div class="text-center">
-    <h1
-      class="text-6xl uppercase leading-none font-black drop-shadow-md bg-[linear-gradient(90deg,#FFC300_0%,#ffffff_50%,#1b5e20_100%)] bg-clip-text text-transparent"
-      style="font-family: Impact;"
-    >
-      CARAGA STATE UNIVERSITY
-    </h1>
-
-    <h2 
-      class="pb-4 text-2xl uppercase text-green-100 font-bold"
-      style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;"
-    >
-      HERO LEARNING COMMONS
-    </h2>
-
-    <div
-      class="mt-4 inline-block bg-white/10 border border-white/20 px-6 py-2 rounded-md font-semibold text-LG opacity-100"
-    >
-      ATTENDANCE AND CAPACITY CSU ENTRY SURVEILLANCE SYSTEM (ACCESS)
-    </div>
-  </div>
-
-  <!-- Right Dropdown -->
-  <div class="absolute right-10">
-    <select
-      v-model="attendanceType"
-      @change="handleAttendanceChange"
-      class="access-dropdown bg-white/10 backdrop-blur-md border border-white/30 text-white px-4 py-2 rounded-md font-semibold shadow-md hover:bg-white/20 transition"
-    >
-      <option disabled value="">Select Attendance</option>
-      <option value="library">Library Attendance</option>
-      <option value="event">Event Attendance</option>
-    </select>
-  </div>
-</div>
 
       <div class="flex-1 flex flex-row-reverse px-10 pb-10 gap-8 overflow-hidden">
         <!-- Left Column: Camera + Manual Entry -->
@@ -154,46 +137,13 @@
       </div>
     </div>
   </div>
-
-  <div v-if="showEventModal" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-  <div class="bg-white rounded-lg p-6 w-[400px] shadow-xl">
-    
-    <h2 class="text-xl font-bold mb-4">Select Event</h2>
-
-    <select v-model="selectedEvent" class="w-full border p-2 rounded mb-4">
-      <option disabled value="">Choose an event</option>
-      <option v-for="event in events" :key="event.id" :value="event">
-        {{ event.name }}
-      </option>
-    </select>
-
-    <div class="flex justify-end gap-2">
-      <button 
-        @click="showEventModal = false"
-        class="px-4 py-2 bg-gray-300 rounded"
-      >
-        Cancel
-      </button>
-
-      <button 
-        @click="goToEvent"
-        class="px-4 py-2 bg-green-600 text-white rounded"
-      >
-        Proceed
-      </button>
-    </div>
-
-  </div>
-</div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from "vue"
-import { useRouter } from 'vue-router'
 import { Html5Qrcode } from "html5-qrcode"
 import { getAttendanceLogs, createAttendanceLog } from "@/services/attendanceService"
 import { getStudentById } from "@/services/studentService"
-import { supabase } from "@/supabase"
 
 // STATE
 const idInput = ref("")
@@ -336,53 +286,6 @@ const formattedTime = computed(() =>
     hour12: true,
   })
 )
-
-// Types
-interface Event {
-  id: string
-  name: string
-  // add other fields if needed
-}
-
-// State
-const attendanceType = ref<string>('')
-const showEventModal = ref<boolean>(false)
-const events = ref<Event[]>([])
-const selectedEvent = ref<Event | null>(null)
-
-const router = useRouter()
-
-// Methods
-const handleAttendanceChange = async () => {
-  if (attendanceType.value === 'event') {
-    await fetchEvents()
-    showEventModal.value = true
-  }
-}
-
-const fetchEvents = async () => {
-  const { data, error } = await supabase
-    .from('events')
-    .select('*')
-
-  if (error) {
-    console.error('Error fetching events:', error)
-    return
-  }
-
-  events.value = data as Event[]
-}
-
-const goToEvent = () => {
-  if (!selectedEvent.value) return
-
-  router.push({
-    name: 'event',
-    query: { id: selectedEvent.value.id }
-  })
-
-  showEventModal.value = false
-}
 </script>
 
 <style>
@@ -405,51 +308,5 @@ const goToEvent = () => {
 
 .hidden-scroll::-webkit-scrollbar {
   display: none; /* Chrome, Safari */
-}
-
-.access-dropdown {
-  appearance: none;
-  background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.25);
-  color: white;
-  padding: 10px 40px 10px 16px;
-  border-radius: 12px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-  transition: all 0.25s ease;
-  position: relative;
-}
-
-/* Hover */
-.access-dropdown:hover {
-  background: rgba(255,255,255,0.2);
-  transform: translateY(-1px);
-}
-
-/* Focus */
-.access-dropdown:focus {
-  outline: none;
-  border: 1px solid #22c55e;
-  box-shadow: 0 0 0 2px rgba(34,197,94,0.4);
-}
-
-/* Dropdown arrow */
-.access-dropdown-wrapper {
-  position: relative;
-}
-
-.access-dropdown-wrapper::after {
-  content: "▾";
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: white;
-  font-size: 14px;
-  pointer-events: none;
-  opacity: 0.8;
 }
 </style>
