@@ -240,7 +240,7 @@
 import { ref, computed, onMounted, onUnmounted } from "vue"
 import { useRouter } from 'vue-router'
 import { Html5Qrcode } from "html5-qrcode"
-import { getAttendanceLogs, createAttendanceLog } from "@/services/attendanceService"
+import { getAttendanceLogs, createAttendanceLog, handleAttendance } from "@/services/attendanceService"
 import { getStudentById } from "@/services/studentService"
 import { supabase } from "@/supabase"
 
@@ -331,9 +331,18 @@ const fetchLogs = async () => {
   }
 }
 
-// ─── HANDLE LOGIN ──────────────────────────────────────────────────────────────
+let lastScanTime = 0
+
+// HANDLE LOGIN
 const handleLogin = async (decodedText?: string) => {
-  if (isProcessing.value) return
+  const now = Date.now()
+
+  if (now - lastScanTime < 3000) return // block within 3 sec
+  lastScanTime = now
+  
+  setTimeout(() => {
+  isProcessing.value = false
+}, 3000) // increase delay
 
   const rawData = decodedText || idInput.value
   if (!rawData.trim()) return
@@ -349,7 +358,14 @@ const handleLogin = async (decodedText?: string) => {
       return
     }
 
-    await createAttendanceLog(studentId)
+    // INSERT attendance log
+    const result = await handleAttendance(studentId)
+
+if (result.type === "already_done") {
+  alert("You have already timed in and out today.")
+}
+
+    // refresh table
     await fetchLogs()
 
     const audio = new Audio("/beep.mp3")
