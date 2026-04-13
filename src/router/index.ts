@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import TestView from '../views/TestView.vue' 
 import ACCESS from '../views/ACCESS.vue' 
+import ACCESSEVENT from '@/views/ACCESS-EVENT.vue'
+import ACCESSVISITORS from '@/views/ACCESS-VISITORS.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,6 +22,16 @@ const router = createRouter({
       path: '/test',
       name: 'test',
       component: TestView,
+    },
+    {
+      path: '/event',
+      name: 'event',
+      component: ACCESSEVENT,
+    },
+    {
+      path: '/visitors',
+      name: 'visitors',
+      component: ACCESSVISITORS,
     },
   ],
 })

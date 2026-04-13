@@ -2,7 +2,7 @@
   <div class="relative h-screen w-screen text-white flex flex-col overflow-hidden bg-[#0b3d1f]">
     <div
       class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-20"
-      :style="backgroundStyle"
+      style="background-image: url('/hero-outside.jpg');"
     ></div>
 
     <div class="relative z-10 flex flex-col h-full w-full">
@@ -10,11 +10,7 @@
       <div class="flex items-center justify-center pt-8 pb-4 px-10 relative">
         <!-- Left Logo -->
         <div class="absolute left-10">
-          <img
-            :src="schoolInfo.logo_path || '/csu-logo.png'"
-            alt="Logo"
-            class="h-32 w-32 object-contain"
-          />
+          <img src="/csu-logo.png" alt="Logo" class="h-32 w-32 object-contain" />
         </div>
 
         <!-- Center Title -->
@@ -23,23 +19,20 @@
             class="text-6xl uppercase leading-none font-black drop-shadow-md bg-[linear-gradient(90deg,#FFC300_0%,#ffffff_50%,#1b5e20_100%)] bg-clip-text text-transparent"
             style="font-family: Impact;"
           >
-            {{ schoolInfo.school_name || 'CARAGA STATE UNIVERSITY' }}
+            CARAGA STATE UNIVERSITY
           </h1>
 
           <h2
             class="pb-4 text-2xl uppercase text-green-100 font-bold"
             style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;"
           >
-            {{ schoolInfo.building_title || 'HERO LEARNING COMMONS' }}
+            HERO LEARNING COMMONS
           </h2>
 
           <div
             class="mt-4 inline-block bg-white/10 border border-white/20 px-6 py-2 rounded-md font-semibold text-LG opacity-100"
           >
-            {{
-              schoolInfo.system_name ||
-              'ATTENDANCE AND CAPACITY CSU ENTRY SURVEILLANCE SYSTEM (ACCESS)'
-            }}
+            ATTENDANCE AND CAPACITY CSU ENTRY SURVEILLANCE SYSTEM (ACCESS)
           </div>
         </div>
 
@@ -168,7 +161,7 @@
     </div>
   </div>
 
-  <!-- Event Selection Modal -->
+  <!-- Event Selection Modal (matched to ACCESS.vue design) -->
   <Transition name="modal">
     <div
       v-if="showEventModal"
@@ -176,6 +169,8 @@
       style="background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);"
     >
       <div class="event-modal">
+
+        <!-- Header -->
         <div class="event-modal-header">
           <div class="event-modal-icon">
             <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
@@ -194,6 +189,7 @@
           </button>
         </div>
 
+        <!-- Body -->
         <div class="event-modal-body">
           <div class="event-modal-section-label">Available Events</div>
           <div class="event-modal-list">
@@ -218,6 +214,7 @@
           </div>
         </div>
 
+        <!-- Footer -->
         <div class="event-modal-footer">
           <button @click="showEventModal = false" class="event-modal-btn-cancel">
             Cancel
@@ -233,6 +230,7 @@
             Proceed to Event
           </button>
         </div>
+
       </div>
     </div>
   </Transition>
@@ -242,7 +240,7 @@
 import { ref, computed, onMounted, onUnmounted } from "vue"
 import { useRouter } from 'vue-router'
 import { Html5Qrcode } from "html5-qrcode"
-import { getAttendanceLogs, handleAttendance } from "@/services/attendanceService"
+import { getAttendanceLogs, createAttendanceLog } from "@/services/attendanceService"
 import { getStudentById } from "@/services/studentService"
 import { supabase } from "@/supabase"
 
@@ -264,32 +262,20 @@ const ICON_VISITORS = `<svg width="16" height="16" viewBox="0 0 16 16" fill="non
   <path d="M13.5 13c0-1.66-1.12-3-2.5-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
 </svg>`
 
-// ─── ATTENDANCE TYPE PILL DATA ────────────────────────────────────────────────
+// ─── ATTENDANCE TYPE PILL DATA ─────────────────────────────────────────────────
 const attendanceTypes = [
-  { value: 'library', label: 'Library', icon: ICON_LIBRARY },
-  { value: 'event', label: 'Event', icon: ICON_EVENT },
+  { value: 'library',  label: 'Library',  icon: ICON_LIBRARY  },
+  { value: 'event',    label: 'Event',    icon: ICON_EVENT    },
   { value: 'visitors', label: 'Visitors', icon: ICON_VISITORS },
 ]
 
-// ─── TYPES ────────────────────────────────────────────────────────────────────
+// ─── TYPES ─────────────────────────────────────────────────────────────────────
 interface Event {
   id: string
   title: string
 }
 
-interface SchoolInfo {
-  school_name: string
-  building_title: string
-  system_name: string
-  bg_path: string
-  logo_path: string
-  max_capacity: number
-  opening_time: string
-  closing_time: string
-  address: string
-}
-
-// ─── STATE ────────────────────────────────────────────────────────────────────
+// ─── STATE ─────────────────────────────────────────────────────────────────────
 const idInput = ref("")
 const attendanceLogs = ref<any[]>([])
 const isScannerRunning = ref(false)
@@ -297,64 +283,15 @@ const isProcessing = ref(false)
 let html5QrCode: Html5Qrcode | null = null
 const currentTime = ref(new Date())
 let timer: any
-let schoolInfoTimer: any
-let attendancePageChannel: any = null
 
-const attendanceType = ref<string>('library')
+const attendanceType = ref<string>('visitors')
 const showEventModal = ref<boolean>(false)
 const events = ref<Event[]>([])
 const selectedEvent = ref<Event | null>(null)
 
-const schoolInfo = ref<SchoolInfo>({
-  school_name: '',
-  building_title: '',
-  system_name: '',
-  bg_path: '',
-  logo_path: '',
-  max_capacity: 0,
-  opening_time: '',
-  closing_time: '',
-  address: '',
-})
-
 const router = useRouter()
 
-// ─── COMPUTED ─────────────────────────────────────────────────────────────────
-const backgroundStyle = computed(() => ({
-  backgroundImage: `url('${schoolInfo.value.bg_path || '/hero-outside.jpg'}')`,
-}))
-
-// ─── FETCH PAGE DATA FROM attendance_page ────────────────────────────────────
-const fetchSchoolInfo = async () => {
-  const { data, error } = await supabase
-    .from('attendance_page')
-    .select('element_form')
-    .eq('element_name', 'school_info')
-    .single()
-
-  if (error) {
-    console.error('Error fetching attendance page school_info:', error)
-    return
-  }
-
-  if (!data?.element_form) return
-
-  try {
-    const parsed =
-      typeof data.element_form === 'string'
-        ? JSON.parse(data.element_form)
-        : data.element_form
-
-    schoolInfo.value = {
-      ...schoolInfo.value,
-      ...parsed,
-    }
-  } catch (err) {
-    console.error('Failed to parse attendance_page.element_form:', err)
-  }
-}
-
-// ─── FETCH ATTENDANCE WITH STUDENT INFO ──────────────────────────────────────
+// ─── FETCH ATTENDANCE WITH STUDENT INFO ───────────────────────────────────────
 const fetchLogs = async () => {
   try {
     const logs = await getAttendanceLogs()
@@ -366,16 +303,13 @@ const fetchLogs = async () => {
         } catch (e) {
           console.warn("Student not found for ID:", log.student_id)
         }
-
         return {
           ...log,
-          students: studentData,
-          log_time: log.time_in
-            ? new Date(log.time_in).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-              })
-            : null,
+          student: studentData,
+          log_time: new Date(log.time_in).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
           time_in_formatted: log.time_in
             ? new Date(log.time_in).toLocaleTimeString([], {
                 hour: '2-digit',
@@ -391,22 +325,15 @@ const fetchLogs = async () => {
         }
       })
     )
-
     attendanceLogs.value = logsWithStudent
   } catch (err) {
     console.error("Failed to fetch attendance logs:", err)
   }
 }
 
-let lastScanTime = 0
-
-// ─── HANDLE LOGIN ─────────────────────────────────────────────────────────────
+// ─── HANDLE LOGIN ──────────────────────────────────────────────────────────────
 const handleLogin = async (decodedText?: string) => {
-  const now = Date.now()
-
   if (isProcessing.value) return
-  if (now - lastScanTime < 3000) return
-  lastScanTime = now
 
   const rawData = decodedText || idInput.value
   if (!rawData.trim()) return
@@ -422,12 +349,7 @@ const handleLogin = async (decodedText?: string) => {
       return
     }
 
-    const result = await handleAttendance(studentId)
-
-    if (result?.type === "already_done") {
-      alert("You have already timed in and out today.")
-    }
-
+    await createAttendanceLog(studentId)
     await fetchLogs()
 
     const audio = new Audio("/beep.mp3")
@@ -443,11 +365,10 @@ const handleLogin = async (decodedText?: string) => {
   }
 }
 
-// ─── CAMERA SCANNER ───────────────────────────────────────────────────────────
+// ─── CAMERA SCANNER ────────────────────────────────────────────────────────────
 const startScanner = async () => {
   if (!html5QrCode) return
   isScannerRunning.value = true
-
   html5QrCode
     .start(
       { facingMode: "environment" },
@@ -480,7 +401,7 @@ const fetchEvents = async () => {
     return
   }
 
-  events.value = (data || []) as Event[]
+  events.value = data as Event[]
 }
 
 // ─── ATTENDANCE TYPE HANDLERS ─────────────────────────────────────────────────
@@ -525,48 +446,19 @@ const goToLibrary = () => {
   showEventModal.value = false
 }
 
-// ─── LIFECYCLE ────────────────────────────────────────────────────────────────
-onMounted(async () => {
-  await fetchSchoolInfo()
-  await fetchLogs()
-
+// ─── LIFECYCLE ─────────────────────────────────────────────────────────────────
+onMounted(() => {
+  fetchLogs()
   html5QrCode = new Html5Qrcode("qr-reader")
   timer = setInterval(() => (currentTime.value = new Date()), 1000)
-
-  schoolInfoTimer = setInterval(() => {
-    fetchSchoolInfo()
-  }, 5000)
-
-  attendancePageChannel = supabase
-    .channel('attendance_page_realtime')
-    .on(
-      'postgres_changes',
-      {
-        event: '*',
-        schema: 'public',
-        table: 'attendance_page',
-      },
-      () => {
-        fetchSchoolInfo()
-      }
-    )
-    .subscribe()
 })
 
 onUnmounted(() => {
   clearInterval(timer)
-  clearInterval(schoolInfoTimer)
-
-  if (html5QrCode?.isScanning) {
-    html5QrCode.stop()
-  }
-
-  if (attendancePageChannel) {
-    supabase.removeChannel(attendancePageChannel)
-  }
+  if (html5QrCode?.isScanning) html5QrCode.stop()
 })
 
-// ─── DATE / TIME ──────────────────────────────────────────────────────────────
+// ─── DATE / TIME ───────────────────────────────────────────────────────────────
 const formattedDate = computed(() =>
   currentTime.value.toLocaleDateString("en-US", {
     weekday: "long",
@@ -875,6 +767,7 @@ const formattedTime = computed(() =>
   box-shadow: 0 2px 12px rgba(22, 163, 74, 0.4);
 }
 
+/* ── Modal animation ── */
 @keyframes modal-pop {
   from { opacity: 0; transform: scale(0.92) translateY(10px); }
   to   { opacity: 1; transform: scale(1) translateY(0); }
