@@ -23,22 +23,21 @@
             class="text-6xl uppercase leading-none font-black drop-shadow-md bg-[linear-gradient(90deg,#FFC300_0%,#ffffff_50%,#1b5e20_100%)] bg-clip-text text-transparent"
             style="font-family: Impact;"
           >
-            {{ schoolInfo.school_name || 'CARAGA STATE UNIVERSITY' }}
+            {{ schoolInfo.school_name }}
           </h1>
 
           <h2
             class="pb-4 text-2xl uppercase text-green-100 font-bold"
             style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;"
           >
-            {{ schoolInfo.building_title || 'HERO LEARNING COMMONS' }}
+            {{ schoolInfo.building_title }}
           </h2>
 
           <div
             class="mt-4 inline-block bg-white/10 border border-white/20 px-6 py-2 rounded-md font-semibold text-LG opacity-100"
           >
             {{
-              schoolInfo.system_name ||
-              'ATTENDANCE AND CAPACITY CSU ENTRY SURVEILLANCE SYSTEM (ACCESS)'
+              schoolInfo.system_name
             }}
           </div>
         </div>
