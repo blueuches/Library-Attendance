@@ -36,3 +36,18 @@ export const createAttendanceLog = async (studentId: string) => {
   if (error) throw error
   return data
 }
+
+export const createTimeOut = async (studentId: string) => {
+  const { data, error } = await supabase
+    .from("attendance_logs")
+    .insert([
+      {
+        student_id: studentId,
+        attendance_type: "library",
+        time_out: new Date()
+      }
+    ])
+
+  if (error) throw error
+  return data
+}
