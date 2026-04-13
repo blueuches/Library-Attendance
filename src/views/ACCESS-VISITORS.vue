@@ -66,40 +66,15 @@
           <div
             class="flex-1 bg-white/10 border rounded-2xl overflow-hidden relative flex flex-col shadow-2xl"
           >
-            <div class="p-3 bg-white/10 flex justify-between items-center px-4">
-              <span class="text-xs font-black tracking-widest uppercase">Live Camera Feed</span>
-              <button
-                v-if="isScannerRunning"
-                @click="stopScanner"
-                class="text-[10px] bg-red-600 hover:bg-red-700 px-3 py-1 rounded font-bold transition-all border border-red-400 shadow-lg"
-              >
-                STOP CAMERA
-              </button>
-            </div>
-
-            <div id="qr-reader" class="flex-1 w-full bg-black/20"></div>
 
             <div class="p-4 bg-black/40 flex flex-col gap-3">
               <input
                 v-model="idInput"
                 type="text"
-                placeholder="Manual Entry..."
+                placeholder="Enter Your Name..."
                 @keyup.enter="(e: KeyboardEvent) => handleLogin()"
                 class="w-full p-2 rounded border border-white/80 text-white"
               />
-              <button
-                v-if="!isScannerRunning"
-                @click="startScanner"
-                class="w-full py-3 rounded-lg font-bold transition-all bg-green-700 hover:bg-green-600 border border-green-500 shadow-md"
-              >
-                START CAMERA
-              </button>
-              <div
-                v-else
-                class="w-full py-3 text-center text-green-400 font-bold animate-pulse text-sm tracking-widest"
-              >
-                SCANNER IS ACTIVE...
-              </div>
             </div>
           </div>
         </div>
@@ -112,47 +87,33 @@
             <table class="w-full text-white border-collapse">
               <thead class="sticky top-0 z-20 bg-white/40 backdrop-blur-md">
                 <tr class="text-left">
-                  <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">ID Number</th>
                   <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">Name</th>
-                  <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">Course</th>
-                  <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">Year Level</th>
-                  <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">Time-In</th>
-                  <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">Time-Out</th>
+                  <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">Time-In</th> 
                 </tr>
               </thead>
               <tbody class="divide-y divide-white/5">
-                <tr
-                  v-for="log in attendanceLogs"
-                  :key="log.id"
-                  class="hover:bg-white/5 transition-colors"
-                >
-                  <td class="p-4 font-bold text-xl">{{ log.student_id }}</td>
-                  <td class="p-4 font-bold text-xl uppercase">
-                    {{ log.students?.first_name }} {{ log.students?.last_name }}
-                  </td>
-                  <td class="p-4 text-lg opacity-80">{{ log.students?.program }}</td>
-                  <td class="p-4 text-lg opacity-80">{{ log.students?.year_level || '—' }}</td>
-                  <td class="p-4 font-mono text-lg opacity-80 font-bold">
-                    {{
-                      log.time_in
-                        ? new Date(log.time_in).toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })
-                        : '—'
-                    }}
-                  </td>
-                  <td class="p-4 font-mono text-lg opacity-80 font-bold">
-                    {{
-                      log.time_out
-                        ? new Date(log.time_out).toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })
-                        : '—'
-                    }}
-                  </td>
-                </tr>
+<tr
+  v-for="log in attendanceLogs"
+  :key="log.id"
+  class="hover:bg-white/5 transition-colors"
+>
+
+  <td class="p-4 font-bold text-xl uppercase">
+    {{ log.full_name }}
+  </td>
+
+
+  <td class="p-4 font-mono text-lg opacity-80 font-bold">
+    {{
+      new Date(log.time_in).toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    }}
+  </td>
+
+
+</tr>
               </tbody>
             </table>
           </div>
@@ -241,6 +202,7 @@ import { ref, computed, onMounted, onUnmounted } from "vue"
 import { useRouter } from 'vue-router'
 import { Html5Qrcode } from "html5-qrcode"
 import { getAttendanceLogs, createAttendanceLog } from "@/services/attendanceService"
+import { createVisitorLog, getVisitorLogs } from "@/services/attendanceVisitorsService"
 import { getStudentById } from "@/services/studentService"
 import { supabase } from "@/supabase"
 
@@ -331,6 +293,15 @@ const fetchLogs = async () => {
   }
 }
 
+const fetchVisitorLogs = async () => {
+  try {
+    const logs = await getVisitorLogs()
+    attendanceLogs.value = logs
+  } catch (err) {
+    console.error("Failed to fetch visitor logs:", err)
+  }
+}
+
 // ─── HANDLE LOGIN ──────────────────────────────────────────────────────────────
 const handleLogin = async (decodedText?: string) => {
   if (isProcessing.value) return
@@ -341,6 +312,16 @@ const handleLogin = async (decodedText?: string) => {
   isProcessing.value = true
 
   try {
+    // 🔥 VISITOR MODE
+    if (attendanceType.value === "visitors") {
+      await createVisitorLog(rawData.trim())
+      await fetchVisitorLogs()
+
+      idInput.value = ""
+      return
+    }
+
+    // 🔥 STUDENT MODE (existing logic)
     const studentId = rawData.trim()
     const student = await getStudentById(studentId)
 
@@ -352,40 +333,14 @@ const handleLogin = async (decodedText?: string) => {
     await createAttendanceLog(studentId)
     await fetchLogs()
 
-    const audio = new Audio("/beep.mp3")
-    audio.play().catch(() => {})
-
     idInput.value = ""
+
   } catch (err) {
     console.error("Attendance error:", err)
   } finally {
     setTimeout(() => {
       isProcessing.value = false
     }, 2000)
-  }
-}
-
-// ─── CAMERA SCANNER ────────────────────────────────────────────────────────────
-const startScanner = async () => {
-  if (!html5QrCode) return
-  isScannerRunning.value = true
-  html5QrCode
-    .start(
-      { facingMode: "environment" },
-      { fps: 15, qrbox: { width: 250, height: 250 } },
-      (decodedText) => handleLogin(decodedText),
-      () => {}
-    )
-    .catch((err) => {
-      console.error("Camera start error:", err)
-      isScannerRunning.value = false
-    })
-}
-
-const stopScanner = async () => {
-  if (html5QrCode && isScannerRunning.value) {
-    await html5QrCode.stop()
-    isScannerRunning.value = false
   }
 }
 
@@ -448,7 +403,12 @@ const goToLibrary = () => {
 
 // ─── LIFECYCLE ─────────────────────────────────────────────────────────────────
 onMounted(() => {
-  fetchLogs()
+  if (attendanceType.value === "visitors") {
+    fetchVisitorLogs()
+  } else {
+    fetchLogs()
+  }
+
   html5QrCode = new Html5Qrcode("qr-reader")
   timer = setInterval(() => (currentTime.value = new Date()), 1000)
 })
