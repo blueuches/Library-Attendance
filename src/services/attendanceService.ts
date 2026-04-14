@@ -37,6 +37,26 @@ export const createAttendanceLog = async (studentId: string) => {
   return data
 }
 
+export const createAttendanceLogEvent = async (payload: {
+  student_id: string
+  attendance_type: string
+  event_id?: string | null
+}) => {
+  const { data, error } = await supabase
+    .from('attendance_logs')
+    .insert([
+      {
+        student_id: payload.student_id,
+        attendance_type: payload.attendance_type,
+        event_id: payload.event_id ?? null,
+        time_in: new Date().toISOString()
+      }
+    ])
+
+  if (error) throw error
+  return data
+}
+
 export const handleAttendance = async (studentId: string) => {
   const todayStart = new Date()
   todayStart.setHours(0, 0, 0, 0)

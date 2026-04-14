@@ -103,6 +103,7 @@
             </div>
           </div>
         </div>
+        
 
         <!-- Right Column: Attendance Table -->
         <div class="flex-1 flex flex-col min-h-0">
@@ -112,36 +113,12 @@
             <table class="w-full text-white border-collapse">
               <thead class="sticky top-0 z-20 bg-white/40 backdrop-blur-md">
                 <tr class="text-left">
-                  <th
-                    class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10"
-                  >
-                    ID Number
-                  </th>
-                  <th
-                    class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10"
-                  >
-                    Name
-                  </th>
-                  <th
-                    class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10"
-                  >
-                    Course
-                  </th>
-                  <th
-                    class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10"
-                  >
-                    Year Level
-                  </th>
-                  <th
-                    class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10"
-                  >
-                    Time-In
-                  </th>
-                  <th
-                    class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10"
-                  >
-                    Time-Out
-                  </th>
+                  <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">ID Number</th>
+                  <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">Name</th>
+                  <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">Course</th>
+                  <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">Year Level</th>
+                  <th class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10">Time-In</th>
+                  
                 </tr>
               </thead>
               <tbody class="divide-y divide-white/5">
@@ -166,16 +143,7 @@
                         : '—'
                     }}
                   </td>
-                  <td class="p-4 font-mono text-lg opacity-80 font-bold">
-                    {{
-                      log.time_out
-                        ? new Date(log.time_out).toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })
-                        : '—'
-                    }}
-                  </td>
+
                 </tr>
               </tbody>
             </table>
@@ -325,12 +293,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { Html5Qrcode } from 'html5-qrcode'
-import { getAttendanceLogs, createAttendanceLog } from '@/services/attendanceService'
-import { getStudentById } from '@/services/studentService'
-import { supabase } from '@/supabase'
+import { ref, computed, onMounted, onUnmounted } from "vue"
+import { useRouter, useRoute } from 'vue-router'
+import { watch } from "vue"
+import { Html5Qrcode } from "html5-qrcode"
+import { getAttendanceLogs, createAttendanceLogEvent } from "@/services/attendanceService"
+import { getStudentById } from "@/services/studentService"
+import { supabase } from "@/supabase"
 
 // ─── ICONS ────────────────────────────────────────────────────────────────────
 const ICON_LIBRARY = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -374,13 +343,29 @@ let html5QrCode: Html5Qrcode | null = null
 const currentTime = ref(new Date())
 let timer: any
 
-const attendanceType = ref<string>('library')
+const attendanceType = ref<string>('event')
 const showEventModal = ref<boolean>(false)
 const events = ref<Event[]>([])
 const selectedEvent = ref<Event | null>(null)
 const eventSearch = ref<string>('')
 
 const router = useRouter()
+const route = useRoute()
+
+watch(
+  () => route.query.id,
+  async (newId) => {
+    if (newId) {
+      selectedEvent.value = {
+        id: newId as string,
+        title: ''
+      }
+
+      attendanceLogs.value = [] // 🔥 clear old data immediately
+      await fetchLogs()         // 🔥 fetch new event logs
+    }
+  }
+)
 
 // ─── FILTERED EVENTS ──────────────────────────────────────────────────────────
 const filteredEvents = computed(() => {
@@ -392,32 +377,35 @@ const filteredEvents = computed(() => {
 // ─── FETCH ATTENDANCE WITH STUDENT INFO ───────────────────────────────────────
 const fetchLogs = async () => {
   try {
-    const logs = await getAttendanceLogs()
-    const logsWithStudent = await Promise.all(
-      logs.map(async (log: any) => {
-        let studentData = null
-        try {
-          studentData = await getStudentById(log.student_id)
-        } catch (e) {
-          console.warn('Student not found for ID:', log.student_id)
-        }
-        return {
-          ...log,
-          student: studentData,
-          log_time: new Date(log.time_in).toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-          }),
-          time_in_formatted: log.time_in
-            ? new Date(log.time_in).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            : null,
-          time_out_formatted: log.time_out
-            ? new Date(log.time_out).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            : null,
-        }
-      }),
-    )
-    attendanceLogs.value = logsWithStudent
+    let query = supabase
+      .from('attendance_logs')
+      .select(`
+        *,
+        students (
+          first_name,
+          last_name,
+          program,
+          year_level
+        )
+      `)
+      .order('time_in', { ascending: false })
+
+    // 🔥 FILTER HERE
+    if (attendanceType.value === 'event' && selectedEvent.value) {
+      query = query
+        .eq('attendance_type', 'event')
+        .eq('event_id', selectedEvent.value.id)
+    }
+
+    if (attendanceType.value === 'library') {
+      query = query.eq('attendance_type', 'library')
+    }
+
+    const { data, error } = await query
+
+    if (error) throw error
+
+    attendanceLogs.value = data || []
   } catch (err) {
     console.error('Failed to fetch attendance logs:', err)
   }
@@ -441,7 +429,16 @@ const handleLogin = async (decodedText?: string) => {
       return
     }
 
-    await createAttendanceLog(studentId)
+    if (attendanceType.value === 'event' && !selectedEvent.value) {
+  console.warn("No event selected")
+  return
+}
+
+    await createAttendanceLogEvent({
+  student_id: studentId,
+  attendance_type: attendanceType.value === 'event' ? 'event' : 'library',
+  event_id: attendanceType.value === 'event' ? selectedEvent.value?.id : null
+})
     await fetchLogs()
 
     const audio = new Audio('/beep.mp3')
@@ -537,6 +534,13 @@ const goToLibrary = () => {
 
 // ─── LIFECYCLE ─────────────────────────────────────────────────────────────────
 onMounted(() => {
+  const eventId = route.query.id as string
+
+  if (eventId) {
+    attendanceType.value = 'event' // ✅ force correct type
+    selectedEvent.value = { id: eventId, title: '' } // minimal object
+  }
+
   fetchLogs()
   html5QrCode = new Html5Qrcode('qr-reader')
   timer = setInterval(() => (currentTime.value = new Date()), 1000)
