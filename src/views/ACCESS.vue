@@ -8,7 +8,6 @@
     <div class="relative z-10 flex flex-col h-full w-full">
       <!-- Header -->
       <div class="flex items-center justify-center pt-8 pb-4 px-10 relative">
-        <!-- Left Logo -->
         <div class="absolute left-10">
           <img
             :src="schoolInfo.logo_path || '/csu-logo.png'"
@@ -16,8 +15,6 @@
             class="h-32 w-32 object-contain"
           />
         </div>
-
-        <!-- Center Title -->
         <div class="text-center">
           <h1
             class="text-6xl uppercase leading-none font-black drop-shadow-md bg-[linear-gradient(90deg,#FFC300_0%,#ffffff_50%,#1b5e20_100%)] bg-clip-text text-transparent"
@@ -25,26 +22,22 @@
           >
             {{ schoolInfo.school_name }}
           </h1>
-
           <h2
             class="pb-4 text-2xl uppercase text-green-100 font-bold"
             style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
           >
             {{ schoolInfo.building_title }}
           </h2>
-
           <div
             class="mt-4 inline-block bg-white/10 border border-white/20 px-6 py-2 rounded-md font-semibold text-LG opacity-100"
           >
             {{ schoolInfo.system_name }}
           </div>
         </div>
-
-        <!-- Right: Pill Selector -->
         <div class="absolute right-10 flex flex-col items-center gap-2">
-          <span class="text-[11px] font-semibold tracking-[0.15em] uppercase text-white/40">
-            Attendance Type
-          </span>
+          <span class="text-[11px] font-semibold tracking-[0.15em] uppercase text-white/40"
+            >Attendance Type</span
+          >
           <div class="attendance-pill-group">
             <button
               v-for="type in attendanceTypes"
@@ -60,13 +53,12 @@
       </div>
 
       <div class="flex-1 flex flex-row-reverse px-10 pb-10 gap-8 overflow-hidden">
-        <!-- Left Column: Camera + Manual Entry -->
+        <!-- Left Column -->
         <div class="w-[400px] flex flex-col gap-4">
           <div class="bg-white/40 border border-white/10 p-6 rounded-2xl text-center">
             <div class="text-xl opacity-70 uppercase font-bold">{{ formattedDate }}</div>
             <div class="text-4xl font-mono font-bold text-green-400 mt-1">{{ formattedTime }}</div>
           </div>
-
           <div
             class="flex-1 bg-white/10 border rounded-2xl overflow-hidden relative flex flex-col shadow-2xl"
           >
@@ -80,9 +72,7 @@
                 STOP CAMERA
               </button>
             </div>
-
             <div id="qr-reader" class="flex-1 w-full bg-black/20"></div>
-
             <div class="p-4 bg-black/40 flex flex-col gap-3">
               <input
                 v-model="idInput"
@@ -108,7 +98,7 @@
           </div>
         </div>
 
-        <!-- Right Column: Attendance Table -->
+        <!-- Right Column: Table -->
         <div class="flex-1 flex flex-col min-h-0">
           <div
             class="flex-1 bg-white/10 rounded-2xl overflow-y-auto overflow-x-hidden hidden-scroll border border-white/20 shadow-2xl"
@@ -189,7 +179,38 @@
     </div>
   </div>
 
-  <!-- Event Selection Modal -->
+  <!-- ── Already Done Modal ── -->
+  <Transition name="modal">
+    <div
+      v-if="showAlreadyDoneModal"
+      class="fixed inset-0 z-50 flex items-center justify-center"
+      style="background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px)"
+    >
+      <div class="already-done-modal">
+        <div class="already-done-icon-wrap">
+          <div class="already-done-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="#b45309" stroke-width="1.8" />
+              <path d="M12 7v5.5" stroke="#b45309" stroke-width="2" stroke-linecap="round" />
+              <circle cx="12" cy="16.5" r="1" fill="#b45309" />
+            </svg>
+          </div>
+        </div>
+        <div class="already-done-body">
+          <div class="already-done-title">Already Completed</div>
+          <div class="already-done-subtitle">
+            You have already timed in and out today.<br />
+            Please come back tomorrow.
+          </div>
+        </div>
+        <div class="already-done-footer">
+          <button @click="showAlreadyDoneModal = false" class="already-done-btn">Got it</button>
+        </div>
+      </div>
+    </div>
+  </Transition>
+
+  <!-- ── Event Selection Modal ── -->
   <Transition name="modal">
     <div
       v-if="showEventModal"
@@ -197,7 +218,6 @@
       style="background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px)"
     >
       <div class="event-modal">
-        <!-- Header -->
         <div class="event-modal-header">
           <div class="event-modal-icon">
             <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
@@ -233,8 +253,6 @@
             </svg>
           </button>
         </div>
-
-        <!-- Search -->
         <div class="event-modal-search-wrap">
           <svg
             class="event-modal-search-icon"
@@ -253,8 +271,6 @@
             class="event-modal-search-input"
           />
         </div>
-
-        <!-- Body -->
         <div class="event-modal-body">
           <div class="event-modal-section-label">Available events</div>
           <div class="event-modal-list">
@@ -290,16 +306,13 @@
                 <div class="event-modal-radio-dot"></div>
               </div>
             </button>
-
             <div v-if="filteredEvents.length === 0" class="event-modal-empty">No events found.</div>
           </div>
         </div>
-
-        <!-- Footer -->
         <div class="event-modal-footer">
-          <span class="event-modal-selection-hint">
-            {{ selectedEvent ? '1 event selected' : 'No event selected' }}
-          </span>
+          <span class="event-modal-selection-hint">{{
+            selectedEvent ? '1 event selected' : 'No event selected'
+          }}</span>
           <div class="event-modal-footer-actions">
             <button @click="showEventModal = false" class="event-modal-btn-cancel">Cancel</button>
             <button
@@ -333,37 +346,20 @@ import { getAttendanceLogs, handleAttendance } from '@/services/attendanceServic
 import { getStudentById } from '@/services/studentService'
 import { supabase } from '@/supabase'
 
-// ─── ICONS ────────────────────────────────────────────────────────────────────
-const ICON_LIBRARY = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/>
-  <path d="M5 8h6M5 5.5h6M5 10.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-</svg>`
+const ICON_LIBRARY = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 8h6M5 5.5h6M5 10.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`
+const ICON_EVENT = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3.5l2 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+const ICON_VISITORS = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="5" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M2 13c0-2.21 1.79-4 4-4s4 1.79 4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="11.5" cy="5.5" r="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M13.5 13c0-1.66-1.12-3-2.5-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>`
 
-const ICON_EVENT = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/>
-  <path d="M8 5v3.5l2 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>`
-
-const ICON_VISITORS = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="6" cy="5" r="2" stroke="currentColor" stroke-width="1.3"/>
-  <path d="M2 13c0-2.21 1.79-4 4-4s4 1.79 4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-  <circle cx="11.5" cy="5.5" r="1.5" stroke="currentColor" stroke-width="1.2"/>
-  <path d="M13.5 13c0-1.66-1.12-3-2.5-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-</svg>`
-
-// ─── ATTENDANCE TYPE PILL DATA ────────────────────────────────────────────────
 const attendanceTypes = [
   { value: 'library', label: 'Library', icon: ICON_LIBRARY },
   { value: 'event', label: 'Event', icon: ICON_EVENT },
   { value: 'visitors', label: 'Visitors', icon: ICON_VISITORS },
 ]
 
-// ─── TYPES ────────────────────────────────────────────────────────────────────
 interface Event {
   id: string
   title: string
 }
-
 interface SchoolInfo {
   school_name: string
   building_title: string
@@ -376,7 +372,6 @@ interface SchoolInfo {
   address: string
 }
 
-// ─── STATE ────────────────────────────────────────────────────────────────────
 const idInput = ref('')
 const attendanceLogs = ref<any[]>([])
 const isScannerRunning = ref(false)
@@ -389,6 +384,7 @@ let attendancePageChannel: any = null
 
 const attendanceType = ref<string>('library')
 const showEventModal = ref<boolean>(false)
+const showAlreadyDoneModal = ref<boolean>(false)
 const events = ref<Event[]>([])
 const selectedEvent = ref<Event | null>(null)
 const eventSearch = ref<string>('')
@@ -407,7 +403,6 @@ const schoolInfo = ref<SchoolInfo>({
 
 const router = useRouter()
 
-// ─── COMPUTED ─────────────────────────────────────────────────────────────────
 const backgroundStyle = computed(() => ({
   backgroundImage: `url('${schoolInfo.value.bg_path || '/hero-outside.jpg'}')`,
 }))
@@ -418,31 +413,26 @@ const filteredEvents = computed(() => {
   return events.value.filter((e) => e.title.toLowerCase().includes(q))
 })
 
-// ─── FETCH SCHOOL INFO ────────────────────────────────────────────────────────
 const fetchSchoolInfo = async () => {
   const { data, error } = await supabase
     .from('attendance_page')
     .select('element_form')
     .eq('element_name', 'school_info')
     .single()
-
   if (error) {
-    console.error('Error fetching attendance page school_info:', error)
+    console.error('Error fetching school_info:', error)
     return
   }
-
   if (!data?.element_form) return
-
   try {
     const parsed =
       typeof data.element_form === 'string' ? JSON.parse(data.element_form) : data.element_form
     schoolInfo.value = { ...schoolInfo.value, ...parsed }
   } catch (err) {
-    console.error('Failed to parse attendance_page.element_form:', err)
+    console.error('Failed to parse element_form:', err)
   }
 }
 
-// ─── FETCH ATTENDANCE WITH STUDENT INFO ──────────────────────────────────────
 const fetchLogs = async () => {
   try {
     const logs = await getAttendanceLogs()
@@ -451,9 +441,7 @@ const fetchLogs = async () => {
         let studentData = null
         try {
           studentData = await getStudentById(log.student_id)
-        } catch (e) {
-          console.warn('Student not found for ID:', log.student_id)
-        }
+        } catch (e) {}
         return {
           ...log,
           students: studentData,
@@ -471,16 +459,14 @@ const fetchLogs = async () => {
     )
     attendanceLogs.value = logsWithStudent
   } catch (err) {
-    console.error('Failed to fetch attendance logs:', err)
+    console.error('Failed to fetch logs:', err)
   }
 }
 
 let lastScanTime = 0
 
-// ─── HANDLE LOGIN ─────────────────────────────────────────────────────────────
 const handleLogin = async (decodedText?: string) => {
   const now = Date.now()
-
   if (isProcessing.value) return
   if (now - lastScanTime < 3000) return
   lastScanTime = now
@@ -489,11 +475,9 @@ const handleLogin = async (decodedText?: string) => {
   if (!rawData.trim()) return
 
   isProcessing.value = true
-
   try {
     const studentId = rawData.trim()
     const student = await getStudentById(studentId)
-
     if (!student) {
       console.warn('Student not found')
       return
@@ -502,14 +486,12 @@ const handleLogin = async (decodedText?: string) => {
     const result = await handleAttendance(studentId)
 
     if (result?.type === 'already_done') {
-      alert('You have already timed in and out today.')
+      showAlreadyDoneModal.value = true
     }
 
     await fetchLogs()
-
     const audio = new Audio('/beep.mp3')
     audio.play().catch(() => {})
-
     idInput.value = ''
   } catch (err) {
     console.error('Attendance error:', err)
@@ -520,11 +502,9 @@ const handleLogin = async (decodedText?: string) => {
   }
 }
 
-// ─── CAMERA SCANNER ───────────────────────────────────────────────────────────
 const startScanner = async () => {
   if (!html5QrCode) return
   isScannerRunning.value = true
-
   html5QrCode
     .start(
       { facingMode: 'environment' },
@@ -545,19 +525,15 @@ const stopScanner = async () => {
   }
 }
 
-// ─── FETCH EVENTS ─────────────────────────────────────────────────────────────
 const fetchEvents = async () => {
   const { data, error } = await supabase.from('events').select('id, title').eq('is_active', true)
-
   if (error) {
     console.error('Error fetching events:', error)
     return
   }
-
   events.value = (data || []) as Event[]
 }
 
-// ─── ATTENDANCE TYPE HANDLERS ─────────────────────────────────────────────────
 const setAttendanceType = async (value: string) => {
   attendanceType.value = value
   await handleAttendanceChange()
@@ -570,14 +546,8 @@ const handleAttendanceChange = async () => {
     selectedEvent.value = null
     showEventModal.value = true
   }
-
-  if (attendanceType.value === 'visitors') {
-    goToVisitors()
-  }
-
-  if (attendanceType.value === 'library') {
-    goToLibrary()
-  }
+  if (attendanceType.value === 'visitors') goToVisitors()
+  if (attendanceType.value === 'library') goToLibrary()
 }
 
 const goToEvent = () => {
@@ -585,29 +555,23 @@ const goToEvent = () => {
   router.push({ name: 'event', query: { id: selectedEvent.value.id } })
   showEventModal.value = false
 }
-
 const goToVisitors = () => {
   router.push({ name: 'visitors' })
   showEventModal.value = false
 }
-
 const goToLibrary = () => {
   router.push({ name: 'access' })
   showEventModal.value = false
 }
 
-// ─── LIFECYCLE ────────────────────────────────────────────────────────────────
 onMounted(async () => {
   await fetchSchoolInfo()
   await fetchLogs()
-
   html5QrCode = new Html5Qrcode('qr-reader')
   timer = setInterval(() => (currentTime.value = new Date()), 1000)
-
   schoolInfoTimer = setInterval(() => {
     fetchSchoolInfo()
   }, 5000)
-
   attendancePageChannel = supabase
     .channel('attendance_page_realtime')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'attendance_page' }, () => {
@@ -619,17 +583,10 @@ onMounted(async () => {
 onUnmounted(() => {
   clearInterval(timer)
   clearInterval(schoolInfoTimer)
-
-  if (html5QrCode?.isScanning) {
-    html5QrCode.stop()
-  }
-
-  if (attendancePageChannel) {
-    supabase.removeChannel(attendancePageChannel)
-  }
+  if (html5QrCode?.isScanning) html5QrCode.stop()
+  if (attendancePageChannel) supabase.removeChannel(attendancePageChannel)
 })
 
-// ─── DATE / TIME ──────────────────────────────────────────────────────────────
 const formattedDate = computed(() =>
   currentTime.value.toLocaleDateString('en-US', {
     weekday: 'long',
@@ -638,7 +595,6 @@ const formattedDate = computed(() =>
     day: 'numeric',
   }),
 )
-
 const formattedTime = computed(() =>
   currentTime.value.toLocaleTimeString('en-US', {
     hour: '2-digit',
@@ -714,6 +670,80 @@ const formattedTime = computed(() =>
   line-height: 0;
 }
 
+/* ── Already Done Modal ── */
+.already-done-modal {
+  width: 380px;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.18);
+  animation: modal-pop 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 32px 28px;
+}
+
+.already-done-icon-wrap {
+  margin-bottom: 18px;
+}
+
+.already-done-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #fef3c7;
+  border: 1.5px solid #fcd34d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.already-done-body {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.already-done-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #111;
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+}
+
+.already-done-subtitle {
+  font-size: 14px;
+  color: #888;
+  line-height: 1.65;
+}
+
+.already-done-footer {
+  width: 100%;
+}
+
+.already-done-btn {
+  width: 100%;
+  padding: 13px;
+  border-radius: 12px;
+  border: none;
+  background: #111;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    box-shadow 0.15s;
+  letter-spacing: 0.01em;
+}
+
+.already-done-btn:hover {
+  background: #333;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+}
+
 /* ── Event Modal ── */
 .event-modal {
   width: 480px;
@@ -724,7 +754,6 @@ const formattedTime = computed(() =>
   box-shadow: 0 12px 48px rgba(0, 0, 0, 0.18);
   animation: modal-pop 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-
 .event-modal-header {
   display: flex;
   align-items: center;
@@ -732,7 +761,6 @@ const formattedTime = computed(() =>
   padding: 22px 24px 18px;
   border-bottom: 1px solid #f0f0f0;
 }
-
 .event-modal-icon {
   width: 48px;
   height: 48px;
@@ -744,11 +772,9 @@ const formattedTime = computed(() =>
   justify-content: center;
   flex-shrink: 0;
 }
-
 .event-modal-header-text {
   flex: 1;
 }
-
 .event-modal-title {
   font-size: 16px;
   font-weight: 800;
@@ -756,12 +782,10 @@ const formattedTime = computed(() =>
   margin-bottom: 3px;
   letter-spacing: -0.01em;
 }
-
 .event-modal-subtitle {
   font-size: 12.5px;
   color: #999;
 }
-
 .event-modal-close {
   width: 32px;
   height: 32px;
@@ -778,25 +802,20 @@ const formattedTime = computed(() =>
     background 0.15s,
     color 0.15s;
 }
-
 .event-modal-close:hover {
   background: #ebebeb;
   color: #555;
 }
-
-/* Search */
 .event-modal-search-wrap {
   position: relative;
   padding: 16px 20px 0;
 }
-
 .event-modal-search-icon {
   position: absolute;
   left: 34px;
   top: 26px;
   pointer-events: none;
 }
-
 .event-modal-search-input {
   width: 100%;
   padding: 11px 14px 11px 36px;
@@ -811,21 +830,16 @@ const formattedTime = computed(() =>
     border-color 0.15s,
     background 0.15s;
 }
-
 .event-modal-search-input::placeholder {
   color: #c0c0c0;
 }
-
 .event-modal-search-input:focus {
   border-color: #3b6d11;
   background: #fff;
 }
-
-/* Body */
 .event-modal-body {
   padding: 16px 20px 6px;
 }
-
 .event-modal-section-label {
   font-size: 10px;
   font-weight: 700;
@@ -834,7 +848,6 @@ const formattedTime = computed(() =>
   color: #c0c0c0;
   margin-bottom: 10px;
 }
-
 .event-modal-list {
   display: flex;
   flex-direction: column;
@@ -843,12 +856,9 @@ const formattedTime = computed(() =>
   overflow-y: auto;
   scrollbar-width: none;
 }
-
 .event-modal-list::-webkit-scrollbar {
   display: none;
 }
-
-/* Event Items */
 .event-modal-item {
   display: flex;
   align-items: center;
@@ -863,18 +873,15 @@ const formattedTime = computed(() =>
   width: 100%;
   transition: all 0.15s;
 }
-
 .event-modal-item:hover {
   background: #f3f3f3;
   border-color: #e0e0e0;
 }
-
 .event-modal-item.active {
   background: #f0f7e6;
   border: 1.5px solid #b8d98a;
   box-shadow: 0 0 0 3px rgba(59, 109, 17, 0.06);
 }
-
 .event-modal-item-icon {
   width: 36px;
   height: 36px;
@@ -890,18 +897,15 @@ const formattedTime = computed(() =>
     background 0.15s,
     color 0.15s;
 }
-
 .event-modal-item.active .event-modal-item-icon {
   background: #c8e09a;
   border-color: #97c459;
   color: #27500a;
 }
-
 .event-modal-item-text {
   flex: 1;
   min-width: 0;
 }
-
 .event-modal-name {
   font-size: 14px;
   font-weight: 700;
@@ -912,12 +916,9 @@ const formattedTime = computed(() =>
   letter-spacing: 0.01em;
   transition: color 0.15s;
 }
-
 .event-modal-item.active .event-modal-name {
   color: #1e4a0a;
 }
-
-/* Radio button */
 .event-modal-radio {
   width: 20px;
   height: 20px;
@@ -932,12 +933,10 @@ const formattedTime = computed(() =>
     border-color 0.15s,
     background 0.15s;
 }
-
 .event-modal-item.active .event-modal-radio {
   border-color: #3b6d11;
   background: #fff;
 }
-
 .event-modal-radio-dot {
   width: 10px;
   height: 10px;
@@ -945,19 +944,15 @@ const formattedTime = computed(() =>
   background: transparent;
   transition: background 0.15s;
 }
-
 .event-modal-item.active .event-modal-radio-dot {
   background: #3b6d11;
 }
-
 .event-modal-empty {
   padding: 32px 0;
   text-align: center;
   font-size: 13px;
   color: #bbb;
 }
-
-/* Footer */
 .event-modal-footer {
   display: flex;
   justify-content: space-between;
@@ -967,17 +962,14 @@ const formattedTime = computed(() =>
   border-top: 1px solid #f0f0f0;
   margin-top: 10px;
 }
-
 .event-modal-selection-hint {
   font-size: 12.5px;
   color: #bbb;
 }
-
 .event-modal-footer-actions {
   display: flex;
   gap: 8px;
 }
-
 .event-modal-btn-cancel {
   padding: 10px 18px;
   border-radius: 10px;
@@ -989,12 +981,10 @@ const formattedTime = computed(() =>
   cursor: pointer;
   transition: all 0.15s;
 }
-
 .event-modal-btn-cancel:hover {
   background: #ebebeb;
   color: #222;
 }
-
 .event-modal-btn-proceed {
   display: flex;
   align-items: center;
@@ -1010,12 +1000,10 @@ const formattedTime = computed(() =>
   opacity: 0.35;
   transition: all 0.15s;
 }
-
 .event-modal-btn-proceed.ready {
   opacity: 1;
   cursor: pointer;
 }
-
 .event-modal-btn-proceed.ready:hover {
   background: #2d560d;
   box-shadow: 0 3px 14px rgba(59, 109, 17, 0.32);
@@ -1031,7 +1019,6 @@ const formattedTime = computed(() =>
     transform: scale(1) translateY(0);
   }
 }
-
 .modal-enter-active,
 .modal-leave-active {
   transition: opacity 0.18s ease;
