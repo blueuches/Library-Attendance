@@ -391,7 +391,11 @@ const fetchLogs = async () => {
       })
     )
 
-    attendanceLogs.value = logsWithStudent
+    attendanceLogs.value = logsWithStudent.sort((a, b) => {
+      const aTimeOut = a.time_out ? new Date(a.time_out).getTime() : 0
+      const bTimeOut = b.time_out ? new Date(b.time_out).getTime() : 0
+      return bTimeOut - aTimeOut
+    })
   } catch (err) {
     console.error("Failed to fetch attendance logs:", err)
   }
