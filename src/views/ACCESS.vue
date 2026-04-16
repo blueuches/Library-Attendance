@@ -390,7 +390,7 @@ const schoolInfo = ref<SchoolInfo>({
 const router = useRouter()
 
 const backgroundStyle = computed(() => ({
-  backgroundImage: `url('${schoolInfo.value.bg_path || '/hero-outside.jpg'}')`,
+  backgroundImage: `url('${schoolInfo.value.bg_path || '/hero-outside.png'}')`,
 }))
 
 const filteredEvents = computed(() => {
