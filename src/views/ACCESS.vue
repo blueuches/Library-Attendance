@@ -54,14 +54,14 @@
 
       <div class="flex-1 flex flex-row-reverse px-10 pb-10 gap-8 overflow-hidden">
         <!-- Left Column -->
-        <div class="w-[400px] flex flex-col gap-4">
+        <div class="w-[400px] flex flex-col gap-4 self-start">
           <div class="bg-white/40 border border-white/10 p-6 rounded-2xl text-center">
             <div class="text-xl opacity-70 uppercase font-bold">{{ formattedDate }}</div>
             <div class="text-4xl font-mono font-bold text-green-400 mt-1">{{ formattedTime }}</div>
           </div>
           <div
-            class="flex-1 bg-white/10 border rounded-2xl overflow-hidden relative flex flex-col shadow-2xl"
-          >
+            class="bg-white/10 border rounded-2xl overflow-hidden relative flex flex-col shadow-2xl max-h-[420px]">
+          
             <div class="p-3 bg-white/10 flex justify-between items-center px-4">
               <span class="text-xs font-black tracking-widest uppercase">Live Camera Feed</span>
             </div>
@@ -70,7 +70,7 @@
               <input
                 v-model="idInput"
                 type="text"
-                placeholder="Manual Entry..."
+                placeholder="Ex. 221-293842"
                 @keyup.enter="() => handleLogin()"
                 class="w-full p-2 rounded border border-white/80 text-white"
               />
@@ -78,7 +78,7 @@
                 @click="handleLogin()"
                 class="w-full py-3 rounded-lg font-bold transition-all bg-green-700 hover:bg-green-600 border border-green-500 shadow-md"
               >
-                LOGIN
+               ENTER
               </button>
             </div>
           </div>
@@ -390,7 +390,7 @@ const schoolInfo = ref<SchoolInfo>({
 const router = useRouter()
 
 const backgroundStyle = computed(() => ({
-  backgroundImage: `url('${schoolInfo.value.bg_path || '/hero-outside.jpg'}')`,
+  backgroundImage: `url('${schoolInfo.value.bg_path || '/hero-outside.png'}')`,
 }))
 
 const filteredEvents = computed(() => {
