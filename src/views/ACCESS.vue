@@ -64,36 +64,22 @@
           >
             <div class="p-3 bg-white/10 flex justify-between items-center px-4">
               <span class="text-xs font-black tracking-widest uppercase">Live Camera Feed</span>
-              <button
-                v-if="isScannerRunning"
-                @click="stopScanner"
-                class="text-[10px] bg-red-600 hover:bg-red-700 px-3 py-1 rounded font-bold transition-all border border-red-400 shadow-lg"
-              >
-                STOP CAMERA
-              </button>
             </div>
-            <div id="qr-reader" class="flex-1 w-full bg-black/20"></div>
+           <div id="qr-reader" class="w-full bg-black/20" style="height: 180px;"></div>
             <div class="p-4 bg-black/40 flex flex-col gap-3">
               <input
                 v-model="idInput"
                 type="text"
                 placeholder="Manual Entry..."
-                @keyup.enter="(e: KeyboardEvent) => handleLogin()"
+                @keyup.enter="() => handleLogin()"
                 class="w-full p-2 rounded border border-white/80 text-white"
               />
               <button
-                v-if="!isScannerRunning"
-                @click="startScanner"
+                @click="handleLogin()"
                 class="w-full py-3 rounded-lg font-bold transition-all bg-green-700 hover:bg-green-600 border border-green-500 shadow-md"
               >
-                START CAMERA
+                LOGIN
               </button>
-              <div
-                v-else
-                class="w-full py-3 text-center text-green-400 font-bold animate-pulse text-sm tracking-widest"
-              >
-                SCANNER IS ACTIVE...
-              </div>
             </div>
           </div>
         </div>
@@ -458,10 +444,16 @@ const fetchLogs = async () => {
       }),
     )
     attendanceLogs.value = logsWithStudent.sort((a, b) => {
-      const aTimeOut = a.time_out ? new Date(a.time_out).getTime() : 0
-      const bTimeOut = b.time_out ? new Date(b.time_out).getTime() : 0
-      return bTimeOut - aTimeOut
-    })
+  const aLatest = Math.max(
+    a.time_in ? new Date(a.time_in).getTime() : 0,
+    a.time_out ? new Date(a.time_out).getTime() : 0
+  )
+  const bLatest = Math.max(
+    b.time_in ? new Date(b.time_in).getTime() : 0,
+    b.time_out ? new Date(b.time_out).getTime() : 0
+  )
+  return bLatest - aLatest
+})
   } catch (err) {
     console.error('Failed to fetch logs:', err)
   }
@@ -572,6 +564,7 @@ onMounted(async () => {
   await fetchSchoolInfo()
   await fetchLogs()
   html5QrCode = new Html5Qrcode('qr-reader')
+  await startScanner()
   timer = setInterval(() => (currentTime.value = new Date()), 1000)
   schoolInfoTimer = setInterval(() => {
     fetchSchoolInfo()
