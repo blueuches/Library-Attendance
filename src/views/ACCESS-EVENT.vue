@@ -1,13 +1,13 @@
 <template>
-  <div class="relative h-screen w-screen text-white flex flex-col overflow-hidden bg-[#0b3d1f]">
+  <div class="relative min-h-screen w-screen text-white flex flex-col overflow-x-hidden bg-[#0b3d1f]">
     <div
       class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-20"
-      style="background-image: url('/hero-outside.jpg')"
+      style="background-image: url('/hero-outside.png')"
     ></div>
 
     <div class="relative z-10 flex flex-col h-full w-full">
       <!-- Header -->
-      <div class="flex items-center justify-center pt-8 pb-4 px-10 relative">
+      <div class="flex items-center justify-center pt-6 pb-3 px-10 shrink-0">
         <!-- Left Logo -->
         <div class="absolute left-10">
           <img src="/csu-logo.png" alt="Logo" class="h-32 w-32 object-contain" />
@@ -36,77 +36,61 @@
           </div>
         </div>
 
-        <!-- Right: Pill Selector -->
-        <div class="absolute right-10 flex flex-col items-center gap-2">
-          <span class="text-[11px] font-semibold tracking-[0.15em] uppercase text-white/40">
-            Attendance Type
-          </span>
-          <div class="attendance-pill-group">
-            <button
-              v-for="type in attendanceTypes"
-              :key="type.value"
-              @click="setAttendanceType(type.value)"
-              :class="['attendance-pill-btn', attendanceType === type.value ? 'active' : '']"
-            >
-              <span class="pill-icon" v-html="type.icon"></span>
-              {{ type.label }}
-            </button>
-          </div>
-        </div>
       </div>
 
-      <div class="flex-1 flex flex-row-reverse px-10 pb-10 gap-8 overflow-hidden">
-        <!-- Left Column: Camera + Manual Entry -->
-        <div class="w-[400px] flex flex-col gap-4">
-          <div class="bg-white/40 border border-white/10 p-6 rounded-2xl text-center">
-            <div class="text-xl opacity-70 uppercase font-bold">{{ formattedDate }}</div>
-            <div class="text-4xl font-mono font-bold text-green-400 mt-1">{{ formattedTime }}</div>
-          </div>
+      <div class="flex flex-row-reverse px-6 lg:px-10 pb-6 lg:pb-10 gap-6 lg:gap-8 flex-1 overflow-hidden">
+  <!-- Right Column: Date/Time + Attendance Type + Camera -->
+  <div class="w-[340px] lg:w-[400px] flex flex-col gap-3 shrink-0">
 
-          <div
-            class="flex-1 bg-white/10 border rounded-2xl overflow-hidden relative flex flex-col shadow-2xl"
-          >
-            <div class="p-3 bg-white/10 flex justify-between items-center px-4">
-              <span class="text-xs font-black tracking-widest uppercase">Live Camera Feed</span>
-              <button
-                v-if="isScannerRunning"
-                @click="stopScanner"
-                class="text-[10px] bg-red-600 hover:bg-red-700 px-3 py-1 rounded font-bold transition-all border border-red-400 shadow-lg"
-              >
-                STOP CAMERA
-              </button>
-            </div>
+    <!-- Date & Time -->
+    <div class="bg-white/40 border border-white/10 px-6 py-3 rounded-2xl text-center shrink-0">
+      <div class="text-xs lg:text-base opacity-70 uppercase font-bold">{{ formattedDate }}</div>
+      <div class="text-2xl lg:text-3xl font-mono font-bold text-green-400 mt-1">{{ formattedTime }}</div>
+    </div>
 
-            <div id="qr-reader" class="flex-1 w-full bg-black/20"></div>
+    <!-- Attendance Type -->
+    <div class="bg-white/10 border border-white/20 rounded-2xl px-4 py-3 flex flex-col items-center gap-2 shrink-0">
+      <span class="text-[11px] font-semibold tracking-[0.15em] uppercase text-white/40">Attendance Type</span>
+      <div class="attendance-pill-group w-full">
+        <button
+          v-for="type in attendanceTypes"
+          :key="type.value"
+          @click="setAttendanceType(type.value)"
+          :class="['attendance-pill-btn', attendanceType === type.value ? 'active' : '']"
+        >
+          <span class="pill-icon" v-html="type.icon"></span>
+          {{ type.label }}
+        </button>
+      </div>
+    </div>
 
-            <div class="p-4 bg-black/40 flex flex-col gap-3">
-              <input
-                v-model="idInput"
-                type="text"
-                placeholder="Manual Entry..."
-                @keyup.enter="(e: KeyboardEvent) => handleLogin()"
-                class="w-full p-2 rounded border border-white/80 text-white"
-              />
-              <button
-                v-if="!isScannerRunning"
-                @click="startScanner"
-                class="w-full py-3 rounded-lg font-bold transition-all bg-green-700 hover:bg-green-600 border border-green-500 shadow-md"
-              >
-                START CAMERA
-              </button>
-              <div
-                v-else
-                class="w-full py-3 text-center text-green-400 font-bold animate-pulse text-sm tracking-widest"
-              >
-                SCANNER IS ACTIVE...
-              </div>
-            </div>
-          </div>
-        </div>
+    <!-- Camera + Manual Entry -->
+    <div class="bg-white/10 border rounded-2xl overflow-hidden flex flex-col shadow-2xl shrink-0">
+      <div class="p-3 bg-white/10 flex justify-between items-center px-4 shrink-0">
+        <span class="text-xs font-black tracking-widest uppercase">Live Camera Feed</span>
+      </div>
+      <div id="qr-reader" class="w-full bg-black/20 shrink-0" style="height: clamp(160px, 22vh, 260px);"></div>
+      <div class="p-4 bg-black/40 flex flex-col gap-3 shrink-0">
+        <input
+          v-model="idInput"
+          type="text"
+          placeholder="Ex. 221-293842"
+          @keyup.enter="() => handleLogin()"
+          class="w-full p-2 rounded border border-white/80 text-white bg-transparent text-sm lg:text-base"
+        />
+        <button
+          @click="handleLogin()"
+          class="w-full py-3 rounded-lg font-bold transition-all bg-green-700 hover:bg-green-600 border border-green-500 shadow-md text-sm lg:text-base"
+        >
+          ENTER
+        </button>
+      </div>
+    </div>
+  </div>
         
 
-        <!-- Right Column: Attendance Table -->
-        <div class="flex-1 flex flex-col min-h-0">
+        <!-- Left Column: Attendance Table -->
+<div class="flex-1 flex flex-col min-h-0 overflow-hidden">
           <div
             class="flex-1 bg-white/10 rounded-2xl overflow-y-auto overflow-x-hidden hidden-scroll border border-white/20 shadow-2xl"
           >

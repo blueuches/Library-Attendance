@@ -1,127 +1,109 @@
 <template>
-  <div class="relative h-screen w-screen text-white flex flex-col overflow-hidden bg-[#0b3d1f]">
+  <div class="relative min-h-screen w-screen text-white flex flex-col overflow-x-hidden bg-[#0b3d1f]">
     <div
       class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-20"
       :style="backgroundStyle"
     ></div>
 
-    <div class="relative z-10 flex flex-col h-full w-full">
+    <div class="relative z-10 flex flex-col min-h-screen w-full">
       <!-- Header -->
-      <div class="flex items-center justify-center pt-8 pb-4 px-10 relative">
+      <div class="flex items-center justify-center pt-6 pb-3 px-10 shrink-0">
         <div class="absolute left-10">
           <img
             :src="schoolInfo.logo_path || '/csu-logo.png'"
             alt="Logo"
-            class="h-32 w-32 object-contain"
+            class="h-24 w-24 lg:h-32 lg:w-32 object-contain"
           />
         </div>
         <div class="text-center">
           <h1
-            class="text-6xl uppercase leading-none font-black drop-shadow-md bg-[linear-gradient(90deg,#FFC300_0%,#ffffff_50%,#1b5e20_100%)] bg-clip-text text-transparent"
+            class="text-4xl lg:text-6xl uppercase leading-none font-black drop-shadow-md bg-[linear-gradient(90deg,#FFC300_0%,#ffffff_50%,#1b5e20_100%)] bg-clip-text text-transparent"
             style="font-family: Impact"
           >
             {{ schoolInfo.school_name }}
           </h1>
           <h2
-            class="pb-4 text-2xl uppercase text-green-100 font-bold"
+            class="pb-2 text-xl lg:text-2xl uppercase text-green-100 font-bold"
             style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
           >
             {{ schoolInfo.building_title }}
           </h2>
           <div
-            class="mt-4 inline-block bg-white/10 border border-white/20 px-6 py-2 rounded-md font-semibold text-LG opacity-100"
+            class="mt-3 inline-block bg-white/10 border border-white/20 px-6 py-2 rounded-md font-semibold text-sm lg:text-base opacity-100"
           >
             {{ schoolInfo.system_name }}
           </div>
         </div>
-        <div class="absolute right-10 flex flex-col items-center gap-2">
-          <span class="text-[11px] font-semibold tracking-[0.15em] uppercase text-white/40"
-            >Attendance Type</span
-          >
-          <div class="attendance-pill-group">
-            <button
-              v-for="type in attendanceTypes"
-              :key="type.value"
-              @click="setAttendanceType(type.value)"
-              :class="['attendance-pill-btn', attendanceType === type.value ? 'active' : '']"
-            >
-              <span class="pill-icon" v-html="type.icon"></span>
-              {{ type.label }}
-            </button>
-          </div>
-        </div>
       </div>
 
-      <div class="flex-1 flex flex-row-reverse px-10 pb-10 gap-8 overflow-hidden">
-        <!-- Left Column -->
-        <div class="w-[400px] flex flex-col gap-4 self-start">
-          <div class="bg-white/40 border border-white/10 p-6 rounded-2xl text-center">
-            <div class="text-xl opacity-70 uppercase font-bold">{{ formattedDate }}</div>
-            <div class="text-4xl font-mono font-bold text-green-400 mt-1">{{ formattedTime }}</div>
+      <!-- Body -->
+      <div class="flex flex-row-reverse px-6 lg:px-10 pb-6 lg:pb-10 gap-6 lg:gap-8 flex-1 min-h-0">
+
+        <!-- Right Column: Date/Time + Attendance Type + Camera -->
+        <div class="w-[340px] lg:w-[400px] flex flex-col gap-3 shrink-0">
+
+          <!-- Date & Time -->
+          <div class="bg-white/40 border border-white/10 px-6 py-3 rounded-2xl text-center shrink-0">
+            <div class="text-xs lg:text-base opacity-70 uppercase font-bold">{{ formattedDate }}</div>
+            <div class="text-2xl lg:text-3xl font-mono font-bold text-green-400 mt-1">{{ formattedTime }}</div>
           </div>
-          <div
-            class="bg-white/10 border rounded-2xl overflow-hidden relative flex flex-col shadow-2xl max-h-[420px]">
-          
-            <div class="p-3 bg-white/10 flex justify-between items-center px-4">
+
+          <!-- Attendance Type -->
+          <div class="bg-white/10 border border-white/20 rounded-2xl px-4 py-3 flex flex-col items-center gap-2 shrink-0">
+            <span class="text-[11px] font-semibold tracking-[0.15em] uppercase text-white/40">Attendance Type</span>
+            <div class="attendance-pill-group w-full">
+              <button
+                v-for="type in attendanceTypes"
+                :key="type.value"
+                @click="setAttendanceType(type.value)"
+                :class="['attendance-pill-btn', attendanceType === type.value ? 'active' : '']"
+              >
+                <span class="pill-icon" v-html="type.icon"></span>
+                {{ type.label }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Camera + Manual Entry -->
+          <div class="bg-white/10 border rounded-2xl overflow-hidden flex flex-col shadow-2xl shrink-0">
+            <div class="p-3 bg-white/10 flex justify-between items-center px-4 shrink-0">
               <span class="text-xs font-black tracking-widest uppercase">Live Camera Feed</span>
             </div>
-           <div id="qr-reader" class="w-full bg-black/20" style="height: 180px;"></div>
-            <div class="p-4 bg-black/40 flex flex-col gap-3">
+            <!-- Camera takes remaining space but is capped -->
+            <div id="qr-reader" class="w-full bg-black/20 shrink-0" style="height: clamp(160px, 22vh, 260px);"></div>
+            <!-- Input section sticks to bottom naturally -->
+            <div class="p-4 bg-black/40 flex flex-col gap-3 shrink-0 mt-auto">
               <input
                 v-model="idInput"
                 type="text"
                 placeholder="Ex. 221-293842"
                 @keyup.enter="() => handleLogin()"
-                class="w-full p-2 rounded border border-white/80 text-white"
+                class="w-full p-2 rounded border border-white/80 text-white bg-transparent text-sm lg:text-base"
               />
               <button
                 @click="handleLogin()"
-                class="w-full py-3 rounded-lg font-bold transition-all bg-green-700 hover:bg-green-600 border border-green-500 shadow-md"
+                class="w-full py-3 rounded-lg font-bold transition-all bg-green-700 hover:bg-green-600 border border-green-500 shadow-md text-sm lg:text-base"
               >
-               ENTER
+                ENTER
               </button>
             </div>
           </div>
         </div>
 
-        <!-- Right Column: Table -->
-        <div class="flex-1 flex flex-col min-h-0">
+        <!-- Left Column: Table -->
+        <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
           <div
-            class="flex-1 bg-white/10 rounded-2xl overflow-y-auto overflow-x-hidden hidden-scroll border border-white/20 shadow-2xl"
+            class="flex-1 bg-white/10 rounded-2xl overflow-y-auto overflow-x-auto hidden-scroll border border-white/20 shadow-2xl"
           >
             <table class="w-full text-white border-collapse">
               <thead class="sticky top-0 z-20 bg-white/40 backdrop-blur-md">
                 <tr class="text-left">
-                  <th
-                    class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10"
-                  >
-                    ID Number
-                  </th>
-                  <th
-                    class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10"
-                  >
-                    Name
-                  </th>
-                  <th
-                    class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10"
-                  >
-                    Course
-                  </th>
-                  <th
-                    class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10"
-                  >
-                    Year Level
-                  </th>
-                  <th
-                    class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10"
-                  >
-                    Time-In
-                  </th>
-                  <th
-                    class="p-4 uppercase text-sm font-black tracking-widest border-b border-white/10"
-                  >
-                    Time-Out
-                  </th>
+                  <th class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">ID Number</th>
+                  <th class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">Name</th>
+                  <th class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">Course</th>
+                  <th class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">Year Level</th>
+                  <th class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">Time-In</th>
+                  <th class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">Time-Out</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-white/5">
@@ -130,29 +112,23 @@
                   :key="log.id"
                   class="hover:bg-white/5 transition-colors"
                 >
-                  <td class="p-4 font-bold text-xl">{{ log.student_id }}</td>
-                  <td class="p-4 font-bold text-xl uppercase">
+                  <td class="p-3 lg:p-4 font-bold text-base lg:text-xl">{{ log.student_id }}</td>
+                  <td class="p-3 lg:p-4 font-bold text-base lg:text-xl uppercase">
                     {{ log.students?.first_name }} {{ log.students?.last_name }}
                   </td>
-                  <td class="p-4 text-lg opacity-80">{{ log.students?.program }}</td>
-                  <td class="p-4 text-lg opacity-80">{{ log.students?.year_level || '—' }}</td>
-                  <td class="p-4 font-mono text-lg opacity-80 font-bold">
+                  <td class="p-3 lg:p-4 text-sm lg:text-lg opacity-80">{{ log.students?.program }}</td>
+                  <td class="p-3 lg:p-4 text-sm lg:text-lg opacity-80">{{ log.students?.year_level || '—' }}</td>
+                  <td class="p-3 lg:p-4 font-mono text-sm lg:text-lg opacity-80 font-bold">
                     {{
                       log.time_in
-                        ? new Date(log.time_in).toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })
+                        ? new Date(log.time_in).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                         : '—'
                     }}
                   </td>
-                  <td class="p-4 font-mono text-lg opacity-80 font-bold">
+                  <td class="p-3 lg:p-4 font-mono text-sm lg:text-lg opacity-80 font-bold">
                     {{
                       log.time_out
-                        ? new Date(log.time_out).toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })
+                        ? new Date(log.time_out).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                         : '—'
                     }}
                   </td>
@@ -207,21 +183,8 @@
         <div class="event-modal-header">
           <div class="event-modal-icon">
             <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
-              <rect
-                x="2"
-                y="3.5"
-                width="12"
-                height="10"
-                rx="1.5"
-                stroke="#3B6D11"
-                stroke-width="1.3"
-              />
-              <path
-                d="M5 2v3M11 2v3M2.5 7.5h11"
-                stroke="#3B6D11"
-                stroke-width="1.3"
-                stroke-linecap="round"
-              />
+              <rect x="2" y="3.5" width="12" height="10" rx="1.5" stroke="#3B6D11" stroke-width="1.3" />
+              <path d="M5 2v3M11 2v3M2.5 7.5h11" stroke="#3B6D11" stroke-width="1.3" stroke-linecap="round" />
             </svg>
           </div>
           <div class="event-modal-header-text">
@@ -230,23 +193,12 @@
           </div>
           <button @click="showEventModal = false" class="event-modal-close">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <path
-                d="M2 2l8 8M10 2L2 10"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
+              <path d="M2 2l8 8M10 2L2 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
           </button>
         </div>
         <div class="event-modal-search-wrap">
-          <svg
-            class="event-modal-search-icon"
-            width="14"
-            height="14"
-            viewBox="0 0 14 14"
-            fill="none"
-          >
+          <svg class="event-modal-search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
             <circle cx="6" cy="6" r="4" stroke="#aaa" stroke-width="1.3" />
             <path d="M9.5 9.5l2 2" stroke="#aaa" stroke-width="1.3" stroke-linecap="round" />
           </svg>
@@ -268,21 +220,8 @@
             >
               <div class="event-modal-item-icon">
                 <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-                  <rect
-                    x="2"
-                    y="3.5"
-                    width="12"
-                    height="10"
-                    rx="1.5"
-                    stroke="currentColor"
-                    stroke-width="1.3"
-                  />
-                  <path
-                    d="M5 2v3M11 2v3M2.5 7.5h11"
-                    stroke="currentColor"
-                    stroke-width="1.3"
-                    stroke-linecap="round"
-                  />
+                  <rect x="2" y="3.5" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3" />
+                  <path d="M5 2v3M11 2v3M2.5 7.5h11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
                 </svg>
               </div>
               <div class="event-modal-item-text">
@@ -308,13 +247,7 @@
             >
               Proceed to event
               <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                <path
-                  d="M2 6.5h9M8 3.5l3 3-3 3"
-                  stroke="#fff"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
+                <path d="M2 6.5h9M8 3.5l3 3-3 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
             </button>
           </div>
@@ -444,16 +377,16 @@ const fetchLogs = async () => {
       }),
     )
     attendanceLogs.value = logsWithStudent.sort((a, b) => {
-  const aLatest = Math.max(
-    a.time_in ? new Date(a.time_in).getTime() : 0,
-    a.time_out ? new Date(a.time_out).getTime() : 0
-  )
-  const bLatest = Math.max(
-    b.time_in ? new Date(b.time_in).getTime() : 0,
-    b.time_out ? new Date(b.time_out).getTime() : 0
-  )
-  return bLatest - aLatest
-})
+      const aLatest = Math.max(
+        a.time_in ? new Date(a.time_in).getTime() : 0,
+        a.time_out ? new Date(a.time_out).getTime() : 0,
+      )
+      const bLatest = Math.max(
+        b.time_in ? new Date(b.time_in).getTime() : 0,
+        b.time_out ? new Date(b.time_out).getTime() : 0,
+      )
+      return bLatest - aLatest
+    })
   } catch (err) {
     console.error('Failed to fetch logs:', err)
   }
@@ -632,8 +565,10 @@ const formattedTime = computed(() =>
 .attendance-pill-btn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 7px;
-  padding: 8px 18px;
+  flex: 1;
+  padding: 8px 12px;
   border-radius: 10px;
   border: none;
   background: transparent;
@@ -681,11 +616,7 @@ const formattedTime = computed(() =>
   align-items: center;
   padding: 36px 32px 28px;
 }
-
-.already-done-icon-wrap {
-  margin-bottom: 18px;
-}
-
+.already-done-icon-wrap { margin-bottom: 18px; }
 .already-done-icon {
   width: 64px;
   height: 64px;
@@ -696,12 +627,7 @@ const formattedTime = computed(() =>
   align-items: center;
   justify-content: center;
 }
-
-.already-done-body {
-  text-align: center;
-  margin-bottom: 28px;
-}
-
+.already-done-body { text-align: center; margin-bottom: 28px; }
 .already-done-title {
   font-size: 18px;
   font-weight: 800;
@@ -709,17 +635,8 @@ const formattedTime = computed(() =>
   margin-bottom: 10px;
   letter-spacing: -0.01em;
 }
-
-.already-done-subtitle {
-  font-size: 14px;
-  color: #888;
-  line-height: 1.65;
-}
-
-.already-done-footer {
-  width: 100%;
-}
-
+.already-done-subtitle { font-size: 14px; color: #888; line-height: 1.65; }
+.already-done-footer { width: 100%; }
 .already-done-btn {
   width: 100%;
   padding: 13px;
@@ -730,16 +647,10 @@ const formattedTime = computed(() =>
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition:
-    background 0.15s,
-    box-shadow 0.15s;
+  transition: background 0.15s, box-shadow 0.15s;
   letter-spacing: 0.01em;
 }
-
-.already-done-btn:hover {
-  background: #333;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
-}
+.already-done-btn:hover { background: #333; box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
 
 /* ── Event Modal ── */
 .event-modal {
@@ -759,269 +670,101 @@ const formattedTime = computed(() =>
   border-bottom: 1px solid #f0f0f0;
 }
 .event-modal-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  background: #eaf3de;
-  border: 1px solid #c8e09a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  width: 48px; height: 48px; border-radius: 14px;
+  background: #eaf3de; border: 1px solid #c8e09a;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-.event-modal-header-text {
-  flex: 1;
-}
-.event-modal-title {
-  font-size: 16px;
-  font-weight: 800;
-  color: #111;
-  margin-bottom: 3px;
-  letter-spacing: -0.01em;
-}
-.event-modal-subtitle {
-  font-size: 12.5px;
-  color: #999;
-}
+.event-modal-header-text { flex: 1; }
+.event-modal-title { font-size: 16px; font-weight: 800; color: #111; margin-bottom: 3px; letter-spacing: -0.01em; }
+.event-modal-subtitle { font-size: 12.5px; color: #999; }
 .event-modal-close {
-  width: 32px;
-  height: 32px;
-  border-radius: 9px;
-  border: 1px solid #e8e8e8;
-  background: #f5f5f5;
-  color: #aaa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition:
-    background 0.15s,
-    color 0.15s;
+  width: 32px; height: 32px; border-radius: 9px;
+  border: 1px solid #e8e8e8; background: #f5f5f5; color: #aaa;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0; transition: background 0.15s, color 0.15s;
 }
-.event-modal-close:hover {
-  background: #ebebeb;
-  color: #555;
-}
-.event-modal-search-wrap {
-  position: relative;
-  padding: 16px 20px 0;
-}
-.event-modal-search-icon {
-  position: absolute;
-  left: 34px;
-  top: 26px;
-  pointer-events: none;
-}
+.event-modal-close:hover { background: #ebebeb; color: #555; }
+.event-modal-search-wrap { position: relative; padding: 16px 20px 0; }
+.event-modal-search-icon { position: absolute; left: 34px; top: 26px; pointer-events: none; }
 .event-modal-search-input {
-  width: 100%;
-  padding: 11px 14px 11px 36px;
-  font-size: 13.5px;
-  border-radius: 10px;
-  border: 1px solid #e8e8e8;
-  background: #f7f7f7;
-  color: #111;
-  box-sizing: border-box;
-  outline: none;
-  transition:
-    border-color 0.15s,
-    background 0.15s;
+  width: 100%; padding: 11px 14px 11px 36px; font-size: 13.5px;
+  border-radius: 10px; border: 1px solid #e8e8e8; background: #f7f7f7;
+  color: #111; box-sizing: border-box; outline: none;
+  transition: border-color 0.15s, background 0.15s;
 }
-.event-modal-search-input::placeholder {
-  color: #c0c0c0;
-}
-.event-modal-search-input:focus {
-  border-color: #3b6d11;
-  background: #fff;
-}
-.event-modal-body {
-  padding: 16px 20px 6px;
-}
+.event-modal-search-input::placeholder { color: #c0c0c0; }
+.event-modal-search-input:focus { border-color: #3b6d11; background: #fff; }
+.event-modal-body { padding: 16px 20px 6px; }
 .event-modal-section-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #c0c0c0;
-  margin-bottom: 10px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: #c0c0c0; margin-bottom: 10px;
 }
 .event-modal-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  max-height: 240px;
-  overflow-y: auto;
-  scrollbar-width: none;
+  display: flex; flex-direction: column; gap: 6px;
+  max-height: 240px; overflow-y: auto; scrollbar-width: none;
 }
-.event-modal-list::-webkit-scrollbar {
-  display: none;
-}
+.event-modal-list::-webkit-scrollbar { display: none; }
 .event-modal-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  border-radius: 12px;
-  border: 1.5px solid #efefef;
-  background: #fafafa;
-  color: #333;
-  cursor: pointer;
-  text-align: left;
-  width: 100%;
-  transition: all 0.15s;
+  display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+  border-radius: 12px; border: 1.5px solid #efefef; background: #fafafa;
+  color: #333; cursor: pointer; text-align: left; width: 100%; transition: all 0.15s;
 }
-.event-modal-item:hover {
-  background: #f3f3f3;
-  border-color: #e0e0e0;
-}
+.event-modal-item:hover { background: #f3f3f3; border-color: #e0e0e0; }
 .event-modal-item.active {
-  background: #f0f7e6;
-  border: 1.5px solid #b8d98a;
+  background: #f0f7e6; border: 1.5px solid #b8d98a;
   box-shadow: 0 0 0 3px rgba(59, 109, 17, 0.06);
 }
 .event-modal-item-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 9px;
-  background: #f0f0f0;
-  border: 1px solid #e5e5e5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  color: #bbb;
-  transition:
-    background 0.15s,
-    color 0.15s;
+  width: 36px; height: 36px; border-radius: 9px;
+  background: #f0f0f0; border: 1px solid #e5e5e5;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; color: #bbb; transition: background 0.15s, color 0.15s;
 }
-.event-modal-item.active .event-modal-item-icon {
-  background: #c8e09a;
-  border-color: #97c459;
-  color: #27500a;
-}
-.event-modal-item-text {
-  flex: 1;
-  min-width: 0;
-}
+.event-modal-item.active .event-modal-item-icon { background: #c8e09a; border-color: #97c459; color: #27500a; }
+.event-modal-item-text { flex: 1; min-width: 0; }
 .event-modal-name {
-  font-size: 14px;
-  font-weight: 700;
-  color: #222;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  letter-spacing: 0.01em;
-  transition: color 0.15s;
+  font-size: 14px; font-weight: 700; color: #222;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  letter-spacing: 0.01em; transition: color 0.15s;
 }
-.event-modal-item.active .event-modal-name {
-  color: #1e4a0a;
-}
+.event-modal-item.active .event-modal-name { color: #1e4a0a; }
 .event-modal-radio {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid #d8d8d8;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition:
-    border-color 0.15s,
-    background 0.15s;
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid #d8d8d8; background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: border-color 0.15s, background 0.15s;
 }
-.event-modal-item.active .event-modal-radio {
-  border-color: #3b6d11;
-  background: #fff;
-}
+.event-modal-item.active .event-modal-radio { border-color: #3b6d11; background: #fff; }
 .event-modal-radio-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: transparent;
-  transition: background 0.15s;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: transparent; transition: background 0.15s;
 }
-.event-modal-item.active .event-modal-radio-dot {
-  background: #3b6d11;
-}
-.event-modal-empty {
-  padding: 32px 0;
-  text-align: center;
-  font-size: 13px;
-  color: #bbb;
-}
+.event-modal-item.active .event-modal-radio-dot { background: #3b6d11; }
+.event-modal-empty { padding: 32px 0; text-align: center; font-size: 13px; color: #bbb; }
 .event-modal-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  padding: 16px 20px 22px;
-  border-top: 1px solid #f0f0f0;
-  margin-top: 10px;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 8px; padding: 16px 20px 22px; border-top: 1px solid #f0f0f0; margin-top: 10px;
 }
-.event-modal-selection-hint {
-  font-size: 12.5px;
-  color: #bbb;
-}
-.event-modal-footer-actions {
-  display: flex;
-  gap: 8px;
-}
+.event-modal-selection-hint { font-size: 12.5px; color: #bbb; }
+.event-modal-footer-actions { display: flex; gap: 8px; }
 .event-modal-btn-cancel {
-  padding: 10px 18px;
-  border-radius: 10px;
-  border: 1px solid #e5e5e5;
-  background: #f5f5f5;
-  color: #555;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s;
+  padding: 10px 18px; border-radius: 10px; border: 1px solid #e5e5e5;
+  background: #f5f5f5; color: #555; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s;
 }
-.event-modal-btn-cancel:hover {
-  background: #ebebeb;
-  color: #222;
-}
+.event-modal-btn-cancel:hover { background: #ebebeb; color: #222; }
 .event-modal-btn-proceed {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 10px 20px;
-  border-radius: 10px;
-  border: none;
-  background: #3b6d11;
-  color: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: not-allowed;
-  opacity: 0.35;
-  transition: all 0.15s;
+  display: flex; align-items: center; gap: 7px; padding: 10px 20px;
+  border-radius: 10px; border: none; background: #3b6d11; color: #fff;
+  font-size: 13px; font-weight: 600; cursor: not-allowed; opacity: 0.35; transition: all 0.15s;
 }
-.event-modal-btn-proceed.ready {
-  opacity: 1;
-  cursor: pointer;
-}
-.event-modal-btn-proceed.ready:hover {
-  background: #2d560d;
-  box-shadow: 0 3px 14px rgba(59, 109, 17, 0.32);
-}
+.event-modal-btn-proceed.ready { opacity: 1; cursor: pointer; }
+.event-modal-btn-proceed.ready:hover { background: #2d560d; box-shadow: 0 3px 14px rgba(59,109,17,0.32); }
 
 @keyframes modal-pop {
-  from {
-    opacity: 0;
-    transform: scale(0.94) translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+  from { opacity: 0; transform: scale(0.94) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
-.modal-enter-active,
-.modal-leave-active {
-  transition: opacity 0.18s ease;
-}
-.modal-enter-from,
-.modal-leave-to {
-  opacity: 0;
-}
+.modal-enter-active, .modal-leave-active { transition: opacity 0.18s ease; }
+.modal-enter-from, .modal-leave-to { opacity: 0; }
 </style>
