@@ -1,11 +1,6 @@
 <template>
-  <div
-    class="relative min-h-screen w-screen text-white flex flex-col overflow-x-hidden bg-[#0b3d1f]"
-  >
-    <div
-      class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-20"
-      :style="backgroundStyle"
-    ></div>
+  <div class="relative min-h-screen w-screen text-white flex flex-col overflow-x-hidden bg-[#0b3d1f]">
+    <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-20" :style="backgroundStyle"></div>
 
     <div class="relative z-10 flex flex-col min-h-screen w-full">
       <!-- Header -->
@@ -16,19 +11,15 @@
         <div class="text-center">
           <h1
             class="text-4xl lg:text-6xl uppercase leading-none font-black drop-shadow-md bg-[linear-gradient(90deg,#FFC300_0%,#ffffff_50%,#1b5e20_100%)] bg-clip-text text-transparent"
-            style="font-family: Impact"
-          >
+            style="font-family: Impact ">
             CARAGA STATE UNIVERSITY
           </h1>
-          <h2
-            class="pb-2 text-xl lg:text-2xl uppercase text-green-100 font-bold"
-            style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
-          >
+          <h2 class="pb-2 text-xl lg:text-2xl uppercase text-green-100 font-bold"
+            style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif">
             HERO LEARNING COMMONS
           </h2>
           <div
-            class="mt-3 inline-block bg-white/10 border border-white/20 px-6 py-2 rounded-md font-semibold text-sm lg:text-base opacity-100"
-          >
+            class="mt-3 inline-block bg-white/10 border border-white/20 px-6 py-2 rounded-md font-semibold text-sm lg:text-base opacity-100">
             ATTENDANCE AND CAPACITY CSU-LIBRARY ENTRY SYSTEM (ACCES)
           </div>
         </div>
@@ -52,18 +43,11 @@
 
           <!-- Attendance Type -->
           <div
-            class="bg-white/10 border border-white/20 rounded-2xl px-4 py-3 flex flex-col items-center gap-2 shrink-0"
-          >
-            <span class="text-[11px] font-semibold tracking-[0.15em] uppercase text-white/40"
-              >Attendance Type</span
-            >
+            class="bg-white/10 border border-white/20 rounded-2xl px-4 py-3 flex flex-col items-center gap-2 shrink-0">
+            <span class="text-[11px] font-semibold tracking-[0.15em] uppercase text-white/40">Attendance Type</span>
             <div class="attendance-pill-group w-full">
-              <button
-                v-for="type in attendanceTypes"
-                :key="type.value"
-                @click="setAttendanceType(type.value)"
-                :class="['attendance-pill-btn', attendanceType === type.value ? 'active' : '']"
-              >
+              <button v-for="type in attendanceTypes" :key="type.value" @click="setAttendanceType(type.value)"
+                :class="['attendance-pill-btn', attendanceType === type.value ? 'active' : '']">
                 <span class="pill-icon" v-html="type.icon"></span>
                 {{ type.label }}
               </button>
@@ -85,18 +69,11 @@
             ></div>
             <!-- Input section sticks to bottom naturally -->
             <div class="p-4 bg-black/40 flex flex-col gap-3 shrink-0 mt-auto">
-              <input
-                ref="scannerInput"
-                v-model="idInput"
-                type="text"
-                placeholder="Scan or type ID..."
+              <input ref="scannerInput" v-model="idInput" type="text" placeholder="Scan or type ID..."
                 @keyup.enter="handleEnter"
-                class="w-full p-2 rounded border border-white/80 text-white bg-transparent text-sm lg:text-base"
-              />
-              <button
-                @click="handleLogin()"
-                class="w-full py-3 rounded-lg font-bold transition-all bg-green-700 hover:bg-green-600 border border-green-500 shadow-md text-sm lg:text-base"
-              >
+                class="w-full p-2 rounded border border-white/80 text-white bg-transparent text-sm lg:text-base" />
+              <button @click="handleLogin()"
+                class="w-full py-3 rounded-lg font-bold transition-all bg-green-700 hover:bg-green-600 border border-green-500 shadow-md text-sm lg:text-base">
                 ENTER
               </button>
             </div>
@@ -106,49 +83,32 @@
         <!-- Left Column: Table -->
         <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
           <div
-            class="flex-1 bg-white/10 rounded-2xl overflow-y-auto overflow-x-auto hidden-scroll border border-white/20 shadow-2xl max-h-[550px]"
-          >
+            class="flex-1 bg-white/10 rounded-2xl overflow-y-auto overflow-x-auto hidden-scroll border border-white/20 shadow-2xl max-h-[550px]">
             <table class="w-full text-white border-collapse">
               <thead class="sticky top-0 z-20 bg-white/40 backdrop-blur-md">
                 <tr class="text-left">
                   <th
-                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap"
-                  >
-                    ID Number
-                  </th>
+                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
+                    ID Number</th>
                   <th
-                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap"
-                  >
-                    Name
-                  </th>
+                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
+                    Name</th>
                   <th
-                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap"
-                  >
-                    Course
-                  </th>
+                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
+                    Course</th>
                   <th
-                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap"
-                  >
-                    Year Level
-                  </th>
+                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
+                    Year Level</th>
                   <th
-                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap"
-                  >
-                    Time-In
-                  </th>
+                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
+                    Time-In</th>
                   <th
-                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap"
-                  >
-                    Time-Out
-                  </th>
+                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
+                    Time-Out</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-white/5">
-                <tr
-                  v-for="log in attendanceLogs"
-                  :key="log.id"
-                  class="hover:bg-white/5 transition-colors"
-                >
+                <tr v-for="log in attendanceLogs" :key="log.id" class="hover:bg-white/5 transition-colors">
                   <td class="p-3 lg:p-4 font-bold text-base lg:text-xl">{{ log.student_id }}</td>
                   <td class="p-3 lg:p-4 font-bold text-base lg:text-xl uppercase">
                     {{ log.students?.first_name }} {{ log.students?.last_name }}
@@ -195,11 +155,8 @@
 
   <!-- ── Already Done Modal ── -->
   <Transition name="modal">
-    <div
-      v-if="showAlreadyDoneModal"
-      class="fixed inset-0 z-50 flex items-center justify-center"
-      style="background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px)"
-    >
+    <div v-if="showAlreadyDoneModal" class="fixed inset-0 z-50 flex items-center justify-center"
+      style="background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px)">
       <div class="already-done-modal">
         <div class="already-done-icon-wrap">
           <div class="already-done-icon">
@@ -226,11 +183,8 @@
 
   <!-- ── Global Alert Modal ── -->
   <Transition name="modal">
-    <div
-      v-if="alertModal.show"
-      class="fixed inset-0 z-50 flex items-center justify-center"
-      style="background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px)"
-    >
+    <div v-if="alertModal.show" class="fixed inset-0 z-50 flex items-center justify-center"
+      style="background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px)">
       <div class="already-done-modal">
         <div class="already-done-icon-wrap">
           <div class="already-done-icon">
@@ -241,20 +195,9 @@
               <circle cx="12" cy="16.5" r="1" fill="#dc2626" />
             </svg>
 
-            <svg
-              v-else-if="alertModal.type === 'success'"
-              width="28"
-              height="28"
-              viewBox="0 0 24 24"
-            >
+            <svg v-else-if="alertModal.type === 'success'" width="28" height="28" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="10" stroke="#16a34a" stroke-width="1.8" />
-              <path
-                d="M8 12l3 3 5-6"
-                stroke="#16a34a"
-                stroke-width="2"
-                fill="none"
-                stroke-linecap="round"
-              />
+              <path d="M8 12l3 3 5-6" stroke="#16a34a" stroke-width="2" fill="none" stroke-linecap="round" />
             </svg>
 
             <svg v-else width="28" height="28" viewBox="0 0 24 24">
@@ -283,11 +226,8 @@
 
   <!-- ── Event Selection Modal ── -->
   <Transition name="modal">
-    <div
-      v-if="showEventModal"
-      class="fixed inset-0 z-50 flex items-center justify-center"
-      style="background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px)"
-    >
+    <div v-if="showEventModal" class="fixed inset-0 z-50 flex items-center justify-center"
+      style="background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px)">
       <div class="event-modal">
         <div class="event-modal-header">
           <div class="event-modal-icon">
@@ -335,22 +275,13 @@
             <circle cx="6" cy="6" r="4" stroke="#aaa" stroke-width="1.3" />
             <path d="M9.5 9.5l2 2" stroke="#aaa" stroke-width="1.3" stroke-linecap="round" />
           </svg>
-          <input
-            v-model="eventSearch"
-            type="text"
-            placeholder="Search events..."
-            class="event-modal-search-input"
-          />
+          <input v-model="eventSearch" type="text" placeholder="Search events..." class="event-modal-search-input" />
         </div>
         <div class="event-modal-body">
           <div class="event-modal-section-label">Available events</div>
           <div class="event-modal-list">
-            <button
-              v-for="event in filteredEvents"
-              :key="event.id"
-              @click="selectedEvent = event"
-              :class="['event-modal-item', selectedEvent?.id === event.id ? 'active' : '']"
-            >
+            <button v-for="event in filteredEvents" :key="event.id" @click="selectedEvent = event"
+              :class="['event-modal-item', selectedEvent?.id === event.id ? 'active' : '']">
               <div class="event-modal-item-icon">
                 <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
                   <rect
@@ -383,23 +314,15 @@
         <div class="event-modal-footer">
           <span class="event-modal-selection-hint">{{
             selectedEvent ? '1 event selected' : 'No event selected'
-          }}</span>
+            }}</span>
           <div class="event-modal-footer-actions">
             <button @click="showEventModal = false" class="event-modal-btn-cancel">Cancel</button>
-            <button
-              @click="goToEvent"
-              :disabled="!selectedEvent"
-              :class="['event-modal-btn-proceed', selectedEvent ? 'ready' : '']"
-            >
+            <button @click="goToEvent" :disabled="!selectedEvent"
+              :class="['event-modal-btn-proceed', selectedEvent ? 'ready' : '']">
               Proceed to event
               <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                <path
-                  d="M2 6.5h9M8 3.5l3 3-3 3"
-                  stroke="#fff"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
+                <path d="M2 6.5h9M8 3.5l3 3-3 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"
+                  stroke-linejoin="round" />
               </svg>
             </button>
           </div>
@@ -408,6 +331,11 @@
     </div>
   </Transition>
 </template>
+
+
+
+
+
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
@@ -433,7 +361,7 @@ const showAlert = (
   title: string,
   message: string,
   type: 'info' | 'success' | 'error' = 'info',
-  duration: number = 2500,
+  duration: number = 2500
 ) => {
   if (alertTimeout.value) clearTimeout(alertTimeout.value)
 
@@ -464,6 +392,7 @@ const closeAlert = () => {
 const ICON_LIBRARY = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 8h6M5 5.5h6M5 10.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`
 const ICON_EVENT = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3.5l2 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`
 const ICON_VISITORS = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="5" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M2 13c0-2.21 1.79-4 4-4s4 1.79 4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="11.5" cy="5.5" r="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M13.5 13c0-1.66-1.12-3-2.5-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>`
+
 
 const attendanceTypes = [
   { value: 'library', label: 'Library', icon: ICON_LIBRARY },
@@ -504,6 +433,7 @@ const schoolInfo = ref<any>({
 
 const router = useRouter()
 
+
 /* =========================
    COMPUTED
 ========================= */
@@ -514,7 +444,9 @@ const backgroundStyle = computed(() => ({
 const filteredEvents = computed(() => {
   const q = eventSearch.value.toLowerCase().trim()
   if (!q) return events.value
-  return events.value.filter((e) => e.title.toLowerCase().includes(q))
+  return events.value.filter(e =>
+    e.title.toLowerCase().includes(q)
+  )
 })
 
 /* =========================
@@ -548,10 +480,10 @@ const fetchLogs = async () => {
         let studentData = null
         try {
           studentData = await getStudentById(log.student_id)
-        } catch {}
+        } catch { }
 
         return { ...log, students: studentData }
-      }),
+      })
     )
 
     attendanceLogs.value = logsWithStudent.sort((a, b) => {
@@ -614,14 +546,17 @@ const handleLogin = async (decodedText?: string) => {
     await fetchLogs()
 
     const audio = new Audio('/beep.mp3')
-    audio.play().catch(() => {})
+    audio.play().catch(() => { })
 
     idInput.value = ''
     scannerInput.value?.focus()
+
   } catch (err) {
     console.error(err)
     showAlert('Error', 'Something went wrong.', 'error')
   } finally {
+    isProcessing.value = false
+  }
     isProcessing.value = false
   }
 }
@@ -635,10 +570,11 @@ const handleEnter = () => {
   handleLogin()
 }
 
+
 const isScannerMode = ref(true)
 
 // const handleEnter = () => {
-//   if (isScanner.value) return
+//   if (isScanner.value) return 
 //   handleLogin()
 // }
 
@@ -646,7 +582,10 @@ const isScannerMode = ref(true)
    EVENTS
 ========================= */
 const fetchEvents = async () => {
-  const { data } = await supabase.from('events').select('id, title').eq('is_active', true)
+  const { data } = await supabase
+    .from('events')
+    .select('id, title')
+    .eq('is_active', true)
 
   events.value = data || []
 }
@@ -694,7 +633,7 @@ onMounted(async () => {
     .on(
       'postgres_changes',
       { event: '*', schema: 'public', table: 'attendance_page' },
-      fetchSchoolInfo,
+      fetchSchoolInfo
     )
     .subscribe()
 })
@@ -721,7 +660,7 @@ const formattedDate = computed(() =>
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-  }),
+  })
 )
 
 const formattedTime = computed(() =>
@@ -729,9 +668,15 @@ const formattedTime = computed(() =>
     hour: '2-digit',
     minute: '2-digit',
     hour12: true,
-  }),
+  })
 )
 </script>
+
+
+
+
+
+
 
 <style>
 #qr-reader img {
@@ -942,9 +887,7 @@ const formattedTime = computed(() =>
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
-  transition:
-    background 0.15s,
-    color 0.15s;
+  transition: background 0.15s, color 0.15s;
 }
 
 .event-modal-close:hover {
@@ -974,9 +917,7 @@ const formattedTime = computed(() =>
   color: #111;
   box-sizing: border-box;
   outline: none;
-  transition:
-    border-color 0.15s,
-    background 0.15s;
+  transition: border-color 0.15s, background 0.15s;
 }
 
 .event-modal-search-input::placeholder {
@@ -1051,9 +992,7 @@ const formattedTime = computed(() =>
   justify-content: center;
   flex-shrink: 0;
   color: #bbb;
-  transition:
-    background 0.15s,
-    color 0.15s;
+  transition: background 0.15s, color 0.15s;
 }
 
 .event-modal-item.active .event-modal-item-icon {
@@ -1092,9 +1031,7 @@ const formattedTime = computed(() =>
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition:
-    border-color 0.15s,
-    background 0.15s;
+  transition: border-color 0.15s, background 0.15s;
 }
 
 .event-modal-item.active .event-modal-radio {
