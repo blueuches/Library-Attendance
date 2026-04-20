@@ -1,25 +1,34 @@
 <template>
-  <div class="relative min-h-screen w-screen text-white flex flex-col overflow-x-hidden bg-[#0b3d1f]">
-    <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-20" :style="backgroundStyle"></div>
+  <div
+    class="relative min-h-screen w-screen text-white flex flex-col overflow-x-hidden bg-[#0b3d1f]"
+  >
+    <div
+      class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-20"
+      :style="backgroundStyle"
+    ></div>
 
     <div class="relative z-10 flex flex-col min-h-screen w-full">
       <!-- Header -->
       <div class="flex items-center justify-center pt-4 pb-2 px-10 shrink-0">
         <div class="absolute left-10">
-          <img src="/csu-logo.png" alt="Logo" class="h-20 w-20 lg:h-28 lg:w-28 object-contain" />
+          <img src="/csu-logo.png" alt="Logo" class="h-30 w-30 lg:h-50 lg:w-50 object-contain" />
         </div>
         <div class="text-center">
           <h1
             class="text-5xl lg:text-7xl uppercase leading-none font-black drop-shadow-md bg-[linear-gradient(90deg,#FFC300_0%,#ffffff_50%,#1b5e20_100%)] bg-clip-text text-transparent"
-            style="font-family: Impact">
+            style="font-family: Impact"
+          >
             CARAGA STATE UNIVERSITY
           </h1>
-          <h2 class="pb-1 text-2xl lg:text-3xl uppercase text-green-100 font-bold"
-            style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif">
+          <h2
+            class="pb-1 text-4xl lg:text-5xl uppercase text-green-100 font-bold"
+            style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
+          >
             HERO LEARNING COMMONS
           </h2>
           <div
-            class="mt-2 inline-block bg-white/10 border border-white/20 px-6 py-1.5 rounded-md font-semibold text-sm lg:text-base opacity-100">
+            class="mt-2 inline-block bg-white/10 border border-white/20 px-6 py-1.5 rounded-md font-semibold text-2xl lg:text-3xl opacity-100"
+          >
             ATTENDANCE AND CAPACITY CSU-LIBRARY ENTRY SYSTEM (ACCES)
           </div>
         </div>
@@ -27,22 +36,34 @@
 
       <!-- Body -->
       <div class="flex flex-row-reverse px-6 lg:px-10 pb-4 lg:pb-6 gap-4 lg:gap-5 flex-1 min-h-0">
-
         <!-- Right Column: Date/Time + Attendance Type + Camera + Featured Video -->
-        <div class="w-[340px] lg:w-[400px] flex flex-col gap-2 shrink-0 min-h-0 overflow-y-auto hidden-scroll">
-
+        <div
+          class="w-[340px] lg:w-[400px] flex flex-col gap-2 shrink-0 min-h-0 overflow-y-auto hidden-scroll"
+        >
           <!-- Date & Time -->
-          <div class="bg-white/40 border border-white/10 px-6 py-2 rounded-2xl text-center shrink-0">
+          <div
+            class="bg-white/40 border border-white/10 px-6 py-2 rounded-2xl text-center shrink-0"
+          >
             <div class="text-xs lg:text-sm opacity-70 uppercase font-bold">{{ formattedDate }}</div>
-            <div class="text-xl lg:text-2xl font-mono font-bold text-green-400 mt-0.5">{{ formattedTime }}</div>
+            <div class="text-xl lg:text-2xl font-mono font-bold text-green-400 mt-0.5">
+              {{ formattedTime }}
+            </div>
           </div>
 
           <!-- Attendance Type -->
-          <div class="bg-white/10 border border-white/20 rounded-2xl px-4 py-2 flex flex-col items-center gap-2 shrink-0">
-            <span class="text-[11px] font-semibold tracking-[0.15em] uppercase text-white/40">Attendance Type</span>
+          <div
+            class="bg-white/10 border border-white/20 rounded-2xl px-4 py-2 flex flex-col items-center gap-2 shrink-0"
+          >
+            <span class="text-[11px] font-semibold tracking-[0.15em] uppercase text-white/40"
+              >Attendance Type</span
+            >
             <div class="attendance-pill-group w-full">
-              <button v-for="type in attendanceTypes" :key="type.value" @click="setAttendanceType(type.value)"
-                :class="['attendance-pill-btn', attendanceType === type.value ? 'active' : '']">
+              <button
+                v-for="type in attendanceTypes"
+                :key="type.value"
+                @click="setAttendanceType(type.value)"
+                :class="['attendance-pill-btn', attendanceType === type.value ? 'active' : '']"
+              >
                 <span class="pill-icon" v-html="type.icon"></span>
                 {{ type.label }}
               </button>
@@ -50,32 +71,45 @@
           </div>
 
           <!-- Camera + Manual Entry -->
-          <div class="bg-white/10 border rounded-2xl overflow-hidden flex flex-col shadow-2xl shrink-0">
+          <div
+            class="bg-white/10 border rounded-2xl overflow-hidden flex flex-col shadow-2xl shrink-0"
+          >
             <div class="p-2 bg-white/10 flex justify-between items-center px-4 shrink-0">
               <span class="text-xs font-black tracking-widest uppercase">Scan your ID here</span>
             </div>
-            <div id="qr-reader" class="w-full bg-black/20" style="height: 160px;"></div>
+            <div id="qr-reader" class="w-full bg-black/20" style="height: 160px"></div>
             <div class="p-3 bg-black/40 flex flex-col gap-2 shrink-0">
-              <input ref="scannerInput" v-model="idInput" type="text" placeholder="Scan or type ID..."
+              <input
+                ref="scannerInput"
+                v-model="idInput"
+                type="text"
+                placeholder="Scan or type ID..."
                 @keyup.enter="handleEnter"
-                class="w-full p-2 rounded border border-white/80 text-white bg-transparent text-sm lg:text-base" />
-              <button @click="handleLogin()"
-                class="w-full py-2.5 rounded-lg font-bold transition-all bg-green-700 hover:bg-green-600 border border-green-500 shadow-md text-sm lg:text-base">
+                class="w-full p-2 rounded border border-white/80 text-white bg-transparent text-sm lg:text-base"
+              />
+              <button
+                @click="handleLogin()"
+                class="w-full py-2.5 rounded-lg font-bold transition-all bg-green-700 hover:bg-green-600 border border-green-500 shadow-md text-sm lg:text-base"
+              >
                 ENTER
               </button>
             </div>
           </div>
 
           <!-- Featured Video Card (MP4) -->
-          <div class="bg-white/10 border border-white/20 rounded-2xl overflow-hidden shadow-2xl shrink-0">
+          <div
+            class="bg-white/10 border border-white/20 rounded-2xl overflow-hidden shadow-2xl shrink-0"
+          >
             <div class="p-2.5 bg-white/10 flex justify-between items-center px-4">
               <span class="text-xs font-black tracking-widest uppercase">Featured Video</span>
-              <span class="text-[10px] text-white/50 font-semibold tracking-widest uppercase">CSU Hero Learning Commons</span>
+              <span class="text-[10px] text-white/50 font-semibold tracking-widest uppercase"
+                >CSU Hero Learning Commons</span
+              >
             </div>
-            <div class="relative w-full" style="padding-top: 56.25%;">
+            <div class="relative w-full" style="padding-top: 56.25%">
               <video
                 class="absolute top-0 left-0 w-full h-full object-cover"
-                src="/videos/featured.mp4"
+                src="/videos/qr.mp4"
                 autoplay
                 muted
                 loop
@@ -84,51 +118,86 @@
             </div>
             <div class="px-4 py-2 bg-black/30">
               <div class="text-sm font-bold text-white">CSU Library Orientation 2026</div>
-              <div class="text-[11px] text-white/50 mt-0.5">Caraga State University · Hero Learning Commons</div>
+              <div class="text-[11px] text-white/50 mt-0.5">
+                Caraga State University · Hero Learning Commons
+              </div>
             </div>
           </div>
-
         </div>
 
         <!-- Left Column: Table only — fills full height, scrolls internally -->
         <div class="flex-1 min-h-0 overflow-hidden">
-          <div class="bg-white/10 rounded-2xl border border-white/20 shadow-2xl overflow-y-auto overflow-x-auto hidden-scroll h-full">
+          <div
+            class="bg-white/10 rounded-2xl border border-white/20 shadow-2xl overflow-y-auto overflow-x-auto hidden-scroll max-h-[815px]"
+          >
             <table class="w-full text-white border-collapse">
               <thead class="sticky top-0 z-20 bg-white/40 backdrop-blur-md">
                 <tr class="text-left">
-                  <th class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
-                    ID Number</th>
-                  <th class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
-                    Name</th>
-                  <th class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
-                    Course</th>
-                  <th class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
-                    Year Level</th>
-                  <th class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
-                    Time-In</th>
-                  <th class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
-                    Time-Out</th>
+                  <th
+                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap"
+                  >
+                    ID Number
+                  </th>
+                  <th
+                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap"
+                  >
+                    Name
+                  </th>
+                  <th
+                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap"
+                  >
+                    Course
+                  </th>
+                  <th
+                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap"
+                  >
+                    Year Level
+                  </th>
+                  <th
+                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap"
+                  >
+                    Time-In
+                  </th>
+                  <th
+                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap"
+                  >
+                    Time-Out
+                  </th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-white/5">
-                <tr v-for="log in attendanceLogs" :key="log.id" class="hover:bg-white/5 transition-colors">
+                <tr
+                  v-for="log in attendanceLogs"
+                  :key="log.id"
+                  class="hover:bg-white/5 transition-colors"
+                >
                   <td class="p-3 lg:p-4 font-bold text-base lg:text-xl">{{ log.student_id }}</td>
                   <td class="p-3 lg:p-4 font-bold text-base lg:text-xl uppercase">
                     {{ log.students?.first_name }} {{ log.students?.last_name }}
                   </td>
-                  <td class="p-3 lg:p-4 text-sm lg:text-lg opacity-80">{{ log.students?.program }}</td>
-                  <td class="p-3 lg:p-4 text-sm lg:text-lg opacity-80">{{ log.students?.year_level || '—' }}</td>
+                  <td class="p-3 lg:p-4 text-sm lg:text-lg opacity-80">
+                    {{ log.students?.program }}
+                  </td>
+                  <td class="p-3 lg:p-4 text-sm lg:text-lg opacity-80">
+                    {{ log.students?.year_level || '—' }}
+                  </td>
                   <td class="p-3 lg:p-4 font-mono text-sm lg:text-lg opacity-80 font-bold">
                     {{
                       log.time_in
-                        ? new Date(log.time_in).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                        ? new Date(log.time_in).toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })
                         : '—'
                     }}
                   </td>
                   <td class="p-3 lg:p-4 font-mono text-sm lg:text-lg opacity-80 font-bold">
                     {{
                       log.time_out
-                        ? new Date(log.time_out).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                        ? new Date(log.time_out).toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })
                         : '—'
                     }}
                   </td>
@@ -137,15 +206,17 @@
             </table>
           </div>
         </div>
-
       </div>
     </div>
   </div>
 
   <!-- ── Already Done Modal ── -->
   <Transition name="modal">
-    <div v-if="showAlreadyDoneModal" class="fixed inset-0 z-50 flex items-center justify-center"
-      style="background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px)">
+    <div
+      v-if="showAlreadyDoneModal"
+      class="fixed inset-0 z-50 flex items-center justify-center"
+      style="background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px)"
+    >
       <div class="already-done-modal">
         <div class="already-done-icon-wrap">
           <div class="already-done-icon">
@@ -172,8 +243,11 @@
 
   <!-- ── Global Alert Modal ── -->
   <Transition name="modal">
-    <div v-if="alertModal.show" class="fixed inset-0 z-50 flex items-center justify-center"
-      style="background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px)">
+    <div
+      v-if="alertModal.show"
+      class="fixed inset-0 z-50 flex items-center justify-center"
+      style="background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px)"
+    >
       <div class="already-done-modal">
         <div class="already-done-icon-wrap">
           <div class="already-done-icon">
@@ -182,9 +256,20 @@
               <path d="M12 7v5.5" stroke="#dc2626" stroke-width="2" stroke-linecap="round" />
               <circle cx="12" cy="16.5" r="1" fill="#dc2626" />
             </svg>
-            <svg v-else-if="alertModal.type === 'success'" width="28" height="28" viewBox="0 0 24 24">
+            <svg
+              v-else-if="alertModal.type === 'success'"
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+            >
               <circle cx="12" cy="12" r="10" stroke="#16a34a" stroke-width="1.8" />
-              <path d="M8 12l3 3 5-6" stroke="#16a34a" stroke-width="2" fill="none" stroke-linecap="round" />
+              <path
+                d="M8 12l3 3 5-6"
+                stroke="#16a34a"
+                stroke-width="2"
+                fill="none"
+                stroke-linecap="round"
+              />
             </svg>
             <svg v-else width="28" height="28" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="10" stroke="#b45309" stroke-width="1.8" />
@@ -208,14 +293,30 @@
 
   <!-- ── Event Selection Modal ── -->
   <Transition name="modal">
-    <div v-if="showEventModal" class="fixed inset-0 z-50 flex items-center justify-center"
-      style="background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px)">
+    <div
+      v-if="showEventModal"
+      class="fixed inset-0 z-50 flex items-center justify-center"
+      style="background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px)"
+    >
       <div class="event-modal">
         <div class="event-modal-header">
           <div class="event-modal-icon">
             <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
-              <rect x="2" y="3.5" width="12" height="10" rx="1.5" stroke="#3B6D11" stroke-width="1.3" />
-              <path d="M5 2v3M11 2v3M2.5 7.5h11" stroke="#3B6D11" stroke-width="1.3" stroke-linecap="round" />
+              <rect
+                x="2"
+                y="3.5"
+                width="12"
+                height="10"
+                rx="1.5"
+                stroke="#3B6D11"
+                stroke-width="1.3"
+              />
+              <path
+                d="M5 2v3M11 2v3M2.5 7.5h11"
+                stroke="#3B6D11"
+                stroke-width="1.3"
+                stroke-linecap="round"
+              />
             </svg>
           </div>
           <div class="event-modal-header-text">
@@ -224,26 +325,59 @@
           </div>
           <button @click="showEventModal = false" class="event-modal-close">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <path d="M2 2l8 8M10 2L2 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              <path
+                d="M2 2l8 8M10 2L2 10"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
             </svg>
           </button>
         </div>
         <div class="event-modal-search-wrap">
-          <svg class="event-modal-search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <svg
+            class="event-modal-search-icon"
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+          >
             <circle cx="6" cy="6" r="4" stroke="#aaa" stroke-width="1.3" />
             <path d="M9.5 9.5l2 2" stroke="#aaa" stroke-width="1.3" stroke-linecap="round" />
           </svg>
-          <input v-model="eventSearch" type="text" placeholder="Search events..." class="event-modal-search-input" />
+          <input
+            v-model="eventSearch"
+            type="text"
+            placeholder="Search events..."
+            class="event-modal-search-input"
+          />
         </div>
         <div class="event-modal-body">
           <div class="event-modal-section-label">Available events</div>
           <div class="event-modal-list">
-            <button v-for="event in filteredEvents" :key="event.id" @click="selectedEvent = event"
-              :class="['event-modal-item', selectedEvent?.id === event.id ? 'active' : '']">
+            <button
+              v-for="event in filteredEvents"
+              :key="event.id"
+              @click="selectedEvent = event"
+              :class="['event-modal-item', selectedEvent?.id === event.id ? 'active' : '']"
+            >
               <div class="event-modal-item-icon">
                 <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-                  <rect x="2" y="3.5" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3" />
-                  <path d="M5 2v3M11 2v3M2.5 7.5h11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                  <rect
+                    x="2"
+                    y="3.5"
+                    width="12"
+                    height="10"
+                    rx="1.5"
+                    stroke="currentColor"
+                    stroke-width="1.3"
+                  />
+                  <path
+                    d="M5 2v3M11 2v3M2.5 7.5h11"
+                    stroke="currentColor"
+                    stroke-width="1.3"
+                    stroke-linecap="round"
+                  />
                 </svg>
               </div>
               <div class="event-modal-item-text">
@@ -262,12 +396,20 @@
           }}</span>
           <div class="event-modal-footer-actions">
             <button @click="showEventModal = false" class="event-modal-btn-cancel">Cancel</button>
-            <button @click="goToEvent" :disabled="!selectedEvent"
-              :class="['event-modal-btn-proceed', selectedEvent ? 'ready' : '']">
+            <button
+              @click="goToEvent"
+              :disabled="!selectedEvent"
+              :class="['event-modal-btn-proceed', selectedEvent ? 'ready' : '']"
+            >
               Proceed to event
               <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                <path d="M2 6.5h9M8 3.5l3 3-3 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"
-                  stroke-linejoin="round" />
+                <path
+                  d="M2 6.5h9M8 3.5l3 3-3 3"
+                  stroke="#fff"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
               </svg>
             </button>
           </div>
@@ -286,7 +428,7 @@ import { getStudentById } from '@/services/studentService'
 import { supabase } from '@/supabase'
 
 /* =========================
-   GLOBAL ALERT MODAL
+    GLOBAL ALERT MODAL
 ========================= */
 const alertModal = ref({
   show: false,
@@ -302,11 +444,13 @@ const showAlert = (
   title: string,
   message: string,
   type: 'info' | 'success' | 'error' = 'info',
-  duration: number = 2500
+  duration: number = 2500,
 ) => {
   if (alertTimeout.value) clearTimeout(alertTimeout.value)
   alertModal.value = { show: true, title, message, type, buttonText: 'OK' }
-  alertTimeout.value = setTimeout(() => { closeAlert() }, duration)
+  alertTimeout.value = setTimeout(() => {
+    closeAlert()
+  }, duration)
 }
 
 const closeAlert = () => {
@@ -318,7 +462,7 @@ const closeAlert = () => {
 }
 
 /* =========================
-   ICONS
+    ICONS & CONSTANTS
 ========================= */
 const ICON_LIBRARY = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 8h6M5 5.5h6M5 10.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`
 const ICON_EVENT = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3.5l2 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`
@@ -330,15 +474,16 @@ const attendanceTypes = [
   { value: 'visitors', label: 'Visitors', icon: ICON_VISITORS },
 ]
 
+
+const beepAudio = new Audio('/beep.mp3')
+
 /* =========================
-   STATE
+    STATE
 ========================= */
 const idInput = ref('')
 const scannerInput = ref<HTMLInputElement | null>(null)
-
 const attendanceLogs = ref<any[]>([])
 const isProcessing = ref(false)
-
 const currentTime = ref(new Date())
 let attendancePageChannel: any = null
 
@@ -361,7 +506,7 @@ const schoolInfo = ref<any>({
 const router = useRouter()
 
 /* =========================
-   COMPUTED
+    COMPUTED
 ========================= */
 const backgroundStyle = computed(() => ({
   backgroundImage: `url('${schoolInfo.value.bg_path || '/hero-outside.png'}')`,
@@ -370,25 +515,19 @@ const backgroundStyle = computed(() => ({
 const filteredEvents = computed(() => {
   const q = eventSearch.value.toLowerCase().trim()
   if (!q) return events.value
-  return events.value.filter(e => e.title.toLowerCase().includes(q))
+  return events.value.filter((e) => e.title.toLowerCase().includes(q))
 })
 
 /* =========================
-   FETCH DATA
+    FETCH DATA (Optimized)
 ========================= */
 const fetchLogs = async () => {
   try {
+    
     const logs = await getAttendanceLogs()
-
-    const logsWithStudent = await Promise.all(
-      logs.map(async (log: any) => {
-        let studentData = null
-        try { studentData = await getStudentById(log.student_id) } catch { }
-        return { ...log, students: studentData }
-      })
-    )
-
-    attendanceLogs.value = logsWithStudent.sort((a, b) => {
+    
+    
+    attendanceLogs.value = logs.sort((a: any, b: any) => {
       const aTime = new Date(a.time_out || a.time_in).getTime()
       const bTime = new Date(b.time_out || b.time_in).getTime()
       return bTime - aTime
@@ -399,20 +538,21 @@ const fetchLogs = async () => {
 }
 
 /* =========================
-   ATTENDANCE
+    ATTENDANCE (No-Delay Logic)
 ========================= */
 let lastScanTime = 0
-const isScannerMode = ref(true)
 
 const handleLogin = async (decodedText?: string) => {
   const now = Date.now()
   if (isProcessing.value) return
-  if (now - lastScanTime < 500) return
+  if (now - lastScanTime < 800) return 
   lastScanTime = now
 
   const rawData = (decodedText ?? idInput.value).trim()
   if (!rawData) return
 
+ 
+  idInput.value = ''
   isProcessing.value = true
 
   try {
@@ -420,46 +560,33 @@ const handleLogin = async (decodedText?: string) => {
 
     if (result?.type === 'not_found') {
       showAlert('Student Not Found', 'Invalid ID.', 'error')
-      idInput.value = ''
-      scannerInput.value?.focus()
-      return
-    }
-    if (result?.type === 'closed') {
+    } else if (result?.type === 'closed') {
       showAlert('Closed', 'Library is closed.', 'error')
-      return
-    }
-    if (result?.type === 'already_done') {
+    } else if (result?.type === 'already_done') {
       showAlreadyDoneModal.value = true
-      return
+    } else {
+      // Success! 
+      beepAudio.play().catch(() => {})
+      fetchLogs() 
     }
-
-    await fetchLogs()
-    const audio = new Audio('/beep.mp3')
-    audio.play().catch(() => { })
-    idInput.value = ''
-    scannerInput.value?.focus()
-
   } catch (err) {
     console.error(err)
     showAlert('Error', 'Something went wrong.', 'error')
   } finally {
     isProcessing.value = false
+    setTimeout(() => scannerInput.value?.focus(), 50)
   }
 }
 
 const handleEnter = () => {
-  if (!idInput.value.trim()) return
   handleLogin()
 }
 
 /* =========================
-   EVENTS
+    EVENTS & OTHERS
 ========================= */
 const fetchEvents = async () => {
-  const { data } = await supabase
-    .from('events')
-    .select('id, title')
-    .eq('is_active', true)
+  const { data } = await supabase.from('events').select('id, title').eq('is_active', true)
   events.value = data || []
 }
 
@@ -479,21 +606,37 @@ const goToEvent = () => {
   showEventModal.value = false
 }
 
+const fetchSchoolInfo = async () => {
+  const { data } = await supabase.from('attendance_page').select('*').single()
+  if (data) schoolInfo.value = data
+}
+
 /* =========================
-   LIFECYCLE
+    LIFECYCLE
 ========================= */
 onMounted(async () => {
-  await fetchLogs()
+  await Promise.all([fetchLogs(), fetchSchoolInfo()])
+  
   scannerInput.value?.focus()
 
+  // Real-time listener
   attendancePageChannel = supabase
     .channel('attendance_page_realtime')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'attendance_page' }, fetchSchoolInfo)
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'attendance_page' },
+      fetchSchoolInfo,
+    )
     .subscribe()
+
+  // Clock interval
+  setInterval(() => {
+    currentTime.value = new Date()
+  }, 1000)
 })
 
 /* =========================
-   DATE/TIME
+    DATE/TIME FORMATTERS
 ========================= */
 const formattedDate = computed(() =>
   currentTime.value.toLocaleDateString('en-US', {
@@ -501,7 +644,7 @@ const formattedDate = computed(() =>
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-  })
+  }),
 )
 
 const formattedTime = computed(() =>
@@ -509,9 +652,11 @@ const formattedTime = computed(() =>
     hour: '2-digit',
     minute: '2-digit',
     hour12: true,
-  })
+  }),
 )
 </script>
+
+
 
 
 <style>
@@ -560,7 +705,10 @@ const formattedTime = computed(() =>
   font-weight: 600;
   letter-spacing: 0.02em;
   cursor: pointer;
-  transition: background 0.18s ease, color 0.18s ease, transform 0.12s ease;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    transform 0.12s ease;
   white-space: nowrap;
   outline: none;
 }
@@ -649,7 +797,9 @@ const formattedTime = computed(() =>
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.15s, box-shadow 0.15s;
+  transition:
+    background 0.15s,
+    box-shadow 0.15s;
   letter-spacing: 0.01em;
 }
 
@@ -689,7 +839,9 @@ const formattedTime = computed(() =>
   flex-shrink: 0;
 }
 
-.event-modal-header-text { flex: 1; }
+.event-modal-header-text {
+  flex: 1;
+}
 
 .event-modal-title {
   font-size: 16px;
@@ -716,7 +868,9 @@ const formattedTime = computed(() =>
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
 }
 
 .event-modal-close:hover {
@@ -746,17 +900,23 @@ const formattedTime = computed(() =>
   color: #111;
   box-sizing: border-box;
   outline: none;
-  transition: border-color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
 }
 
-.event-modal-search-input::placeholder { color: #c0c0c0; }
+.event-modal-search-input::placeholder {
+  color: #c0c0c0;
+}
 
 .event-modal-search-input:focus {
   border-color: #3b6d11;
   background: #fff;
 }
 
-.event-modal-body { padding: 16px 20px 6px; }
+.event-modal-body {
+  padding: 16px 20px 6px;
+}
 
 .event-modal-section-label {
   font-size: 10px;
@@ -776,7 +936,9 @@ const formattedTime = computed(() =>
   scrollbar-width: none;
 }
 
-.event-modal-list::-webkit-scrollbar { display: none; }
+.event-modal-list::-webkit-scrollbar {
+  display: none;
+}
 
 .event-modal-item {
   display: flex;
@@ -815,7 +977,9 @@ const formattedTime = computed(() =>
   justify-content: center;
   flex-shrink: 0;
   color: #bbb;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
 }
 
 .event-modal-item.active .event-modal-item-icon {
@@ -840,7 +1004,9 @@ const formattedTime = computed(() =>
   transition: color 0.15s;
 }
 
-.event-modal-item.active .event-modal-name { color: #1e4a0a; }
+.event-modal-item.active .event-modal-name {
+  color: #1e4a0a;
+}
 
 .event-modal-radio {
   width: 20px;
@@ -852,7 +1018,9 @@ const formattedTime = computed(() =>
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: border-color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
 }
 
 .event-modal-item.active .event-modal-radio {
@@ -868,7 +1036,9 @@ const formattedTime = computed(() =>
   transition: background 0.15s;
 }
 
-.event-modal-item.active .event-modal-radio-dot { background: #3b6d11; }
+.event-modal-item.active .event-modal-radio-dot {
+  background: #3b6d11;
+}
 
 .event-modal-empty {
   padding: 32px 0;
@@ -941,8 +1111,14 @@ const formattedTime = computed(() =>
 }
 
 @keyframes modal-pop {
-  from { opacity: 0; transform: scale(0.94) translateY(8px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .modal-enter-active,

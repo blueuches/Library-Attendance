@@ -1,6 +1,9 @@
 <template>
   <div class="relative h-screen w-screen text-white flex flex-col overflow-hidden bg-[#0b3d1f]">
-    <div class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-20" :style="backgroundStyle"></div>
+    <div
+      class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-20"
+      :style="backgroundStyle"
+    ></div>
 
     <div class="relative z-10 flex flex-col h-full w-full">
       <!-- Header -->
@@ -44,17 +47,30 @@
       <div class="flex flex-row-reverse px-6 lg:px-10 pb-6 lg:pb-10 gap-6 lg:gap-8 flex-1 min-h-0">
         <!-- Right Column: Date/Time + Input + Enter -->
         <div class="w-[340px] lg:w-[400px] flex flex-col gap-3 shrink-0">
-          <div class="bg-white/40 border border-white/10 px-6 py-3 rounded-2xl text-center shrink-0">
-            <div class="text-xs lg:text-base opacity-70 uppercase font-bold">{{ formattedDate }}</div>
-            <div class="text-2xl lg:text-3xl font-mono font-bold text-green-400 mt-1">{{ formattedTime }}</div>
+          <div
+            class="bg-white/40 border border-white/10 px-6 py-3 rounded-2xl text-center shrink-0"
+          >
+            <div class="text-xs lg:text-base opacity-70 uppercase font-bold">
+              {{ formattedDate }}
+            </div>
+            <div class="text-2xl lg:text-3xl font-mono font-bold text-green-400 mt-1">
+              {{ formattedTime }}
+            </div>
           </div>
           <!-- Attendance Type -->
           <div
-            class="bg-white/10 border border-white/20 rounded-2xl px-4 py-3 flex flex-col items-center gap-2 shrink-0">
-            <span class="text-[11px] font-semibold tracking-[0.15em] uppercase text-white/40">Attendance Type</span>
+            class="bg-white/10 border border-white/20 rounded-2xl px-4 py-3 flex flex-col items-center gap-2 shrink-0"
+          >
+            <span class="text-[11px] font-semibold tracking-[0.15em] uppercase text-white/40"
+              >Attendance Type</span
+            >
             <div class="attendance-pill-group w-full">
-              <button v-for="type in attendanceTypes" :key="type.value" @click="setAttendanceType(type.value)"
-                :class="['attendance-pill-btn', attendanceType === type.value ? 'active' : '']">
+              <button
+                v-for="type in attendanceTypes"
+                :key="type.value"
+                @click="setAttendanceType(type.value)"
+                :class="['attendance-pill-btn', attendanceType === type.value ? 'active' : '']"
+              >
                 <span class="pill-icon" v-html="type.icon"></span>
                 {{ type.label }}
               </button>
@@ -120,7 +136,8 @@
         <!-- Left Column: Attendance Table -->
         <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
           <div
-            class="flex-1 bg-white/10 rounded-2xl overflow-y-auto overflow-x-hidden hidden-scroll border border-white/20 shadow-2xl">
+            class="flex-1 bg-white/10 rounded-2xl overflow-y-auto overflow-x-hidden hidden-scroll border border-white/20 shadow-2xl"
+          >
             <table class="w-full text-white border-collapse">
               <thead class="sticky top-0 z-20 bg-white/40 backdrop-blur-md">
                 <tr class="text-left">
@@ -142,16 +159,20 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-white/5">
-                <tr v-for="log in attendanceLogs" :key="log.id" class="hover:bg-white/5 transition-colors">
+                <tr
+                  v-for="log in attendanceLogs"
+                  :key="log.id"
+                  class="hover:bg-white/5 transition-colors"
+                >
                   <td class="p-4 font-bold text-xl uppercase">{{ log.full_name }}</td>
                   <td class="p-4 text-base opacity-80">{{ log.institution_school || log.institution || pendingMeta[log.id]?.institution || '—' }}</td>
                   <td class="p-4 text-base opacity-80 font-mono font-semibold">
                     {{
                       log.time_in
                         ? new Date(log.time_in).toLocaleTimeString([], {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })
                         : '—'
                     }}
                   </td>
@@ -166,15 +187,31 @@
 
   <!-- Event Selection Modal -->
   <Transition name="modal">
-    <div v-if="showEventModal" class="fixed inset-0 z-50 flex items-center justify-center"
-      style="background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px)">
+    <div
+      v-if="showEventModal"
+      class="fixed inset-0 z-50 flex items-center justify-center"
+      style="background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px)"
+    >
       <div class="event-modal">
         <!-- Header -->
         <div class="event-modal-header">
           <div class="event-modal-icon">
             <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
-              <rect x="2" y="3.5" width="12" height="10" rx="1.5" stroke="#3B6D11" stroke-width="1.3" />
-              <path d="M5 2v3M11 2v3M2.5 7.5h11" stroke="#3B6D11" stroke-width="1.3" stroke-linecap="round" />
+              <rect
+                x="2"
+                y="3.5"
+                width="12"
+                height="10"
+                rx="1.5"
+                stroke="#3B6D11"
+                stroke-width="1.3"
+              />
+              <path
+                d="M5 2v3M11 2v3M2.5 7.5h11"
+                stroke="#3B6D11"
+                stroke-width="1.3"
+                stroke-linecap="round"
+              />
             </svg>
           </div>
           <div class="event-modal-header-text">
@@ -183,30 +220,63 @@
           </div>
           <button @click="showEventModal = false" class="event-modal-close">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <path d="M2 2l8 8M10 2L2 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              <path
+                d="M2 2l8 8M10 2L2 10"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
             </svg>
           </button>
         </div>
 
         <!-- Search -->
         <div class="event-modal-search-wrap">
-          <svg class="event-modal-search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <svg
+            class="event-modal-search-icon"
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+          >
             <circle cx="6" cy="6" r="4" stroke="#aaa" stroke-width="1.3" />
             <path d="M9.5 9.5l2 2" stroke="#aaa" stroke-width="1.3" stroke-linecap="round" />
           </svg>
-          <input v-model="eventSearch" type="text" placeholder="Search events..." class="event-modal-search-input" />
+          <input
+            v-model="eventSearch"
+            type="text"
+            placeholder="Search events..."
+            class="event-modal-search-input"
+          />
         </div>
 
         <!-- Body -->
         <div class="event-modal-body">
           <div class="event-modal-section-label">Available events</div>
           <div class="event-modal-list">
-            <button v-for="event in filteredEvents" :key="event.id" @click="selectedEvent = event"
-              :class="['event-modal-item', selectedEvent?.id === event.id ? 'active' : '']">
+            <button
+              v-for="event in filteredEvents"
+              :key="event.id"
+              @click="selectedEvent = event"
+              :class="['event-modal-item', selectedEvent?.id === event.id ? 'active' : '']"
+            >
               <div class="event-modal-item-icon">
                 <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-                  <rect x="2" y="3.5" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3" />
-                  <path d="M5 2v3M11 2v3M2.5 7.5h11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                  <rect
+                    x="2"
+                    y="3.5"
+                    width="12"
+                    height="10"
+                    rx="1.5"
+                    stroke="currentColor"
+                    stroke-width="1.3"
+                  />
+                  <path
+                    d="M5 2v3M11 2v3M2.5 7.5h11"
+                    stroke="currentColor"
+                    stroke-width="1.3"
+                    stroke-linecap="round"
+                  />
                 </svg>
               </div>
               <div class="event-modal-item-text">
@@ -228,12 +298,20 @@
           </span>
           <div class="event-modal-footer-actions">
             <button @click="showEventModal = false" class="event-modal-btn-cancel">Cancel</button>
-            <button @click="goToEvent" :disabled="!selectedEvent"
-              :class="['event-modal-btn-proceed', selectedEvent ? 'ready' : '']">
+            <button
+              @click="goToEvent"
+              :disabled="!selectedEvent"
+              :class="['event-modal-btn-proceed', selectedEvent ? 'ready' : '']"
+            >
               Proceed to event
               <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                <path d="M2 6.5h9M8 3.5l3 3-3 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"
-                  stroke-linejoin="round" />
+                <path
+                  d="M2 6.5h9M8 3.5l3 3-3 3"
+                  stroke="#fff"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
               </svg>
             </button>
           </div>
