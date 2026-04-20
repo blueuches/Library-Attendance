@@ -419,6 +419,7 @@
   </Transition>
 </template>
 
+
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
@@ -427,7 +428,7 @@ import { getStudentById } from '@/services/studentService'
 import { supabase } from '@/supabase'
 
 /* =========================
-   GLOBAL ALERT MODAL
+    GLOBAL ALERT MODAL
 ========================= */
 const alertModal = ref({
   show: false,
@@ -461,7 +462,7 @@ const closeAlert = () => {
 }
 
 /* =========================
-   ICONS
+    ICONS & CONSTANTS
 ========================= */
 const ICON_LIBRARY = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 8h6M5 5.5h6M5 10.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`
 const ICON_EVENT = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3.5l2 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`
@@ -473,15 +474,16 @@ const attendanceTypes = [
   { value: 'visitors', label: 'Visitors', icon: ICON_VISITORS },
 ]
 
+
+const beepAudio = new Audio('/beep.mp3')
+
 /* =========================
-   STATE
+    STATE
 ========================= */
 const idInput = ref('')
 const scannerInput = ref<HTMLInputElement | null>(null)
-
 const attendanceLogs = ref<any[]>([])
 const isProcessing = ref(false)
-
 const currentTime = ref(new Date())
 let attendancePageChannel: any = null
 
@@ -504,7 +506,7 @@ const schoolInfo = ref<any>({
 const router = useRouter()
 
 /* =========================
-   COMPUTED
+    COMPUTED
 ========================= */
 const backgroundStyle = computed(() => ({
   backgroundImage: `url('${schoolInfo.value.bg_path || '/hero-outside.png'}')`,
@@ -517,23 +519,15 @@ const filteredEvents = computed(() => {
 })
 
 /* =========================
-   FETCH DATA
+    FETCH DATA (Optimized)
 ========================= */
 const fetchLogs = async () => {
   try {
+    
     const logs = await getAttendanceLogs()
-
-    const logsWithStudent = await Promise.all(
-      logs.map(async (log: any) => {
-        let studentData = null
-        try {
-          studentData = await getStudentById(log.student_id)
-        } catch {}
-        return { ...log, students: studentData }
-      }),
-    )
-
-    attendanceLogs.value = logsWithStudent.sort((a, b) => {
+    
+    
+    attendanceLogs.value = logs.sort((a: any, b: any) => {
       const aTime = new Date(a.time_out || a.time_in).getTime()
       const bTime = new Date(b.time_out || b.time_in).getTime()
       return bTime - aTime
@@ -544,20 +538,21 @@ const fetchLogs = async () => {
 }
 
 /* =========================
-   ATTENDANCE
+    ATTENDANCE (No-Delay Logic)
 ========================= */
 let lastScanTime = 0
-const isScannerMode = ref(true)
 
 const handleLogin = async (decodedText?: string) => {
   const now = Date.now()
   if (isProcessing.value) return
-  if (now - lastScanTime < 500) return
+  if (now - lastScanTime < 800) return 
   lastScanTime = now
 
   const rawData = (decodedText ?? idInput.value).trim()
   if (!rawData) return
 
+ 
+  idInput.value = ''
   isProcessing.value = true
 
   try {
@@ -565,39 +560,30 @@ const handleLogin = async (decodedText?: string) => {
 
     if (result?.type === 'not_found') {
       showAlert('Student Not Found', 'Invalid ID.', 'error')
-      idInput.value = ''
-      scannerInput.value?.focus()
-      return
-    }
-    if (result?.type === 'closed') {
+    } else if (result?.type === 'closed') {
       showAlert('Closed', 'Library is closed.', 'error')
-      return
-    }
-    if (result?.type === 'already_done') {
+    } else if (result?.type === 'already_done') {
       showAlreadyDoneModal.value = true
-      return
+    } else {
+      // Success! 
+      beepAudio.play().catch(() => {})
+      fetchLogs() 
     }
-
-    await fetchLogs()
-    const audio = new Audio('/beep.mp3')
-    audio.play().catch(() => {})
-    idInput.value = ''
-    scannerInput.value?.focus()
   } catch (err) {
     console.error(err)
     showAlert('Error', 'Something went wrong.', 'error')
   } finally {
     isProcessing.value = false
+    setTimeout(() => scannerInput.value?.focus(), 50)
   }
 }
 
 const handleEnter = () => {
-  if (!idInput.value.trim()) return
   handleLogin()
 }
 
 /* =========================
-   EVENTS
+    EVENTS & OTHERS
 ========================= */
 const fetchEvents = async () => {
   const { data } = await supabase.from('events').select('id, title').eq('is_active', true)
@@ -620,13 +606,20 @@ const goToEvent = () => {
   showEventModal.value = false
 }
 
+const fetchSchoolInfo = async () => {
+  const { data } = await supabase.from('attendance_page').select('*').single()
+  if (data) schoolInfo.value = data
+}
+
 /* =========================
-   LIFECYCLE
+    LIFECYCLE
 ========================= */
 onMounted(async () => {
-  await fetchLogs()
+  await Promise.all([fetchLogs(), fetchSchoolInfo()])
+  
   scannerInput.value?.focus()
 
+  // Real-time listener
   attendancePageChannel = supabase
     .channel('attendance_page_realtime')
     .on(
@@ -635,10 +628,15 @@ onMounted(async () => {
       fetchSchoolInfo,
     )
     .subscribe()
+
+  // Clock interval
+  setInterval(() => {
+    currentTime.value = new Date()
+  }, 1000)
 })
 
 /* =========================
-   DATE/TIME
+    DATE/TIME FORMATTERS
 ========================= */
 const formattedDate = computed(() =>
   currentTime.value.toLocaleDateString('en-US', {
@@ -657,6 +655,9 @@ const formattedTime = computed(() =>
   }),
 )
 </script>
+
+
+
 
 <style>
 #qr-reader img {
