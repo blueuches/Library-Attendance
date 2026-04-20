@@ -4,42 +4,41 @@
 
     <div class="relative z-10 flex flex-col min-h-screen w-full">
       <!-- Header -->
-      <div class="flex items-center justify-center pt-6 pb-3 px-10 shrink-0">
+      <div class="flex items-center justify-center pt-4 pb-2 px-10 shrink-0">
         <div class="absolute left-10">
-          <img src="/csu-logo.png" alt="Logo" class="h-24 w-24 lg:h-32 lg:w-32 object-contain" />
+          <img src="/csu-logo.png" alt="Logo" class="h-20 w-20 lg:h-28 lg:w-28 object-contain" />
         </div>
         <div class="text-center">
           <h1
-            class="text-4xl lg:text-6xl uppercase leading-none font-black drop-shadow-md bg-[linear-gradient(90deg,#FFC300_0%,#ffffff_50%,#1b5e20_100%)] bg-clip-text text-transparent"
-            style="font-family: Impact ">
+            class="text-5xl lg:text-7xl uppercase leading-none font-black drop-shadow-md bg-[linear-gradient(90deg,#FFC300_0%,#ffffff_50%,#1b5e20_100%)] bg-clip-text text-transparent"
+            style="font-family: Impact">
             CARAGA STATE UNIVERSITY
           </h1>
-          <h2 class="pb-2 text-xl lg:text-2xl uppercase text-green-100 font-bold"
+          <h2 class="pb-1 text-2xl lg:text-3xl uppercase text-green-100 font-bold"
             style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif">
             HERO LEARNING COMMONS
           </h2>
           <div
-            class="mt-3 inline-block bg-white/10 border border-white/20 px-6 py-2 rounded-md font-semibold text-sm lg:text-base opacity-100">
+            class="mt-2 inline-block bg-white/10 border border-white/20 px-6 py-1.5 rounded-md font-semibold text-sm lg:text-base opacity-100">
             ATTENDANCE AND CAPACITY CSU-LIBRARY ENTRY SYSTEM (ACCES)
           </div>
         </div>
       </div>
 
       <!-- Body -->
-      <div class="flex flex-row-reverse px-6 lg:px-10 pb-6 lg:pb-10 gap-6 lg:gap-8 flex-1 min-h-0">
+      <div class="flex flex-row-reverse px-6 lg:px-10 pb-4 lg:pb-6 gap-4 lg:gap-5 flex-1 min-h-0">
 
-        <!-- Right Column: Date/Time + Attendance Type + Camera -->
-        <div class="w-[340px] lg:w-[400px] flex flex-col gap-3 shrink-0">
+        <!-- Right Column: Date/Time + Attendance Type + Camera + Featured Video -->
+        <div class="w-[340px] lg:w-[400px] flex flex-col gap-2 shrink-0 min-h-0 overflow-y-auto hidden-scroll">
 
           <!-- Date & Time -->
-          <div class="bg-white/40 border border-white/10 px-6 py-3 rounded-2xl text-center shrink-0">
-            <div class="text-xs lg:text-base opacity-70 uppercase font-bold">{{ formattedDate }}</div>
-            <div class="text-2xl lg:text-3xl font-mono font-bold text-green-400 mt-1">{{ formattedTime }}</div>
+          <div class="bg-white/40 border border-white/10 px-6 py-2 rounded-2xl text-center shrink-0">
+            <div class="text-xs lg:text-sm opacity-70 uppercase font-bold">{{ formattedDate }}</div>
+            <div class="text-xl lg:text-2xl font-mono font-bold text-green-400 mt-0.5">{{ formattedTime }}</div>
           </div>
 
           <!-- Attendance Type -->
-          <div
-            class="bg-white/10 border border-white/20 rounded-2xl px-4 py-3 flex flex-col items-center gap-2 shrink-0">
+          <div class="bg-white/10 border border-white/20 rounded-2xl px-4 py-2 flex flex-col items-center gap-2 shrink-0">
             <span class="text-[11px] font-semibold tracking-[0.15em] uppercase text-white/40">Attendance Type</span>
             <div class="attendance-pill-group w-full">
               <button v-for="type in attendanceTypes" :key="type.value" @click="setAttendanceType(type.value)"
@@ -52,48 +51,62 @@
 
           <!-- Camera + Manual Entry -->
           <div class="bg-white/10 border rounded-2xl overflow-hidden flex flex-col shadow-2xl shrink-0">
-            <div class="p-3 bg-white/10 flex justify-between items-center px-4 shrink-0">
+            <div class="p-2 bg-white/10 flex justify-between items-center px-4 shrink-0">
               <span class="text-xs font-black tracking-widest uppercase">Scan your ID here</span>
             </div>
-            <!-- Camera takes remaining space but is capped -->
-            <div id="qr-reader" class="w-full bg-black/20 shrink-0" style="height: clamp(160px, 22vh, 260px);"></div>
-            <!-- Input section sticks to bottom naturally -->
-            <div class="p-4 bg-black/40 flex flex-col gap-3 shrink-0 mt-auto">
+            <div id="qr-reader" class="w-full bg-black/20" style="height: 160px;"></div>
+            <div class="p-3 bg-black/40 flex flex-col gap-2 shrink-0">
               <input ref="scannerInput" v-model="idInput" type="text" placeholder="Scan or type ID..."
                 @keyup.enter="handleEnter"
                 class="w-full p-2 rounded border border-white/80 text-white bg-transparent text-sm lg:text-base" />
               <button @click="handleLogin()"
-                class="w-full py-3 rounded-lg font-bold transition-all bg-green-700 hover:bg-green-600 border border-green-500 shadow-md text-sm lg:text-base">
+                class="w-full py-2.5 rounded-lg font-bold transition-all bg-green-700 hover:bg-green-600 border border-green-500 shadow-md text-sm lg:text-base">
                 ENTER
               </button>
             </div>
           </div>
+
+          <!-- Featured Video Card (MP4) -->
+          <div class="bg-white/10 border border-white/20 rounded-2xl overflow-hidden shadow-2xl shrink-0">
+            <div class="p-2.5 bg-white/10 flex justify-between items-center px-4">
+              <span class="text-xs font-black tracking-widest uppercase">Featured Video</span>
+              <span class="text-[10px] text-white/50 font-semibold tracking-widest uppercase">CSU Hero Learning Commons</span>
+            </div>
+            <div class="relative w-full" style="padding-top: 56.25%;">
+              <video
+                class="absolute top-0 left-0 w-full h-full object-cover"
+                src="/videos/featured.mp4"
+                autoplay
+                muted
+                loop
+                playsinline
+              ></video>
+            </div>
+            <div class="px-4 py-2 bg-black/30">
+              <div class="text-sm font-bold text-white">CSU Library Orientation 2024</div>
+              <div class="text-[11px] text-white/50 mt-0.5">Caraga State University · Hero Learning Commons</div>
+            </div>
+          </div>
+
         </div>
 
-        <!-- Left Column: Table -->
-        <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
-          <div
-            class="flex-1 bg-white/10 rounded-2xl overflow-y-auto overflow-x-auto hidden-scroll border border-white/20 shadow-2xl max-h-[550px]">
+        <!-- Left Column: Table only — fills full height, scrolls internally -->
+        <div class="flex-1 min-h-0 overflow-hidden">
+          <div class="bg-white/10 rounded-2xl border border-white/20 shadow-2xl overflow-y-auto overflow-x-auto hidden-scroll h-full">
             <table class="w-full text-white border-collapse">
               <thead class="sticky top-0 z-20 bg-white/40 backdrop-blur-md">
                 <tr class="text-left">
-                  <th
-                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
+                  <th class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
                     ID Number</th>
-                  <th
-                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
+                  <th class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
                     Name</th>
-                  <th
-                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
+                  <th class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
                     Course</th>
-                  <th
-                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
+                  <th class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
                     Year Level</th>
-                  <th
-                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
+                  <th class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
                     Time-In</th>
-                  <th
-                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
+                  <th class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap">
                     Time-Out</th>
                 </tr>
               </thead>
@@ -119,16 +132,12 @@
                         : '—'
                     }}
                   </td>
-                  <!-- <td class="p-3 lg:p-4 font-mono text-sm lg:text-lg font-bold">
-                    <span :class="log.time_out ? 'text-gray-400' : 'text-green-400 animate-pulse'">
-                      {{ log.time_out ? formatTime(log.time_out) : 'STILL INSIDE' }}
-                    </span>
-                  </td> -->
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -168,18 +177,15 @@
       <div class="already-done-modal">
         <div class="already-done-icon-wrap">
           <div class="already-done-icon">
-            <!-- Icon changes based on type -->
             <svg v-if="alertModal.type === 'error'" width="28" height="28" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="10" stroke="#dc2626" stroke-width="1.8" />
               <path d="M12 7v5.5" stroke="#dc2626" stroke-width="2" stroke-linecap="round" />
               <circle cx="12" cy="16.5" r="1" fill="#dc2626" />
             </svg>
-
             <svg v-else-if="alertModal.type === 'success'" width="28" height="28" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="10" stroke="#16a34a" stroke-width="1.8" />
               <path d="M8 12l3 3 5-6" stroke="#16a34a" stroke-width="2" fill="none" stroke-linecap="round" />
             </svg>
-
             <svg v-else width="28" height="28" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="10" stroke="#b45309" stroke-width="1.8" />
               <path d="M12 7v5.5" stroke="#b45309" stroke-width="2" stroke-linecap="round" />
@@ -187,14 +193,10 @@
             </svg>
           </div>
         </div>
-
         <div class="already-done-body">
           <div class="already-done-title">{{ alertModal.title }}</div>
-          <div class="already-done-subtitle">
-            {{ alertModal.message }}
-          </div>
+          <div class="already-done-subtitle">{{ alertModal.message }}</div>
         </div>
-
         <div class="already-done-footer">
           <button @click="closeAlert" class="already-done-btn">
             {{ alertModal.buttonText || 'OK' }}
@@ -257,7 +259,7 @@
         <div class="event-modal-footer">
           <span class="event-modal-selection-hint">{{
             selectedEvent ? '1 event selected' : 'No event selected'
-            }}</span>
+          }}</span>
           <div class="event-modal-footer-actions">
             <button @click="showEventModal = false" class="event-modal-btn-cancel">Cancel</button>
             <button @click="goToEvent" :disabled="!selectedEvent"
@@ -276,12 +278,8 @@
 </template>
 
 
-
-
-
-
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getAttendanceLogs, handleAttendance } from '@/services/attendanceService'
 import { getStudentById } from '@/services/studentService'
@@ -307,18 +305,8 @@ const showAlert = (
   duration: number = 2500
 ) => {
   if (alertTimeout.value) clearTimeout(alertTimeout.value)
-
-  alertModal.value = {
-    show: true,
-    title,
-    message,
-    type,
-    buttonText: 'OK',
-  }
-
-  alertTimeout.value = setTimeout(() => {
-    closeAlert()
-  }, duration)
+  alertModal.value = { show: true, title, message, type, buttonText: 'OK' }
+  alertTimeout.value = setTimeout(() => { closeAlert() }, duration)
 }
 
 const closeAlert = () => {
@@ -336,7 +324,6 @@ const ICON_LIBRARY = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none
 const ICON_EVENT = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3.5l2 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`
 const ICON_VISITORS = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="5" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M2 13c0-2.21 1.79-4 4-4s4 1.79 4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="11.5" cy="5.5" r="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M13.5 13c0-1.66-1.12-3-2.5-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>`
 
-
 const attendanceTypes = [
   { value: 'library', label: 'Library', icon: ICON_LIBRARY },
   { value: 'event', label: 'Event', icon: ICON_EVENT },
@@ -348,14 +335,11 @@ const attendanceTypes = [
 ========================= */
 const idInput = ref('')
 const scannerInput = ref<HTMLInputElement | null>(null)
-const isScanner = ref(true) // default: scanner mode
 
 const attendanceLogs = ref<any[]>([])
 const isProcessing = ref(false)
 
 const currentTime = ref(new Date())
-// let timer: any
-// let schoolInfoTimer: any
 let attendancePageChannel: any = null
 
 const attendanceType = ref('library')
@@ -376,7 +360,6 @@ const schoolInfo = ref<any>({
 
 const router = useRouter()
 
-
 /* =========================
    COMPUTED
 ========================= */
@@ -387,33 +370,12 @@ const backgroundStyle = computed(() => ({
 const filteredEvents = computed(() => {
   const q = eventSearch.value.toLowerCase().trim()
   if (!q) return events.value
-  return events.value.filter(e =>
-    e.title.toLowerCase().includes(q)
-  )
+  return events.value.filter(e => e.title.toLowerCase().includes(q))
 })
 
 /* =========================
    FETCH DATA
 ========================= */
-// const fetchSchoolInfo = async () => {
-//   const { data } = await supabase
-//     .from('attendance_page')
-//     .select('element_form')
-//     .eq('element_name', 'school_info')
-//     .single()
-
-//   if (!data?.element_form) return
-
-//   try {
-//     const parsed =
-//       typeof data.element_form === 'string'
-//         ? JSON.parse(data.element_form)
-//         : data.element_form
-
-//     schoolInfo.value = { ...schoolInfo.value, ...parsed }
-//   } catch {}
-// }
-
 const fetchLogs = async () => {
   try {
     const logs = await getAttendanceLogs()
@@ -421,10 +383,7 @@ const fetchLogs = async () => {
     const logsWithStudent = await Promise.all(
       logs.map(async (log: any) => {
         let studentData = null
-        try {
-          studentData = await getStudentById(log.student_id)
-        } catch { }
-
+        try { studentData = await getStudentById(log.student_id) } catch { }
         return { ...log, students: studentData }
       })
     )
@@ -440,17 +399,15 @@ const fetchLogs = async () => {
 }
 
 /* =========================
-   ATTENDANCE (USB SCANNER)
+   ATTENDANCE
 ========================= */
 let lastScanTime = 0
+const isScannerMode = ref(true)
 
 const handleLogin = async (decodedText?: string) => {
   const now = Date.now()
-
-  // prevent double submit ONLY (reduce from 3000 → 500ms)
   if (isProcessing.value) return
   if (now - lastScanTime < 500) return
-
   lastScanTime = now
 
   const rawData = (decodedText ?? idInput.value).trim()
@@ -459,38 +416,26 @@ const handleLogin = async (decodedText?: string) => {
   isProcessing.value = true
 
   try {
-    const studentId = rawData
+    const result = await handleAttendance(rawData)
 
-    const result = await handleAttendance(studentId)
-
-    /* NOT FOUND */
     if (result?.type === 'not_found') {
       showAlert('Student Not Found', 'Invalid ID.', 'error')
-
       idInput.value = ''
       scannerInput.value?.focus()
-
       return
     }
-
-    /* CLOSED */
     if (result?.type === 'closed') {
       showAlert('Closed', 'Library is closed.', 'error')
       return
     }
-
-    /* ALREADY DONE */
     if (result?.type === 'already_done') {
       showAlreadyDoneModal.value = true
       return
     }
 
-    /* SUCCESS */
     await fetchLogs()
-
     const audio = new Audio('/beep.mp3')
     audio.play().catch(() => { })
-
     idInput.value = ''
     scannerInput.value?.focus()
 
@@ -502,22 +447,10 @@ const handleLogin = async (decodedText?: string) => {
   }
 }
 
-const handleInput = () => {
-  if (!isScannerMode.value) return
-}
-
 const handleEnter = () => {
   if (!idInput.value.trim()) return
   handleLogin()
 }
-
-
-const isScannerMode = ref(true)
-
-// const handleEnter = () => {
-//   if (isScanner.value) return 
-//   handleLogin()
-// }
 
 /* =========================
    EVENTS
@@ -527,30 +460,22 @@ const fetchEvents = async () => {
     .from('events')
     .select('id, title')
     .eq('is_active', true)
-
   events.value = data || []
 }
 
 const setAttendanceType = async (value: string) => {
   attendanceType.value = value
-
   if (value === 'event') {
     await fetchEvents()
     showEventModal.value = true
   }
-
   if (value === 'visitors') router.push({ name: 'visitors' })
   if (value === 'library') router.push({ name: 'access' })
 }
 
 const goToEvent = () => {
   if (!selectedEvent.value) return
-
-  router.push({
-    name: 'event',
-    query: { id: selectedEvent.value.id },
-  })
-
+  router.push({ name: 'event', query: { id: selectedEvent.value.id } })
   showEventModal.value = false
 }
 
@@ -558,39 +483,14 @@ const goToEvent = () => {
    LIFECYCLE
 ========================= */
 onMounted(async () => {
-  // await fetchSchoolInfo()
   await fetchLogs()
-
   scannerInput.value?.focus()
-
-  // timer = setInterval(() => {
-  //   currentTime.value = new Date()
-  // }, 1000)
-
-  // schoolInfoTimer = setInterval(fetchSchoolInfo, 5000)
 
   attendancePageChannel = supabase
     .channel('attendance_page_realtime')
-    .on(
-      'postgres_changes',
-      { event: '*', schema: 'public', table: 'attendance_page' },
-      fetchSchoolInfo
-    )
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'attendance_page' }, fetchSchoolInfo)
     .subscribe()
 })
-
-// onUnmounted(() => {
-//   clearInterval(timer)
-//   clearInterval(schoolInfoTimer)
-
-//   if (attendancePageChannel) {
-//     supabase.removeChannel(attendancePageChannel)
-//   }
-
-//   if (alertTimeout.value) {
-//     clearTimeout(alertTimeout.value)
-//   }
-// })
 
 /* =========================
    DATE/TIME
@@ -612,11 +512,6 @@ const formattedTime = computed(() =>
   })
 )
 </script>
-
-
-
-
-
 
 
 <style>
@@ -665,10 +560,7 @@ const formattedTime = computed(() =>
   font-weight: 600;
   letter-spacing: 0.02em;
   cursor: pointer;
-  transition:
-    background 0.18s ease,
-    color 0.18s ease,
-    transform 0.12s ease;
+  transition: background 0.18s ease, color 0.18s ease, transform 0.12s ease;
   white-space: nowrap;
   outline: none;
 }
@@ -797,9 +689,7 @@ const formattedTime = computed(() =>
   flex-shrink: 0;
 }
 
-.event-modal-header-text {
-  flex: 1;
-}
+.event-modal-header-text { flex: 1; }
 
 .event-modal-title {
   font-size: 16px;
@@ -859,18 +749,14 @@ const formattedTime = computed(() =>
   transition: border-color 0.15s, background 0.15s;
 }
 
-.event-modal-search-input::placeholder {
-  color: #c0c0c0;
-}
+.event-modal-search-input::placeholder { color: #c0c0c0; }
 
 .event-modal-search-input:focus {
   border-color: #3b6d11;
   background: #fff;
 }
 
-.event-modal-body {
-  padding: 16px 20px 6px;
-}
+.event-modal-body { padding: 16px 20px 6px; }
 
 .event-modal-section-label {
   font-size: 10px;
@@ -890,9 +776,7 @@ const formattedTime = computed(() =>
   scrollbar-width: none;
 }
 
-.event-modal-list::-webkit-scrollbar {
-  display: none;
-}
+.event-modal-list::-webkit-scrollbar { display: none; }
 
 .event-modal-item {
   display: flex;
@@ -956,9 +840,7 @@ const formattedTime = computed(() =>
   transition: color 0.15s;
 }
 
-.event-modal-item.active .event-modal-name {
-  color: #1e4a0a;
-}
+.event-modal-item.active .event-modal-name { color: #1e4a0a; }
 
 .event-modal-radio {
   width: 20px;
@@ -986,9 +868,7 @@ const formattedTime = computed(() =>
   transition: background 0.15s;
 }
 
-.event-modal-item.active .event-modal-radio-dot {
-  background: #3b6d11;
-}
+.event-modal-item.active .event-modal-radio-dot { background: #3b6d11; }
 
 .event-modal-empty {
   padding: 32px 0;
@@ -1061,15 +941,8 @@ const formattedTime = computed(() =>
 }
 
 @keyframes modal-pop {
-  from {
-    opacity: 0;
-    transform: scale(0.94) translateY(8px);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+  from { opacity: 0; transform: scale(0.94) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .modal-enter-active,
