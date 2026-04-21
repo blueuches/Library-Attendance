@@ -19,7 +19,7 @@
             />
           </div>
 
-          <div class="text-center px-20 sm:px-24 md:px-28 lg:px-32">
+          <div class="px-20 text-center sm:px-24 md:px-28 lg:px-32">
             <h1
               class="bg-[linear-gradient(90deg,#FFC300_0%,#ffffff_50%,#1b5e20_100%)] bg-clip-text text-2xl font-black uppercase leading-none text-transparent drop-shadow-md sm:text-3xl md:text-4xl lg:text-6xl xl:text-7xl"
               style="font-family: Impact"
@@ -45,17 +45,16 @@
 
       <!-- Body -->
       <div
-        class="grid flex-1 min-h-0 grid-cols-1 gap-3 overflow-hidden px-3 pb-3 sm:px-4 lg:grid-cols-2 lg:gap-4 lg:px-8 lg:pb-4 xl:px-10 xl:pb-5"
+        class="grid flex-1 min-h-0 grid-cols-1 gap-3 overflow-hidden px-3 pb-3 sm:px-4 lg:grid-cols-[2.8fr_1.2fr] lg:gap-4 lg:px-8 lg:pb-4 xl:px-10 xl:pb-5"
       >
-        <!-- LEFT COLUMN: FEATURED SIDE (2 EQUAL ROWS) -->
-        <div class="flex min-h-0 flex-col gap-3 lg:gap-4">
-          <!-- Featured Video -->
+        <!-- LEFT COLUMN -->
+        <div class="flex min-h-0 flex-col overflow-hidden">
           <div
             class="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-white/20 bg-white/10 shadow-2xl"
           >
-            <div class="flex items-center justify-between bg-white/10 px-4 py-2.5 shrink-0">
+            <div class="flex shrink-0 items-center justify-between bg-white/10 px-4 py-2.5">
               <span class="text-[10px] font-black uppercase tracking-widest sm:text-xs">
-                Featured Video
+                Orientation Video
               </span>
               <span
                 class="text-[9px] font-semibold uppercase tracking-widest text-white/50 sm:text-[10px]"
@@ -64,7 +63,7 @@
               </span>
             </div>
 
-            <div class="relative flex-1 min-h-0 bg-black/30">
+            <div class="relative min-h-0 flex-1 bg-black/30">
               <video
                 class="absolute inset-0 h-full w-full object-cover"
                 src="/videos/qr.mp4"
@@ -76,104 +75,27 @@
               ></video>
             </div>
           </div>
-
-          <!-- Announcement Card -->
-          <div
-            class="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-white/20 bg-white/10 shadow-2xl"
-          >
-            <div class="flex items-center justify-between bg-white/10 px-4 py-2.5 shrink-0">
-              <span class="text-[10px] font-black uppercase tracking-widest sm:text-xs">
-                Announcements
-              </span>
-              <span
-                class="text-[9px] font-semibold uppercase tracking-widest text-white/50 sm:text-[10px]"
-              >
-                CSU Hero Learning Commons
-              </span>
-            </div>
-
-            <div
-              class="flex flex-1 min-h-0 items-center justify-center bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),rgba(255,255,255,0.03)_45%,rgba(0,0,0,0.16)_100%)] p-4 sm:p-6 lg:p-8"
-            >
-              <div class="w-full max-w-xl text-center">
-                <div
-                  class="mb-2 text-xl font-black uppercase tracking-[0.18em] text-white sm:text-2xl lg:text-3xl"
-                >
-                  Library Advisory
-                </div>
-
-                <div
-                  class="mx-auto max-w-lg text-xs leading-relaxed text-white/80 sm:text-sm lg:text-base"
-                >
-                  This section may be used for campus announcements, library reminders,
-                  upcoming activities, orientation details, or other important notices for
-                  students.
-                </div>
-
-                <div class="mt-6 grid grid-cols-1 gap-3 text-left">
-                  <div
-                    class="rounded-2xl border border-white/15 bg-white/10 px-4 py-3 backdrop-blur-sm"
-                  >
-                    <div
-                      class="mb-1 text-[10px] font-bold uppercase tracking-widest text-green-200/80 sm:text-xs"
-                    >
-                      Reminder
-                    </div>
-                    <div class="text-xs text-white/85 sm:text-sm">
-                      Please prepare your valid school ID before entering the library.
-                    </div>
-                  </div>
-
-                  <div
-                    class="rounded-2xl border border-white/15 bg-white/10 px-4 py-3 backdrop-blur-sm"
-                  >
-                    <div
-                      class="mb-1 text-[10px] font-bold uppercase tracking-widest text-green-200/80 sm:text-xs"
-                    >
-                      Update
-                    </div>
-                    <div class="text-xs text-white/85 sm:text-sm">
-                      Library schedules, event notices, and important campus updates may be
-                      displayed here.
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Replace with second video if needed
-            <div class="relative flex-1 min-h-0 bg-black/30">
-              <video
-                class="absolute inset-0 h-full w-full object-cover"
-                src="/videos/announcement.mp4"
-                autoplay
-                muted
-                loop
-                playsinline
-                controls
-              ></video>
-            </div>
-            -->
-          </div>
         </div>
 
-        <!-- RIGHT COLUMN: ATTENDANCE -->
-        <div class="flex min-h-0 flex-col gap-3 overflow-hidden">
-          <!-- Date & Time -->
+        <!-- RIGHT COLUMN -->
+        <div class="flex min-h-0 flex-col gap-1 overflow-hidden">
+          <!-- Realtime -->
           <div
-            class="shrink-0 rounded-2xl border border-white/10 bg-white/40 px-4 py-2 text-center"
+            class="w-full shrink-0 rounded-2xl border border-white/10 bg-white/40 px-4 py-2 text-center"
           >
             <div class="text-[10px] font-bold uppercase opacity-70 sm:text-xs lg:text-sm">
               {{ formattedDate }}
             </div>
-            <div class="mt-0.5 font-mono text-lg font-bold text-green-400 sm:text-xl lg:text-2xl">
+            <div
+              class="mt-0.5 font-mono text-lg font-bold text-green-400 sm:text-xl lg:text-2xl"
+            >
               {{ formattedTime }}
             </div>
           </div>
 
           <!-- Attendance Type -->
           <div
-            class="shrink-0 flex flex-col items-center gap-2 rounded-2xl border border-white/20 bg-white/10 px-3 py-2"
+            class="w-full shrink-0 flex flex-col items-center gap-2 rounded-2xl border border-white/20 bg-white/10 px-3 py-2"
           >
             <span
               class="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/40 sm:text-[11px]"
@@ -196,7 +118,7 @@
 
           <!-- Scan Card -->
           <div
-            class="shrink-0 flex flex-col overflow-hidden rounded-2xl border border-white/20 bg-white/10 shadow-2xl"
+            class="w-full shrink-0 overflow-hidden rounded-2xl border border-white/20 bg-white/10 shadow-2xl"
           >
             <div class="flex items-center justify-between bg-white/10 px-4 py-2 shrink-0">
               <span class="text-[10px] font-black uppercase tracking-widest sm:text-xs">
@@ -204,32 +126,36 @@
               </span>
             </div>
 
-            <div
-              id="qr-reader"
-              class="w-full bg-black/20"
-              style="height: clamp(120px, 18vh, 180px)"
-            ></div>
+            <div class="px-3 pt-3">
+              <div
+                id="qr-reader"
+                class="mx-auto w-full rounded-xl bg-black/20"
+                style="height: clamp(120px, 16vh, 170px)"
+              ></div>
+            </div>
 
-            <div class="shrink-0 flex flex-col gap-2 bg-black/40 p-3">
-              <input
-                ref="scannerInput"
-                v-model="idInput"
-                type="text"
-                placeholder="Scan or type ID..."
-                @keyup.enter="handleEnter"
-                class="w-full rounded border border-white/80 bg-transparent p-2 text-sm text-white placeholder:text-white/45"
-              />
-              <button
-                @click="handleLogin()"
-                class="w-full rounded-lg border border-green-500 bg-green-700 py-2.5 text-sm font-bold shadow-md transition-all hover:bg-green-600"
-              >
-                ENTER
-              </button>
+            <div class="shrink-0 bg-black/40 px-3 pb-3 pt-3">
+              <div class="mx-auto flex w-full flex-col gap-2">
+                <input
+                  ref="scannerInput"
+                  v-model="idInput"
+                  type="text"
+                  placeholder="Scan or type ID..."
+                  @keyup.enter="handleEnter"
+                  class="w-full rounded border border-white/80 bg-transparent p-2 text-sm text-white placeholder:text-white/45"
+                />
+                <button
+                  @click="handleLogin()"
+                  class="w-full rounded-lg border border-green-500 bg-green-700 py-2.5 text-sm font-bold shadow-md transition-all hover:bg-green-600"
+                >
+                  ENTER
+                </button>
+              </div>
             </div>
           </div>
 
           <!-- Attendance Records -->
-          <div class="flex-1 min-h-0 overflow-hidden">
+          <div class="flex-1 min-h-0 w-full overflow-hidden">
             <div
               class="hidden-scroll h-full overflow-auto rounded-2xl border border-white/20 bg-white/10 shadow-2xl"
             >
@@ -237,32 +163,27 @@
                 <thead class="sticky top-0 z-20 bg-white/40 backdrop-blur-md">
                   <tr class="text-left">
                     <th
-                      class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:p-3 sm:text-xs lg:text-sm"
+                      class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:text-xs"
                     >
                       ID Number
                     </th>
                     <th
-                      class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:p-3 sm:text-xs lg:text-sm"
-                    >
-                      Name
-                    </th>
-                    <th
-                      class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:p-3 sm:text-xs lg:text-sm"
+                      class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:text-xs"
                     >
                       Course
                     </th>
                     <th
-                      class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:p-3 sm:text-xs lg:text-sm"
+                      class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:text-xs"
                     >
                       Year Level
                     </th>
                     <th
-                      class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:p-3 sm:text-xs lg:text-sm"
+                      class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:text-xs"
                     >
                       Time-In
                     </th>
                     <th
-                      class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:p-3 sm:text-xs lg:text-sm"
+                      class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:text-xs"
                     >
                       Time-Out
                     </th>
@@ -275,29 +196,16 @@
                     :key="log.id"
                     class="transition-colors hover:bg-white/5"
                   >
-                    <td
-                      class="whitespace-nowrap p-2 text-sm font-bold sm:p-3 sm:text-base lg:text-xl"
-                    >
+                    <td class="whitespace-nowrap p-2 text-sm font-bold sm:text-base">
                       {{ log.student_id }}
                     </td>
-                    <td
-                      class="whitespace-nowrap p-2 text-sm font-bold uppercase sm:p-3 sm:text-base lg:text-xl"
-                    >
-                      {{ log.students?.first_name }} {{ log.students?.last_name }}
-                    </td>
-                    <td
-                      class="whitespace-nowrap p-2 text-xs opacity-80 sm:p-3 sm:text-sm lg:text-lg"
-                    >
+                    <td class="whitespace-nowrap p-2 text-xs opacity-80 sm:text-sm">
                       {{ log.students?.program }}
                     </td>
-                    <td
-                      class="whitespace-nowrap p-2 text-xs opacity-80 sm:p-3 sm:text-sm lg:text-lg"
-                    >
+                    <td class="whitespace-nowrap p-2 text-xs opacity-80 sm:text-sm">
                       {{ log.students?.year_level || '—' }}
                     </td>
-                    <td
-                      class="whitespace-nowrap p-2 font-mono text-xs font-bold opacity-80 sm:p-3 sm:text-sm lg:text-lg"
-                    >
+                    <td class="whitespace-nowrap p-2 font-mono text-xs font-bold opacity-80 sm:text-sm">
                       {{
                         log.time_in
                           ? new Date(log.time_in).toLocaleTimeString([], {
@@ -307,9 +215,7 @@
                           : '—'
                       }}
                     </td>
-                    <td
-                      class="whitespace-nowrap p-2 font-mono text-xs font-bold opacity-80 sm:p-3 sm:text-sm lg:text-lg"
-                    >
+                    <td class="whitespace-nowrap p-2 font-mono text-xs font-bold opacity-80 sm:text-sm">
                       {{
                         log.time_out
                           ? new Date(log.time_out).toLocaleTimeString([], {
@@ -322,7 +228,7 @@
                   </tr>
 
                   <tr v-if="attendanceLogs.length === 0">
-                    <td colspan="6" class="p-6 text-center text-sm text-white/70">
+                    <td colspan="5" class="p-6 text-center text-sm text-white/70">
                       No attendance records yet.
                     </td>
                   </tr>
@@ -717,6 +623,7 @@ const formattedTime = computed(() =>
   currentTime.value.toLocaleTimeString('en-US', {
     hour: '2-digit',
     minute: '2-digit',
+    second: '2-digit',
     hour12: true,
   }),
 )
