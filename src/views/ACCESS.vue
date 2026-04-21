@@ -662,34 +662,34 @@ const goToEvent = () => {
   showEventModal.value = false
 }
 
-const fetchSchoolInfo = async () => {
-  const { data } = await supabase.from('attendance_page').select('*').single()
-  if (data) schoolInfo.value = data
-}
+// const fetchSchoolInfo = async () => {
+//   const { data } = await supabase.from('attendance_page').select('*').single()
+//   if (data) schoolInfo.value = data
+// }
 
 /* =========================
     LIFECYCLE
 ========================= */
-onMounted(async () => {
-  await Promise.all([fetchLogs(), fetchSchoolInfo()])
+// onMounted(async () => {
+//   await Promise.all([fetchLogs(), fetchSchoolInfo()])
   
-  scannerInput.value?.focus()
+//   scannerInput.value?.focus()
 
-  // Real-time listener
-  attendancePageChannel = supabase
-    .channel('attendance_page_realtime')
-    .on(
-      'postgres_changes',
-      { event: '*', schema: 'public', table: 'attendance_page' },
-      fetchSchoolInfo,
-    )
-    .subscribe()
+//   // Real-time listener
+//   attendancePageChannel = supabase
+//     .channel('attendance_page_realtime')
+//     .on(
+//       'postgres_changes',
+//       { event: '*', schema: 'public', table: 'attendance_page' },
+//       fetchSchoolInfo,
+//     )
+//     .subscribe()
 
-  // Clock interval
-  setInterval(() => {
-    currentTime.value = new Date()
-  }, 1000)
-})
+//   // Clock interval
+//   setInterval(() => {
+//     currentTime.value = new Date()
+//   }, 1000)
+// })
 
 /* =========================
     DATE/TIME FORMATTERS
