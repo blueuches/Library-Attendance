@@ -34,11 +34,20 @@
         </div>
       </div>
 
+      <div class="stats-container pt-3 pb-3" style="margin-left: 50px;">
+        <div class="stat-card flex items-center gap-2">
+          <h3 class="font-extrabold tracking-tight">
+            Total Students Today:
+            <span class="text-yellow-400 font-extrabold">{{ totalStudentsToday }}</span>
+          </h3>
+        </div>
+      </div>
+
       <!-- Body -->
       <div class="flex flex-row-reverse px-6 lg:px-10 pb-4 lg:pb-6 gap-4 lg:gap-5 flex-1 min-h-0">
         <!-- Right Column: Date/Time + Attendance Type + Camera + Featured Video -->
         <div
-          class="w-[340px] lg:w-[400px] flex flex-col gap-2 shrink-0 min-h-0 overflow-y-auto hidden-scroll"
+          class="w-85 lg:w-100 flex flex-col gap-2 shrink-0 min-h-0 overflow-y-auto hidden-scroll"
         >
           <!-- Date & Time -->
           <div
@@ -166,40 +175,50 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-white/5">
-                <tr
-                  v-for="log in attendanceLogs"
-                  :key="log.id"
-                  class="hover:bg-white/5 transition-colors"
-                >
-                  <td class="p-3 lg:p-4 font-bold text-base lg:text-xl">{{ log.student_id }}</td>
-                  <td class="p-3 lg:p-4 font-bold text-base lg:text-xl uppercase">
-                    {{ log.students?.first_name }} {{ log.students?.last_name }}
-                  </td>
-                  <td class="p-3 lg:p-4 text-sm lg:text-lg opacity-80">
-                    {{ log.students?.program }}
-                  </td>
-                  <td class="p-3 lg:p-4 text-sm lg:text-lg opacity-80">
-                    {{ log.students?.year_level || '—' }}
-                  </td>
-                  <td class="p-3 lg:p-4 font-mono text-sm lg:text-lg opacity-80 font-bold">
-                    {{
-                      log.time_in
-                        ? new Date(log.time_in).toLocaleTimeString([], {
+                <template v-if="attendanceLogs.length > 0">
+                  <tr v-for="log in attendanceLogs" :key="log.id" class="hover:bg-white/5 transition-colors">
+                    <td class="p-3 lg:p-4 font-bold text-base lg:text-xl">{{ log.student_id }}</td>
+                    <td class="p-3 lg:p-4 font-bold text-base lg:text-xl uppercase">
+                      {{ log.students?.first_name }} {{ log.students?.last_name }}
+                    </td>
+                    <td class="p-3 lg:p-4 text-sm lg:text-lg opacity-80">
+                      {{ log.students?.program }}
+                    </td>
+                    <td class="p-3 lg:p-4 text-sm lg:text-lg opacity-80">
+                      {{ log.students?.year_level || '—' }}
+                    </td>
+                    <td class="p-3 lg:p-4 font-mono text-sm lg:text-lg opacity-80 font-bold">
+                      {{
+                        log.time_in
+                          ? new Date(log.time_in).toLocaleTimeString([], {
                             hour: '2-digit',
                             minute: '2-digit',
-                          })
-                        : '—'
-                    }}
-                  </td>
-                  <td class="p-3 lg:p-4 font-mono text-sm lg:text-lg opacity-80 font-bold">
-                    {{
-                      log.time_out
-                        ? new Date(log.time_out).toLocaleTimeString([], {
+                      })
+                      : '—'
+                      }}
+                    </td>
+                    <td class="p-3 lg:p-4 font-mono text-sm lg:text-lg opacity-80 font-bold">
+                      {{
+                        log.time_out
+                          ? new Date(log.time_out).toLocaleTimeString([], {
                             hour: '2-digit',
                             minute: '2-digit',
-                          })
-                        : '—'
-                    }}
+                      })
+                      : '—'
+                      }}
+                    </td>
+                  </tr>
+                </template>
+
+                <tr v-else>
+                  <td colspan="6" class="p-20 text-center">
+                    <div class="flex flex-col items-center justify-center opacity-40">
+                      <i class="fa-solid fa-id-badge" style="font-size: 50px; padding: 12px;"></i>
+                      <span class="text-xl lg:text-1xl font-bold tracking-widest uppercase">
+                        Waiting for Scans...
+                      </span>
+                      <p class="text-sm mt-2">Please tap your ID to record attendance.</p>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -521,21 +540,58 @@ const filteredEvents = computed(() => {
 /* =========================
     FETCH DATA (Optimized)
 ========================= */
+
+/* =========================
+    UTILITIES (DATE RANGE)
+========================= */
+const getTodayRange = () => {
+  const start = new Date()
+  start.setHours(0, 0, 0, 0) 
+
+  const end = new Date()
+  end.setHours(23, 59, 59, 999) 
+
+  return {
+    start: start.toISOString(),
+    end: end.toISOString(),
+  }
+}
+
+/* =========================
+    FETCH DATA (Today's Logs Only)
+========================= */
 const fetchLogs = async () => {
   try {
-    
-    const logs = await getAttendanceLogs()
-    
-    
-    attendanceLogs.value = logs.sort((a: any, b: any) => {
-      const aTime = new Date(a.time_out || a.time_in).getTime()
-      const bTime = new Date(b.time_out || b.time_in).getTime()
-      return bTime - aTime
-    })
-  } catch {
+    const { start, end } = getTodayRange()
+
+   
+    const { data, error } = await supabase
+      .from('attendance_logs')
+      .select(`
+        *,
+        students (*)
+      `)
+      .gte('time_in', start)
+      .lte('time_in', end)
+      .order('time_in', { ascending: false })
+
+    if (error) throw error
+    attendanceLogs.value = data || []
+  } catch (err) {
+    console.error(err)
     showAlert('Error', 'Failed to load attendance logs.', 'error')
   }
 }
+
+/* =========================
+    COMPUTED 
+========================= */
+const totalStudentsToday = computed(() => {
+  
+  // return attendanceLogs.value.length
+  const uniqueIds = new Set(attendanceLogs.value.map(log => log.student_id))
+  return uniqueIds.size
+})
 
 /* =========================
     ATTENDANCE (No-Delay Logic)
@@ -638,6 +694,7 @@ onMounted(async () => {
 /* =========================
     DATE/TIME FORMATTERS
 ========================= */
+
 const formattedDate = computed(() =>
   currentTime.value.toLocaleDateString('en-US', {
     weekday: 'long',
@@ -660,6 +717,7 @@ const formattedTime = computed(() =>
 
 
 <style>
+
 #qr-reader img {
   display: none;
 }
