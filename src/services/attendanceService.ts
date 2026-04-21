@@ -2,6 +2,10 @@ import { supabase } from "@/supabase"
 
 /**
  * Fetch latest 20 logs with student details
+ * FIX:
+ * - Get a larger recent pool first
+ * - Sort by latest activity (time_out || time_in)
+ * - Keep only top 20 after sorting
  */
 export const getAttendanceLogs = async () => {
   const { data, error } = await supabase
@@ -17,10 +21,17 @@ export const getAttendanceLogs = async () => {
       )
     `)
     .order("time_in", { ascending: false })
-    .limit(20)
+    .limit(200)
 
   if (error) throw error
-  return data
+
+  return (data || [])
+    .sort((a: any, b: any) => {
+      const aTime = new Date(a.time_out || a.time_in).getTime()
+      const bTime = new Date(b.time_out || b.time_in).getTime()
+      return bTime - aTime
+    })
+    .slice(0, 20)
 }
 
 /**
@@ -28,16 +39,16 @@ export const getAttendanceLogs = async () => {
  */
 export const handleAttendance = async (studentId: string) => {
   const now = new Date()
-  
+
   // Check 7:00 PM cutoff
   const closingTime = new Date()
   closingTime.setHours(19, 0, 0, 0)
 
   if (now > closingTime) {
-    return { type: "closed" } 
+    return { type: "closed" }
   }
 
-  // 2. CHECK IF STUDENT EXISTS FIRST
+  // Check if student exists
   const { data: student, error: studentError } = await supabase
     .from("students")
     .select("id_number")
@@ -45,18 +56,19 @@ export const handleAttendance = async (studentId: string) => {
     .maybeSingle()
 
   if (studentError) throw studentError
-  
+
   if (!student) {
     return { type: "not_found" }
   }
 
-  // 3. Set today's time range
+  // Today's range
   const todayStart = new Date()
   todayStart.setHours(0, 0, 0, 0)
+
   const todayEnd = new Date()
   todayEnd.setHours(23, 59, 59, 999)
 
-  // 4. Get latest log for today
+  // Get latest log for today
   const { data: latestLog, error: fetchError } = await supabase
     .from("attendance_logs")
     .select("*")
@@ -71,8 +83,8 @@ export const handleAttendance = async (studentId: string) => {
 
   /**
    * Logic:
-   * If no record or already timed out -> Create new Time-In
-   * If record exists without time-out -> Update with Time-Out
+   * - If no record or already timed out -> create new Time-In
+   * - If record exists without time-out -> update with Time-Out
    */
   if (!latestLog || latestLog.time_out) {
     const { error } = await supabase.from("attendance_logs").insert([
@@ -86,8 +98,7 @@ export const handleAttendance = async (studentId: string) => {
 
     if (error) throw error
     return { type: "time_in" }
-  } 
-  else {
+  } else {
     const { error } = await supabase
       .from("attendance_logs")
       .update({ time_out: now.toISOString() })
@@ -104,11 +115,13 @@ export const handleAttendance = async (studentId: string) => {
 export const createAttendanceLog = async (studentId: string) => {
   const { data, error } = await supabase
     .from("attendance_logs")
-    .insert([{
-      student_id: studentId,
-      attendance_type: "library",
-      time_in: new Date().toISOString()
-    }])
+    .insert([
+      {
+        student_id: studentId,
+        attendance_type: "library",
+        time_in: new Date().toISOString(),
+      },
+    ])
 
   if (error) throw error
   return data
@@ -123,13 +136,15 @@ export const createAttendanceLogEvent = async (payload: {
   event_id?: string | null
 }) => {
   const { data, error } = await supabase
-    .from('attendance_logs')
-    .insert([{
-      student_id: payload.student_id,
-      attendance_type: payload.attendance_type,
-      event_id: payload.event_id ?? null,
-      time_in: new Date().toISOString()
-    }])
+    .from("attendance_logs")
+    .insert([
+      {
+        student_id: payload.student_id,
+        attendance_type: payload.attendance_type,
+        event_id: payload.event_id ?? null,
+        time_in: new Date().toISOString(),
+      },
+    ])
 
   if (error) throw error
   return data
@@ -139,7 +154,7 @@ export const createAttendanceLogEvent = async (payload: {
  * Find active session and set Time-Out
  */
 export const createTimeOut = async (studentId: string) => {
-  const { data: latest } = await supabase
+  const { data: latest, error: latestError } = await supabase
     .from("attendance_logs")
     .select("id")
     .eq("student_id", studentId)
@@ -148,13 +163,17 @@ export const createTimeOut = async (studentId: string) => {
     .limit(1)
     .maybeSingle()
 
+  if (latestError) throw latestError
+
   if (latest) {
     const { data, error } = await supabase
       .from("attendance_logs")
       .update({ time_out: new Date().toISOString() })
       .eq("id", latest.id)
-    
+
     if (error) throw error
     return data
   }
+
+  return null
 }

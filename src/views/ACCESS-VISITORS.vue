@@ -6,46 +6,64 @@
     ></div>
 
     <div class="relative z-10 flex flex-col h-full w-full">
-      <!-- Header -->
-      <!-- <div class="flex items-center justify-center pt-6 pb-3 px-10 shrink-0">
-        <div class="absolute left-10">
-          <img
-            :src="schoolInfo.logo_path || '/csu-logo.png'"
-            alt="Logo"
-            class="h-32 w-32 object-contain"
-          />
-        </div>
+      <div class="shrink-0 px-3 pt-2 pb-2 sm:px-4 lg:px-8 xl:px-10">
+        <div class="relative flex items-center justify-center">
+          <div class="absolute left-0 top-1/2 -translate-y-1/2">
+            <img
+              src="/csu-logo.png"
+              alt="Logo"
+              class="h-20 w-20 object-contain sm:h-24 sm:w-24 md:h-28 md:w-28 lg:h-32 lg:w-32 xl:h-36 xl:w-36"
+            />
+          </div>
 
-        <div class="text-center">
-          <h1
-            class="text-6xl uppercase leading-none font-black drop-shadow-md bg-[linear-gradient(90deg,#FFC300_0%,#ffffff_50%,#1b5e20_100%)] bg-clip-text text-transparent"
-            style="font-family: Impact"
-          >
-            {{ schoolInfo.school_name || 'CARAGA STATE UNIVERSITY' }}
-          </h1>
+          <div class="absolute right-0 top-1/2 -translate-y-1/2">
+            <div
+              class="flex h-20 w-20 flex-col items-center justify-center rounded-full border border-white/30 bg-white/12 text-center shadow-lg backdrop-blur-md sm:h-24 sm:w-24 md:h-28 md:w-28 lg:h-32 lg:w-32 xl:h-36 xl:w-36"
+            >
+              <div
+                class="px-2 text-[7px] font-bold uppercase leading-tight tracking-wider text-white/80 sm:text-[8px] md:text-[9px]"
+              >
+                Active Visitors
+              </div>
+              <div
+                class="mt-1 text-xl font-black leading-none text-green-300 sm:text-2xl md:text-3xl lg:text-4xl"
+              >
+                {{ activeInsideCount }}
+              </div>
+              <div
+                class="mt-1 text-[7px] font-semibold uppercase tracking-wide text-white/60 sm:text-[8px] md:text-[9px]"
+              >
+                Today
+              </div>
+            </div>
+          </div>
 
-          <h2
-            class="pb-4 text-2xl uppercase text-green-100 font-bold"
-            style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
-          >
-            {{ schoolInfo.building_title || 'HERO LEARNING COMMONS' }}
-          </h2>
+          <div class="px-24 text-center sm:px-28 md:px-32 lg:px-40">
+            <h1
+              class="bg-[linear-gradient(90deg,#FFC300_0%,#ffffff_50%,#1b5e20_100%)] bg-clip-text text-2xl font-black uppercase leading-none text-transparent drop-shadow-md sm:text-3xl md:text-4xl lg:text-6xl xl:text-7xl"
+              style="font-family: Impact"
+            >
+              CARAGA STATE UNIVERSITY
+            </h1>
 
-          <div
-            class="mt-4 inline-block bg-white/10 border border-white/20 px-6 py-2 rounded-md font-semibold text-LG opacity-100"
-          >
-            {{
-              schoolInfo.system_name ||
-              'ATTENDANCE AND CAPACITY CSU ENTRY SURVEILLANCE SYSTEM (ACCESS)'
-            }}
+            <h2
+              class="mt-1 text-lg font-bold uppercase text-green-100 sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl"
+              style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
+            >
+              HERO LEARNING COMMONS
+            </h2>
+
+            <div
+              class="mt-2 inline-block rounded-md border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold sm:text-sm md:text-base lg:px-5 lg:text-xl xl:text-2xl"
+            >
+              ATTENDANCE AND CAPACITY CSU-LIBRARY ENTRY SYSTEM (ACCES)
+            </div>
           </div>
         </div>
-
-       
-      </div> -->
+      </div>
 
       <div class="flex flex-row-reverse px-6 lg:px-10 pb-6 lg:pb-10 gap-6 lg:gap-8 flex-1 min-h-0">
-        <!-- Right Column: Date/Time + Input + Enter -->
+        <!-- Right Column -->
         <div class="w-[340px] lg:w-[400px] flex flex-col gap-3 shrink-0">
           <div
             class="bg-white/40 border border-white/10 px-6 py-3 rounded-2xl text-center shrink-0"
@@ -57,13 +75,13 @@
               {{ formattedTime }}
             </div>
           </div>
-          <!-- Attendance Type -->
+
           <div
             class="bg-white/10 border border-white/20 rounded-2xl px-4 py-3 flex flex-col items-center gap-2 shrink-0"
           >
-            <span class="text-[11px] font-semibold tracking-[0.15em] uppercase text-white/40"
-              >Attendance Type</span
-            >
+            <span class="text-[11px] font-semibold tracking-[0.15em] uppercase text-white/40">
+              Attendance Type
+            </span>
             <div class="attendance-pill-group w-full">
               <button
                 v-for="type in attendanceTypes"
@@ -77,63 +95,70 @@
             </div>
           </div>
 
-    <div class="bg-white/10 border rounded-2xl overflow-hidden flex flex-col shadow-2xl shrink-0">
-      <div class="p-3 bg-white/10 flex justify-between items-center px-4 shrink-0">
-        <span class="text-xs font-black tracking-widest uppercase">Visitor Details</span>
-      </div>
-      <div class="p-4 bg-black/40 flex flex-col gap-4">
-        <div class="flex flex-col gap-2">
-          <label class="text-[11px] font-semibold tracking-[0.18em] uppercase text-white/60">Name</label>
-          <input
-            v-model="idInput"
-            type="text"
-            placeholder="Enter visitor name"
-            class="w-full p-3 rounded border border-white/80 text-white bg-transparent text-sm lg:text-base"
-          />
-        </div>
+          <div class="bg-white/10 border rounded-2xl overflow-hidden flex flex-col shadow-2xl shrink-0">
+            <div class="p-3 bg-white/10 flex justify-between items-center px-4 shrink-0">
+              <span class="text-xs font-black tracking-widest uppercase">Visitor Details</span>
+            </div>
 
-        <div class="flex flex-col gap-2">
-          <label class="text-[11px] font-semibold tracking-[0.18em] uppercase text-white/60">Email or contact number</label>
-          <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
-            <input
-              v-model="emailInput"
-              type="email"
-              placeholder="Email address"
-              class="p-3 rounded border border-white/80 text-white bg-transparent text-sm lg:text-base w-full"
-            />
-            <span class="text-white/60 font-semibold text-sm uppercase whitespace-nowrap">OR</span>
-            <input
-              v-model="cellphoneInput"
-              type="text"
-              placeholder="Contact no."
-              class="p-3 rounded border border-white/80 text-white bg-transparent text-sm lg:text-base w-full"
-            />
+            <div class="p-4 bg-black/40 flex flex-col gap-4">
+              <div class="flex flex-col gap-2">
+                <label class="text-[11px] font-semibold tracking-[0.18em] uppercase text-white/60">
+                  Name
+                </label>
+                <input
+                  v-model="idInput"
+                  type="text"
+                  placeholder="Enter visitor name"
+                  class="w-full p-3 rounded border border-white/80 text-white bg-transparent text-sm lg:text-base"
+                />
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <label class="text-[11px] font-semibold tracking-[0.18em] uppercase text-white/60">
+                  Email or contact number
+                </label>
+                <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+                  <input
+                    v-model="emailInput"
+                    type="email"
+                    placeholder="Email address"
+                    class="p-3 rounded border border-white/80 text-white bg-transparent text-sm lg:text-base w-full"
+                  />
+                  <span class="text-white/60 font-semibold text-sm uppercase whitespace-nowrap">OR</span>
+                  <input
+                    v-model="cellphoneInput"
+                    type="text"
+                    placeholder="Contact no."
+                    class="p-3 rounded border border-white/80 text-white bg-transparent text-sm lg:text-base w-full"
+                  />
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <label class="text-[11px] font-semibold tracking-[0.18em] uppercase text-white/60">
+                  Institution/School
+                </label>
+                <input
+                  v-model="institutionInput"
+                  type="text"
+                  placeholder="Institution / School"
+                  @keyup.enter="handleLogin()"
+                  class="w-full p-3 rounded border border-white/80 text-white bg-transparent text-sm lg:text-base"
+                />
+              </div>
+
+              <button
+                @click="handleLogin()"
+                :disabled="!canAddVisitor || isProcessing"
+                class="w-full py-3 rounded-lg font-bold transition-all border border-green-500 shadow-md text-sm lg:text-base disabled:opacity-50 disabled:cursor-not-allowed bg-green-700 hover:bg-green-600"
+              >
+                {{ isProcessing ? 'ADDING...' : 'ADD' }}
+              </button>
+            </div>
           </div>
         </div>
 
-        <div class="flex flex-col gap-2">
-          <label class="text-[11px] font-semibold tracking-[0.18em] uppercase text-white/60">Institution/School</label>
-          <input
-            v-model="institutionInput"
-            type="text"
-            placeholder="Institution / School"
-            @keyup.enter="handleLogin()"
-            class="w-full p-3 rounded border border-white/80 text-white bg-transparent text-sm lg:text-base"
-          />
-        </div>
-
-        <button
-          @click="handleLogin()"
-          :disabled="!canAddVisitor || isProcessing"
-          class="w-full py-3 rounded-lg font-bold transition-all border border-green-500 shadow-md text-sm lg:text-base disabled:opacity-50 disabled:cursor-not-allowed bg-green-700 hover:bg-green-600"
-        >
-          {{ isProcessing ? 'ADDING...' : 'ADD' }}
-        </button>
-      </div>
-    </div>
-  </div>
-
-        <!-- Left Column: Attendance Table -->
+        <!-- Left Column -->
         <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
           <div
             class="flex-1 bg-white/10 rounded-2xl overflow-y-auto overflow-x-hidden hidden-scroll border border-white/20 shadow-2xl"
@@ -165,7 +190,9 @@
                   class="hover:bg-white/5 transition-colors"
                 >
                   <td class="p-4 font-bold text-xl uppercase">{{ log.full_name }}</td>
-                  <td class="p-4 text-base opacity-80">{{ log.institution_school || log.institution || pendingMeta[log.id]?.institution || '—' }}</td>
+                  <td class="p-4 text-base opacity-80">
+                    {{ log.institution_school || log.institution || pendingMeta[log.id]?.institution || '—' }}
+                  </td>
                   <td class="p-4 text-base opacity-80 font-mono font-semibold">
                     {{
                       log.time_in
@@ -177,6 +204,12 @@
                     }}
                   </td>
                 </tr>
+
+                <tr v-if="attendanceLogs.length === 0">
+                  <td colspan="3" class="p-6 text-center text-sm text-white/70">
+                    No visitor records yet.
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -185,7 +218,6 @@
     </div>
   </div>
 
-  <!-- Event Selection Modal -->
   <Transition name="modal">
     <div
       v-if="showEventModal"
@@ -193,7 +225,6 @@
       style="background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px)"
     >
       <div class="event-modal">
-        <!-- Header -->
         <div class="event-modal-header">
           <div class="event-modal-icon">
             <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
@@ -230,7 +261,6 @@
           </button>
         </div>
 
-        <!-- Search -->
         <div class="event-modal-search-wrap">
           <svg
             class="event-modal-search-icon"
@@ -250,7 +280,6 @@
           />
         </div>
 
-        <!-- Body -->
         <div class="event-modal-body">
           <div class="event-modal-section-label">Available events</div>
           <div class="event-modal-list">
@@ -291,7 +320,6 @@
           </div>
         </div>
 
-        <!-- Footer -->
         <div class="event-modal-footer">
           <span class="event-modal-selection-hint">
             {{ selectedEvent ? '1 event selected' : 'No event selected' }}
@@ -331,7 +359,6 @@ import {
 } from '@/services/attendanceVisitorsService'
 import { supabase } from '@/supabase'
 
-// ─── ICONS ────────────────────────────────────────────────────────────────────
 const ICON_LIBRARY = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/>
   <path d="M5 8h6M5 5.5h6M5 10.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
@@ -349,14 +376,12 @@ const ICON_VISITORS = `<svg width="16" height="16" viewBox="0 0 16 16" fill="non
   <path d="M13.5 13c0-1.66-1.12-3-2.5-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
 </svg>`
 
-// ─── ATTENDANCE TYPE PILL DATA ────────────────────────────────────────────────
 const attendanceTypes = [
   { value: 'library', label: 'Library', icon: ICON_LIBRARY },
   { value: 'event', label: 'Event', icon: ICON_EVENT },
   { value: 'visitors', label: 'Visitors', icon: ICON_VISITORS },
 ]
 
-// ─── TYPES ────────────────────────────────────────────────────────────────────
 interface Event {
   id: string
   title: string
@@ -374,12 +399,12 @@ interface SchoolInfo {
   address: string
 }
 
-// ─── STATE ────────────────────────────────────────────────────────────────────
 const idInput = ref('')
 const emailInput = ref('')
 const cellphoneInput = ref('')
 const institutionInput = ref('')
 const attendanceLogs = ref<any[]>([])
+const activeInsideCount = ref(0)
 const isProcessing = ref(false)
 const optionalTimeOutMap = ref<Record<string, string>>({})
 const pendingMeta = ref<Record<string, { email: string; cellphone: string; institution: string }>>({})
@@ -408,7 +433,6 @@ const schoolInfo = ref<SchoolInfo>({
 
 const router = useRouter()
 
-// ─── COMPUTED ─────────────────────────────────────────────────────────────────
 const backgroundStyle = computed(() => ({
   backgroundImage: `url('${schoolInfo.value.bg_path || '/hero-outside.png'}')`,
 }))
@@ -428,31 +452,6 @@ const canAddVisitor = computed(() => {
   )
 })
 
-// ─── FETCH SCHOOL INFO ────────────────────────────────────────────────────────
-// const fetchSchoolInfo = async () => {
-//   const { data, error } = await supabase
-//     .from('attendance_page')
-//     .select('element_form')
-//     .eq('element_name', 'school_info')
-//     .single()
-
-//   if (error) {
-//     console.error('Error fetching attendance page school_info:', error)
-//     return
-//   }
-
-//   if (!data?.element_form) return
-
-//   try {
-//     const parsed =
-//       typeof data.element_form === 'string' ? JSON.parse(data.element_form) : data.element_form
-//     schoolInfo.value = { ...schoolInfo.value, ...parsed }
-//   } catch (err) {
-//     console.error('Failed to parse attendance_page.element_form:', err)
-//   }
-// }
-
-// ─── FETCH VISITOR LOGS ───────────────────────────────────────────────────────
 const fetchVisitorLogs = async () => {
   try {
     const logs = await getVisitorLogs()
@@ -462,18 +461,52 @@ const fetchVisitorLogs = async () => {
   }
 }
 
-// ─── HANDLE LOGIN ─────────────────────────────────────────────────────────────
-const handleLogin = async (decodedText?: string) => {
+const fetchActiveInsideCount = async () => {
+  try {
+    const now = new Date()
+
+    const startOfDay = new Date(now)
+    startOfDay.setHours(0, 0, 0, 0)
+
+    const endOfDay = new Date(now)
+    endOfDay.setHours(23, 59, 59, 999)
+
+    const { data, error } = await supabase
+      .from('attendance_logs_visitors')
+      .select('id, time_in, time_out')
+      .gte('time_in', startOfDay.toISOString())
+      .lte('time_in', endOfDay.toISOString())
+      .not('time_in', 'is', null)
+      .is('time_out', null)
+
+    if (error) {
+      console.error('Failed to fetch active visitor count:', error)
+      activeInsideCount.value = 0
+      return
+    }
+
+    activeInsideCount.value = data?.length || 0
+  } catch (err) {
+    console.error('Failed to fetch active visitor count:', err)
+    activeInsideCount.value = 0
+  }
+}
+
+const refreshAttendanceData = async () => {
+  await Promise.all([fetchVisitorLogs(), fetchActiveInsideCount()])
+}
+
+const handleLogin = async () => {
   if (isProcessing.value) return
 
-  const rawData = decodedText || idInput.value
-  const submittedName = rawData.trim()
+  const submittedName = idInput.value.trim()
   const submittedEmail = emailInput.value.trim()
   const submittedCellphone = cellphoneInput.value.trim()
   const submittedInstitution = institutionInput.value.trim()
-  const submittedContact = submittedEmail && submittedCellphone
-    ? `${submittedEmail}/${submittedCellphone}`
-    : (submittedCellphone || submittedEmail)
+  const submittedContact =
+    submittedEmail && submittedCellphone
+      ? `${submittedEmail}/${submittedCellphone}`
+      : (submittedCellphone || submittedEmail)
 
   if (!submittedName || !submittedContact || !submittedInstitution) return
 
@@ -502,7 +535,7 @@ const handleLogin = async (decodedText?: string) => {
       institution: submittedInstitution,
     }
 
-    await fetchVisitorLogs()
+    await refreshAttendanceData()
 
     idInput.value = ''
     emailInput.value = ''
@@ -521,7 +554,7 @@ const markOptionalTimeOut = (logId: string) => {
   updateVisitorTimeOut(logId)
     .then(async () => {
       delete optionalTimeOutMap.value[logId]
-      await fetchVisitorLogs()
+      await refreshAttendanceData()
     })
     .catch((err) => {
       console.error('Failed to update visitor time out:', err)
@@ -532,7 +565,6 @@ const markOptionalTimeOut = (logId: string) => {
     })
 }
 
-// ─── FETCH EVENTS ─────────────────────────────────────────────────────────────
 const fetchEvents = async () => {
   const { data, error } = await supabase.from('events').select('id, title').eq('is_active', true)
 
@@ -544,7 +576,6 @@ const fetchEvents = async () => {
   events.value = (data || []) as Event[]
 }
 
-// ─── ATTENDANCE TYPE HANDLERS ─────────────────────────────────────────────────
 const setAttendanceType = async (value: string) => {
   attendanceType.value = value
   await handleAttendanceChange()
@@ -583,24 +614,10 @@ const goToLibrary = () => {
   showEventModal.value = false
 }
 
-// ─── LIFECYCLE ────────────────────────────────────────────────────────────────
-// onMounted(async () => {
-//   await fetchSchoolInfo()
-//   await fetchVisitorLogs()
-
-//   timer = setInterval(() => (currentTime.value = new Date()), 1000)
-
-//   //   schoolInfoTimer = setInterval(() => {
-//   //     fetchSchoolInfo()
-//   //   }, 5000)
-
-//   attendancePageChannel = supabase
-//     .channel('attendance_page_realtime')
-//     .on('postgres_changes', { event: '*', schema: 'public', table: 'attendance_page' }, () => {
-//       fetchSchoolInfo()
-//     })
-//     .subscribe()
-// })
+onMounted(async () => {
+  await refreshAttendanceData()
+  timer = setInterval(() => (currentTime.value = new Date()), 1000)
+})
 
 onUnmounted(() => {
   clearInterval(timer)
@@ -610,7 +627,6 @@ onUnmounted(() => {
   }
 })
 
-// ─── DATE / TIME ──────────────────────────────────────────────────────────────
 const formattedDate = computed(() =>
   currentTime.value.toLocaleDateString('en-US', {
     weekday: 'long',
@@ -639,7 +655,6 @@ const formattedTime = computed(() =>
   display: none;
 }
 
-/* ── Pill Group ── */
 .attendance-pill-group {
   display: flex;
   background: rgba(255, 255, 255, 0.08);
@@ -691,7 +706,6 @@ const formattedTime = computed(() =>
   line-height: 0;
 }
 
-/* ── Event Modal ── */
 .event-modal {
   width: 480px;
   background: #ffffff;
@@ -761,7 +775,6 @@ const formattedTime = computed(() =>
   color: #555;
 }
 
-/* Search */
 .event-modal-search-wrap {
   position: relative;
   padding: 16px 20px 0;
@@ -798,7 +811,6 @@ const formattedTime = computed(() =>
   background: #fff;
 }
 
-/* Body */
 .event-modal-body {
   padding: 16px 20px 6px;
 }
@@ -825,7 +837,6 @@ const formattedTime = computed(() =>
   display: none;
 }
 
-/* Event Items */
 .event-modal-item {
   display: flex;
   align-items: center;
@@ -894,7 +905,6 @@ const formattedTime = computed(() =>
   color: #1e4a0a;
 }
 
-/* Radio button */
 .event-modal-radio {
   width: 20px;
   height: 20px;
@@ -934,7 +944,6 @@ const formattedTime = computed(() =>
   color: #bbb;
 }
 
-/* Footer */
 .event-modal-footer {
   display: flex;
   justify-content: space-between;

@@ -1,14 +1,11 @@
 <template>
   <div class="relative h-screen w-screen overflow-hidden bg-[#0b3d1f] text-white">
-    <!-- Background -->
     <div
       class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-20"
       :style="backgroundStyle"
     ></div>
 
-    <!-- Main Wrapper -->
     <div class="relative z-10 flex h-full w-full flex-col overflow-hidden">
-      <!-- Header -->
       <div class="shrink-0 px-3 pt-2 pb-2 sm:px-4 lg:px-8 xl:px-10">
         <div class="relative flex items-center justify-center">
           <div class="absolute left-0 top-1/2 -translate-y-1/2">
@@ -19,7 +16,29 @@
             />
           </div>
 
-          <div class="px-20 text-center sm:px-24 md:px-28 lg:px-32">
+          <div class="absolute right-0 top-1/2 -translate-y-1/2">
+            <div
+              class="flex h-20 w-20 flex-col items-center justify-center rounded-full border border-white/30 bg-white/12 text-center shadow-lg backdrop-blur-md sm:h-24 sm:w-24 md:h-28 md:w-28 lg:h-32 lg:w-32 xl:h-36 xl:w-36"
+            >
+              <div
+                class="px-2 text-[7px] font-bold uppercase leading-tight tracking-wider text-white/80 sm:text-[8px] md:text-[9px]"
+              >
+                Active Inside
+              </div>
+              <div
+                class="mt-1 text-xl font-black leading-none text-green-300 sm:text-2xl md:text-3xl lg:text-4xl"
+              >
+                {{ activeInsideCount }}
+              </div>
+              <div
+                class="mt-1 text-[7px] font-semibold uppercase tracking-wide text-white/60 sm:text-[8px] md:text-[9px]"
+              >
+                Today
+              </div>
+            </div>
+          </div>
+
+          <div class="px-24 text-center sm:px-28 md:px-32 lg:px-40">
             <h1
               class="bg-[linear-gradient(90deg,#FFC300_0%,#ffffff_50%,#1b5e20_100%)] bg-clip-text text-2xl font-black uppercase leading-none text-transparent drop-shadow-md sm:text-3xl md:text-4xl lg:text-6xl xl:text-7xl"
               style="font-family: Impact"
@@ -43,11 +62,9 @@
         </div>
       </div>
 
-      <!-- Body -->
       <div
         class="grid flex-1 min-h-0 grid-cols-1 gap-3 overflow-hidden px-3 pb-3 sm:px-4 lg:grid-cols-[2.8fr_1.2fr] lg:gap-4 lg:px-8 lg:pb-4 xl:px-10 xl:pb-5"
       >
-        <!-- LEFT COLUMN -->
         <div class="flex min-h-0 flex-col overflow-hidden">
           <div
             class="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-white/20 bg-white/10 shadow-2xl"
@@ -77,9 +94,7 @@
           </div>
         </div>
 
-        <!-- RIGHT COLUMN -->
         <div class="flex min-h-0 flex-col gap-1 overflow-hidden">
-          <!-- Realtime -->
           <div
             class="w-full shrink-0 rounded-2xl border border-white/10 bg-white/40 px-4 py-2 text-center"
           >
@@ -93,7 +108,6 @@
             </div>
           </div>
 
-          <!-- Attendance Type -->
           <div
             class="w-full shrink-0 flex flex-col items-center gap-2 rounded-2xl border border-white/20 bg-white/10 px-3 py-2"
           >
@@ -116,7 +130,6 @@
             </div>
           </div>
 
-          <!-- Scan Card -->
           <div
             class="w-full shrink-0 overflow-hidden rounded-2xl border border-white/20 bg-white/10 shadow-2xl"
           >
@@ -141,6 +154,8 @@
                   v-model="idInput"
                   type="text"
                   placeholder="Scan or type ID..."
+                  @input="handleInputChange"
+                  @keydown="handleScannerKeydown"
                   @keyup.enter="handleEnter"
                   class="w-full rounded border border-white/80 bg-transparent p-2 text-sm text-white placeholder:text-white/45"
                 />
@@ -154,7 +169,6 @@
             </div>
           </div>
 
-          <!-- Attendance Records -->
           <div class="flex-1 min-h-0 w-full overflow-hidden">
             <div
               class="hidden-scroll h-full overflow-auto rounded-2xl border border-white/20 bg-white/10 shadow-2xl"
@@ -241,7 +255,6 @@
     </div>
   </div>
 
-  <!-- Already Done Modal -->
   <Transition name="modal">
     <div
       v-if="showAlreadyDoneModal"
@@ -272,7 +285,6 @@
     </div>
   </Transition>
 
-  <!-- Global Alert Modal -->
   <Transition name="modal">
     <div
       v-if="alertModal.show"
@@ -322,7 +334,6 @@
     </div>
   </Transition>
 
-  <!-- Event Selection Modal -->
   <Transition name="modal">
     <div
       v-if="showEventModal"
@@ -508,6 +519,7 @@ const beepAudio = new Audio('/beep.mp3')
 const idInput = ref('')
 const scannerInput = ref<HTMLInputElement | null>(null)
 const attendanceLogs = ref<any[]>([])
+const activeInsideCount = ref(0)
 const isProcessing = ref(false)
 const currentTime = ref(new Date())
 const attendanceType = ref('library')
@@ -549,6 +561,40 @@ const fetchLogs = async () => {
   }
 }
 
+const fetchActiveInsideCount = async () => {
+  try {
+    const now = new Date()
+
+    const startOfDay = new Date(now)
+    startOfDay.setHours(0, 0, 0, 0)
+
+    const endOfDay = new Date(now)
+    endOfDay.setHours(23, 59, 59, 999)
+
+    const { count, error } = await supabase
+      .from('attendance_logs')
+      .select('*', { count: 'exact', head: true })
+      .eq('attendance_type', 'library')
+      .gte('time_in', startOfDay.toISOString())
+      .lte('time_in', endOfDay.toISOString())
+      .not('time_in', 'is', null)
+      .is('time_out', null)
+
+    if (error) {
+      console.error('Failed to fetch active inside count:', error)
+      return
+    }
+
+    activeInsideCount.value = count || 0
+  } catch (err) {
+    console.error('Failed to fetch active inside count:', err)
+  }
+}
+
+const refreshAttendanceData = async () => {
+  await Promise.all([fetchLogs(), fetchActiveInsideCount()])
+}
+
 const fetchEvents = async () => {
   const { data } = await supabase.from('events').select('id, title').eq('is_active', true)
   events.value = data || []
@@ -571,17 +617,185 @@ const goToEvent = () => {
 }
 
 let lastScanTime = 0
+let clockInterval: number | undefined
+
+const SCANNER_INTERVAL_MS = 40
+let scannerBuffer = ''
+let scannerSession = false
+let pendingScannerStart = false
+let pendingFirstChar = ''
+let pendingTimer: ReturnType<typeof setTimeout> | null = null
+let lastKeyTime = 0
+
+const normalizeScannedValue = (value: string) => {
+  return value.replace(/\r/g, '').replace(/\n/g, '').trim()
+}
+
+const clearScannerField = () => {
+  idInput.value = ''
+}
+
+const focusScannerInput = () => {
+  setTimeout(() => scannerInput.value?.focus(), 50)
+}
+
+const clearAndRefocusScanner = () => {
+  idInput.value = ''
+  resetScannerState()
+  focusScannerInput()
+}
+
+const resetScannerState = () => {
+  scannerBuffer = ''
+  scannerSession = false
+  pendingScannerStart = false
+  pendingFirstChar = ''
+  lastKeyTime = 0
+  if (pendingTimer) {
+    clearTimeout(pendingTimer)
+    pendingTimer = null
+  }
+}
+
+const handleInputChange = () => {
+  if (isProcessing.value) {
+    clearScannerField()
+    return
+  }
+
+  const cleaned = normalizeScannedValue(idInput.value)
+  if (cleaned !== idInput.value) {
+    idInput.value = cleaned
+  }
+}
+
+const commitPendingManualChar = () => {
+  if (!pendingFirstChar) return
+  idInput.value = normalizeScannedValue(idInput.value + pendingFirstChar)
+  pendingFirstChar = ''
+  pendingScannerStart = false
+  if (pendingTimer) {
+    clearTimeout(pendingTimer)
+    pendingTimer = null
+  }
+}
+
+const handleScannerKeydown = (e: KeyboardEvent) => {
+  if (isProcessing.value) {
+    e.preventDefault()
+    return
+  }
+
+  const key = e.key
+
+  if (
+    key === 'Shift' ||
+    key === 'Control' ||
+    key === 'Alt' ||
+    key === 'Meta' ||
+    key === 'CapsLock' ||
+    key === 'Tab'
+  ) {
+    return
+  }
+
+  const now = Date.now()
+  const diff = lastKeyTime ? now - lastKeyTime : 999
+  lastKeyTime = now
+
+  if (key === 'Enter') {
+    if (scannerSession && scannerBuffer) {
+      e.preventDefault()
+      const value = scannerBuffer
+      clearScannerField()
+      resetScannerState()
+      handleLogin(value)
+      return
+    }
+
+    if (pendingScannerStart) {
+      commitPendingManualChar()
+    }
+
+    return
+  }
+
+  if (key === 'Backspace' || key === 'Delete' || key.startsWith('Arrow')) {
+    resetScannerState()
+    return
+  }
+
+  if (key.length !== 1) return
+
+  if (scannerSession) {
+    e.preventDefault()
+    scannerBuffer += key
+    idInput.value = scannerBuffer
+    return
+  }
+
+  if (pendingScannerStart) {
+    if (diff <= SCANNER_INTERVAL_MS) {
+      e.preventDefault()
+
+      if (pendingTimer) {
+        clearTimeout(pendingTimer)
+        pendingTimer = null
+      }
+
+      scannerSession = true
+      pendingScannerStart = false
+      scannerBuffer = pendingFirstChar + key
+      pendingFirstChar = ''
+      idInput.value = scannerBuffer
+      return
+    }
+
+    commitPendingManualChar()
+    return
+  }
+
+  if (idInput.value && diff > SCANNER_INTERVAL_MS) {
+    e.preventDefault()
+    pendingScannerStart = true
+    pendingFirstChar = key
+
+    if (pendingTimer) clearTimeout(pendingTimer)
+    pendingTimer = setTimeout(() => {
+      commitPendingManualChar()
+    }, SCANNER_INTERVAL_MS + 10)
+
+    return
+  }
+}
 
 const handleLogin = async (decodedText?: string) => {
   const now = Date.now()
-  if (isProcessing.value) return
-  if (now - lastScanTime < 800) return
+
+  if (isProcessing.value) {
+    clearAndRefocusScanner()
+    return
+  }
+
+  if (now - lastScanTime < 800) {
+    clearAndRefocusScanner()
+    return
+  }
+
+  if (pendingScannerStart) {
+    commitPendingManualChar()
+  }
+
+  const rawData = normalizeScannedValue(decodedText ?? idInput.value)
+  if (!rawData) {
+    clearAndRefocusScanner()
+    return
+  }
+
   lastScanTime = now
 
-  const rawData = (decodedText ?? idInput.value).trim()
-  if (!rawData) return
-
   idInput.value = ''
+  resetScannerState()
   isProcessing.value = true
 
   try {
@@ -595,18 +809,19 @@ const handleLogin = async (decodedText?: string) => {
       showAlreadyDoneModal.value = true
     } else {
       beepAudio.play().catch(() => {})
-      await fetchLogs()
+      await refreshAttendanceData()
     }
   } catch (err) {
     console.error(err)
     showAlert('Error', 'Something went wrong.', 'error')
   } finally {
     isProcessing.value = false
-    setTimeout(() => scannerInput.value?.focus(), 50)
+    clearAndRefocusScanner()
   }
 }
 
 const handleEnter = () => {
+  if (scannerSession) return
   handleLogin()
 }
 
@@ -628,11 +843,9 @@ const formattedTime = computed(() =>
   }),
 )
 
-let clockInterval: number | undefined
-
 onMounted(async () => {
-  await fetchLogs()
-  scannerInput.value?.focus()
+  await refreshAttendanceData()
+  focusScannerInput()
 
   clockInterval = window.setInterval(() => {
     currentTime.value = new Date()
@@ -642,6 +855,7 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   if (alertTimeout.value) clearTimeout(alertTimeout.value)
   if (clockInterval) clearInterval(clockInterval)
+  resetScannerState()
 })
 </script>
 
