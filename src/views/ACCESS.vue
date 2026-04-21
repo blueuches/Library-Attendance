@@ -214,7 +214,7 @@
                   <td colspan="6" class="p-20 text-center">
                     <div class="flex flex-col items-center justify-center opacity-40">
                       <i class="fa-solid fa-id-badge" style="font-size: 50px; padding: 12px;"></i>
-                      <span class="text-xl lg:text-1xl font-bold tracking-widest uppercase">
+                      <span class="text-xl font-bold tracking-widest uppercase">
                         Waiting for Scans...
                       </span>
                       <p class="text-sm mt-2">Please tap your ID to record attendance.</p>
@@ -662,34 +662,34 @@ const goToEvent = () => {
   showEventModal.value = false
 }
 
-// const fetchSchoolInfo = async () => {
-//   const { data } = await supabase.from('attendance_page').select('*').single()
-//   if (data) schoolInfo.value = data
-// }
+const fetchSchoolInfo = async () => {
+  const { data } = await supabase.from('attendance_page').select('*').single()
+  if (data) schoolInfo.value = data
+}
 
 /* =========================
     LIFECYCLE
 ========================= */
-// onMounted(async () => {
-//   await Promise.all([fetchLogs(), fetchSchoolInfo()])
+onMounted(async () => {
+  await Promise.all([fetchLogs(), fetchSchoolInfo()])
   
-//   scannerInput.value?.focus()
+  scannerInput.value?.focus()
 
-//   // Real-time listener
-//   attendancePageChannel = supabase
-//     .channel('attendance_page_realtime')
-//     .on(
-//       'postgres_changes',
-//       { event: '*', schema: 'public', table: 'attendance_page' },
-//       fetchSchoolInfo,
-//     )
-//     .subscribe()
+  // Real-time listener
+  attendancePageChannel = supabase
+    .channel('attendance_page_realtime')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'attendance_page' },
+      fetchSchoolInfo,
+    )
+    .subscribe()
 
-//   // Clock interval
-//   setInterval(() => {
-//     currentTime.value = new Date()
-//   }, 1000)
-// })
+  // Clock interval
+  setInterval(() => {
+    currentTime.value = new Date()
+  }, 1000)
+})
 
 /* =========================
     DATE/TIME FORMATTERS
