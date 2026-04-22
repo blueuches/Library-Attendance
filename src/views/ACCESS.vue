@@ -56,7 +56,7 @@
             <div
               class="mt-2 inline-block rounded-md border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold sm:text-sm md:text-base lg:px-5 lg:text-xl xl:text-2xl"
             >
-              ATTENDANCE AND CAPACITY CSU-LIBRARY ENTRY SYSTEM (ACCES)
+              TIME IN STATION
             </div>
           </div>
         </div>
@@ -135,7 +135,7 @@
           >
             <div class="flex items-center justify-between bg-white/10 px-4 py-2 shrink-0">
               <span class="text-[10px] font-black uppercase tracking-widest sm:text-xs">
-                Scan your ID here
+                Scan your ID for Time In
               </span>
             </div>
 
@@ -163,7 +163,7 @@
                   @click="handleLogin()"
                   class="w-full rounded-lg border border-green-500 bg-green-700 py-2.5 text-sm font-bold shadow-md transition-all hover:bg-green-600"
                 >
-                  ENTER
+                  TIME IN
                 </button>
               </div>
             </div>
@@ -196,11 +196,6 @@
                     >
                       Time-In
                     </th>
-                    <th
-                      class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:text-xs"
-                    >
-                      Time-Out
-                    </th>
                   </tr>
                 </thead>
 
@@ -229,20 +224,10 @@
                           : '—'
                       }}
                     </td>
-                    <td class="whitespace-nowrap p-2 font-mono text-xs font-bold opacity-80 sm:text-sm">
-                      {{
-                        log.time_out
-                          ? new Date(log.time_out).toLocaleTimeString([], {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })
-                          : '—'
-                      }}
-                    </td>
                   </tr>
 
                   <tr v-if="attendanceLogs.length === 0">
-                    <td colspan="5" class="p-6 text-center text-sm text-white/70">
+                    <td colspan="4" class="p-6 text-center text-sm text-white/70">
                       No attendance records yet.
                     </td>
                   </tr>
@@ -272,10 +257,9 @@
           </div>
         </div>
         <div class="already-done-body">
-          <div class="already-done-title">Already Completed</div>
+          <div class="already-done-title">Already Timed In</div>
           <div class="already-done-subtitle">
-            You have already timed in and out today.<br />
-            Please come back tomorrow.
+            This ID already has an active time-in today.
           </div>
         </div>
         <div class="already-done-footer">
@@ -344,21 +328,8 @@
         <div class="event-modal-header">
           <div class="event-modal-icon">
             <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
-              <rect
-                x="2"
-                y="3.5"
-                width="12"
-                height="10"
-                rx="1.5"
-                stroke="#3B6D11"
-                stroke-width="1.3"
-              />
-              <path
-                d="M5 2v3M11 2v3M2.5 7.5h11"
-                stroke="#3B6D11"
-                stroke-width="1.3"
-                stroke-linecap="round"
-              />
+              <rect x="2" y="3.5" width="12" height="10" rx="1.5" stroke="#3B6D11" stroke-width="1.3" />
+              <path d="M5 2v3M11 2v3M2.5 7.5h11" stroke="#3B6D11" stroke-width="1.3" stroke-linecap="round" />
             </svg>
           </div>
           <div class="event-modal-header-text">
@@ -367,24 +338,13 @@
           </div>
           <button @click="showEventModal = false" class="event-modal-close">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <path
-                d="M2 2l8 8M10 2L2 10"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-              />
+              <path d="M2 2l8 8M10 2L2 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
           </button>
         </div>
 
         <div class="event-modal-search-wrap">
-          <svg
-            class="event-modal-search-icon"
-            width="14"
-            height="14"
-            viewBox="0 0 14 14"
-            fill="none"
-          >
+          <svg class="event-modal-search-icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
             <circle cx="6" cy="6" r="4" stroke="#aaa" stroke-width="1.3" />
             <path d="M9.5 9.5l2 2" stroke="#aaa" stroke-width="1.3" stroke-linecap="round" />
           </svg>
@@ -407,21 +367,8 @@
             >
               <div class="event-modal-item-icon">
                 <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-                  <rect
-                    x="2"
-                    y="3.5"
-                    width="12"
-                    height="10"
-                    rx="1.5"
-                    stroke="currentColor"
-                    stroke-width="1.3"
-                  />
-                  <path
-                    d="M5 2v3M11 2v3M2.5 7.5h11"
-                    stroke="currentColor"
-                    stroke-width="1.3"
-                    stroke-linecap="round"
-                  />
+                  <rect x="2" y="3.5" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3" />
+                  <path d="M5 2v3M11 2v3M2.5 7.5h11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
                 </svg>
               </div>
               <div class="event-modal-item-text">
@@ -451,13 +398,7 @@
             >
               Proceed to event
               <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                <path
-                  d="M2 6.5h9M8 3.5l3 3-3 3"
-                  stroke="#fff"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
+                <path d="M2 6.5h9M8 3.5l3 3-3 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
             </button>
           </div>
@@ -470,7 +411,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
-import { getAttendanceLogs, handleAttendance } from '@/services/attendanceService'
+import { getAttendanceLogs, handleAttendanceIn } from '@/services/attendanceService'
 import { supabase } from '@/supabase'
 
 const alertModal = ref({
@@ -802,7 +743,7 @@ const handleLogin = async (decodedText?: string) => {
   isProcessing.value = true
 
   try {
-    const result = await handleAttendance(rawData)
+    const result = await handleAttendanceIn(rawData, true)
 
     if (result?.type === 'not_found') {
       showAlert('Student Not Found', 'Invalid ID.', 'error')

@@ -23,12 +23,12 @@
               <div
                 class="px-2 text-[7px] font-bold uppercase leading-tight tracking-wider text-white/80 sm:text-[8px] md:text-[9px]"
               >
-                Active Users
+                Timed Out
               </div>
               <div
-                class="mt-1 text-xl font-black leading-none text-green-300 sm:text-2xl md:text-3xl lg:text-4xl"
+                class="mt-1 text-xl font-black leading-none text-red-300 sm:text-2xl md:text-3xl lg:text-4xl"
               >
-                {{ activeInsideCount }}
+                {{ timedOutCount }}
               </div>
               <div
                 class="mt-1 text-[7px] font-semibold uppercase tracking-wide text-white/60 sm:text-[8px] md:text-[9px]"
@@ -56,7 +56,7 @@
             <div
               class="mt-2 inline-block rounded-md border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold sm:text-sm md:text-base lg:px-5 lg:text-xl xl:text-2xl"
             >
-              ATTENDANCE AND CAPACITY CSU-LIBRARY ENTRY SYSTEM (ACCES)
+              TIME OUT STATION
             </div>
           </div>
         </div>
@@ -135,7 +135,7 @@
           >
             <div class="flex items-center justify-between bg-white/10 px-4 py-2 shrink-0">
               <span class="text-[10px] font-black uppercase tracking-widest sm:text-xs">
-                Scan your ID here
+                Scan your ID for Time Out
               </span>
             </div>
 
@@ -161,9 +161,9 @@
                 />
                 <button
                   @click="handleLogin()"
-                  class="w-full rounded-lg border border-green-500 bg-green-700 py-2.5 text-sm font-bold shadow-md transition-all hover:bg-green-600"
+                  class="w-full rounded-lg border border-red-500 bg-red-700 py-2.5 text-sm font-bold shadow-md transition-all hover:bg-red-600"
                 >
-                  ENTER
+                  TIME OUT
                 </button>
               </div>
             </div>
@@ -194,11 +194,6 @@
                     <th
                       class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:text-xs"
                     >
-                      Time-In
-                    </th>
-                    <th
-                      class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:text-xs"
-                    >
                       Time-Out
                     </th>
                   </tr>
@@ -221,16 +216,6 @@
                     </td>
                     <td class="whitespace-nowrap p-2 font-mono text-xs font-bold opacity-80 sm:text-sm">
                       {{
-                        log.time_in
-                          ? new Date(log.time_in).toLocaleTimeString([], {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })
-                          : '—'
-                      }}
-                    </td>
-                    <td class="whitespace-nowrap p-2 font-mono text-xs font-bold opacity-80 sm:text-sm">
-                      {{
                         log.time_out
                           ? new Date(log.time_out).toLocaleTimeString([], {
                               hour: '2-digit',
@@ -242,7 +227,7 @@
                   </tr>
 
                   <tr v-if="attendanceLogs.length === 0">
-                    <td colspan="5" class="p-6 text-center text-sm text-white/70">
+                    <td colspan="4" class="p-6 text-center text-sm text-white/70">
                       No attendance records yet.
                     </td>
                   </tr>
@@ -272,10 +257,9 @@
           </div>
         </div>
         <div class="already-done-body">
-          <div class="already-done-title">Already Completed</div>
+          <div class="already-done-title">No Active Time-In</div>
           <div class="already-done-subtitle">
-            You have already timed in and out today.<br />
-            Please come back tomorrow.
+            This ID has no active time-in record for today.
           </div>
         </div>
         <div class="already-done-footer">
@@ -470,7 +454,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
-import { getAttendanceLogs, handleAttendance } from '@/services/attendanceService'
+import { getAttendanceLogs, handleAttendanceOut } from '@/services/attendanceService'
 import { supabase } from '@/supabase'
 
 const alertModal = ref({
@@ -520,6 +504,7 @@ const idInput = ref('')
 const scannerInput = ref<HTMLInputElement | null>(null)
 const attendanceLogs = ref<any[]>([])
 const activeInsideCount = ref(0)
+const timedOutCount = ref(0)
 const isProcessing = ref(false)
 const currentTime = ref(new Date())
 const attendanceType = ref('library')
@@ -591,8 +576,37 @@ const fetchActiveInsideCount = async () => {
   }
 }
 
+const fetchTimedOutCount = async () => {
+  try {
+    const now = new Date()
+
+    const startOfDay = new Date(now)
+    startOfDay.setHours(0, 0, 0, 0)
+
+    const endOfDay = new Date(now)
+    endOfDay.setHours(23, 59, 59, 999)
+
+    const { count, error } = await supabase
+      .from('attendance_logs')
+      .select('*', { count: 'exact', head: true })
+      .eq('attendance_type', 'library')
+      .gte('time_in', startOfDay.toISOString())
+      .lte('time_in', endOfDay.toISOString())
+      .not('time_out', 'is', null)
+
+    if (error) {
+      console.error('Failed to fetch timed out count:', error)
+      return
+    }
+
+    timedOutCount.value = count || 0
+  } catch (err) {
+    console.error('Failed to fetch timed out count:', err)
+  }
+}
+
 const refreshAttendanceData = async () => {
-  await Promise.all([fetchLogs(), fetchActiveInsideCount()])
+  await Promise.all([fetchLogs(), fetchActiveInsideCount(), fetchTimedOutCount()])
 }
 
 const fetchEvents = async () => {
@@ -607,7 +621,7 @@ const setAttendanceType = async (value: string) => {
     showEventModal.value = true
   }
   if (value === 'visitors') router.push({ name: 'visitors' })
-  if (value === 'library') router.push({ name: 'access' })
+  if (value === 'library') router.push({ name: 'access-out' })
 }
 
 const goToEvent = () => {
@@ -616,10 +630,12 @@ const goToEvent = () => {
   showEventModal.value = false
 }
 
-let lastScanTime = 0
+let lastScannedId = ''
+let lastScannedAt = 0
 let clockInterval: number | undefined
 
 const SCANNER_INTERVAL_MS = 40
+const DUPLICATE_SCAN_BLOCK_MS = 20000
 let scannerBuffer = ''
 let scannerSession = false
 let pendingScannerStart = false
@@ -770,14 +786,7 @@ const handleScannerKeydown = (e: KeyboardEvent) => {
 }
 
 const handleLogin = async (decodedText?: string) => {
-  const now = Date.now()
-
   if (isProcessing.value) {
-    clearAndRefocusScanner()
-    return
-  }
-
-  if (now - lastScanTime < 800) {
     clearAndRefocusScanner()
     return
   }
@@ -792,14 +801,22 @@ const handleLogin = async (decodedText?: string) => {
     return
   }
 
-  lastScanTime = now
+  const now = Date.now()
+
+  if (rawData === lastScannedId && now - lastScannedAt < DUPLICATE_SCAN_BLOCK_MS) {
+    clearAndRefocusScanner()
+    return
+  }
+
+  lastScannedId = rawData
+  lastScannedAt = now
 
   idInput.value = ''
   resetScannerState()
   isProcessing.value = true
 
   try {
-    const result = await handleAttendance(rawData)
+    const result = await handleAttendanceOut(rawData)
 
     if (result?.type === 'not_found') {
       showAlert('Student Not Found', 'Invalid ID.', 'error')
