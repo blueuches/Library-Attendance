@@ -777,10 +777,12 @@ const handleLogin = async (decodedText?: string) => {
     return
   }
 
-  if (now - lastScanTime < 800) {
-    clearAndRefocusScanner()
-    return
-  }
+  const DUPLICATE_SCAN_BLOCK_MS = 20000
+
+if (now - lastScanTime < DUPLICATE_SCAN_BLOCK_MS) {
+  clearAndRefocusScanner()
+  return
+}
 
   if (pendingScannerStart) {
     commitPendingManualChar()
