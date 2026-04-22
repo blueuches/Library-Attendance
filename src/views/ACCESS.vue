@@ -23,7 +23,7 @@
               <div
                 class="px-2 text-[7px] font-bold uppercase leading-tight tracking-wider text-white/80 sm:text-[8px] md:text-[9px]"
               >
-                Active Users
+                Active Inside
               </div>
               <div
                 class="mt-1 text-xl font-black leading-none text-green-300 sm:text-2xl md:text-3xl lg:text-4xl"
@@ -216,7 +216,7 @@
                     <td class="whitespace-nowrap p-2 text-xs opacity-80 sm:text-sm">
                       {{ log.students?.program }}
                     </td>
-                    <td class="whitespace-nowrap p-2 text-center text-xs opacity-80 sm:text-sm">
+                    <td class="whitespace-nowrap p-2 text-xs opacity-80 sm:text-sm">
                       {{ log.students?.year_level || '—' }}
                     </td>
                     <td class="whitespace-nowrap p-2 font-mono text-xs font-bold opacity-80 sm:text-sm">
