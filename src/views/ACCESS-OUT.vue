@@ -26,7 +26,7 @@
                 Timed Out
               </div>
               <div
-                class="mt-1 text-xl font-black leading-none text-red-300 sm:text-2xl md:text-3xl lg:text-4xl"
+                class="mt-1 text-xl font-black leading-none text-red-700 sm:text-2xl md:text-3xl lg:text-4xl"
               >
                 {{ timedOutCount }}
               </div>
@@ -56,7 +56,7 @@
             <div
               class="mt-2 inline-block rounded-md border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold sm:text-sm md:text-base lg:px-5 lg:text-xl xl:text-2xl"
             >
-              TIME OUT STATION
+              ATTENDANCE AND CAPACITY CSU-LIBRARY ENTRY SYSTEM (ACCES)
             </div>
           </div>
         </div>
@@ -228,7 +228,7 @@
 
                   <tr v-if="attendanceLogs.length === 0">
                     <td colspan="4" class="p-6 text-center text-sm text-white/70">
-                      No attendance records yet.
+                      No timed-out records yet today.
                     </td>
                   </tr>
                 </tbody>
@@ -454,7 +454,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
-import { getAttendanceLogs, handleAttendanceOut } from '@/services/attendanceService'
+import { handleAttendanceOut } from '@/services/attendanceService'
 import { supabase } from '@/supabase'
 
 const alertModal = ref({
@@ -533,35 +533,61 @@ const filteredEvents = computed(() => {
   return events.value.filter((e) => e.title.toLowerCase().includes(q))
 })
 
+const getTodayRange = () => {
+  const now = new Date()
+  const startOfDay = new Date(now)
+  startOfDay.setHours(0, 0, 0, 0)
+
+  const endOfDay = new Date(now)
+  endOfDay.setHours(23, 59, 59, 999)
+
+  return {
+    start: startOfDay.toISOString(),
+    end: endOfDay.toISOString(),
+  }
+}
+
 const fetchLogs = async () => {
   try {
-    const logs = await getAttendanceLogs()
-    attendanceLogs.value = (logs || []).sort((a: any, b: any) => {
-      const aTime = new Date(a.time_out || a.time_in).getTime()
-      const bTime = new Date(b.time_out || b.time_in).getTime()
-      return bTime - aTime
-    })
-  } catch {
+    const { start, end } = getTodayRange()
+
+    const { data, error } = await supabase
+      .from('attendance_logs')
+      .select(`
+        *,
+        students (
+          id_number,
+          first_name,
+          last_name,
+          program,
+          year_level
+        )
+      `)
+      .eq('attendance_type', 'library')
+      .gte('time_out', start)
+      .lte('time_out', end)
+      .not('time_out', 'is', null)
+      .order('time_out', { ascending: false })
+
+    if (error) throw error
+
+    attendanceLogs.value = data || []
+  } catch (err) {
+    console.error('Failed to load timeout logs:', err)
     showAlert('Error', 'Failed to load attendance logs.', 'error')
   }
 }
 
 const fetchActiveInsideCount = async () => {
   try {
-    const now = new Date()
-
-    const startOfDay = new Date(now)
-    startOfDay.setHours(0, 0, 0, 0)
-
-    const endOfDay = new Date(now)
-    endOfDay.setHours(23, 59, 59, 999)
+    const { start, end } = getTodayRange()
 
     const { count, error } = await supabase
       .from('attendance_logs')
       .select('*', { count: 'exact', head: true })
       .eq('attendance_type', 'library')
-      .gte('time_in', startOfDay.toISOString())
-      .lte('time_in', endOfDay.toISOString())
+      .gte('time_in', start)
+      .lte('time_in', end)
       .not('time_in', 'is', null)
       .is('time_out', null)
 
@@ -578,20 +604,14 @@ const fetchActiveInsideCount = async () => {
 
 const fetchTimedOutCount = async () => {
   try {
-    const now = new Date()
-
-    const startOfDay = new Date(now)
-    startOfDay.setHours(0, 0, 0, 0)
-
-    const endOfDay = new Date(now)
-    endOfDay.setHours(23, 59, 59, 999)
+    const { start, end } = getTodayRange()
 
     const { count, error } = await supabase
       .from('attendance_logs')
       .select('*', { count: 'exact', head: true })
       .eq('attendance_type', 'library')
-      .gte('time_in', startOfDay.toISOString())
-      .lte('time_in', endOfDay.toISOString())
+      .gte('time_out', start)
+      .lte('time_out', end)
       .not('time_out', 'is', null)
 
     if (error) {
@@ -633,6 +653,7 @@ const goToEvent = () => {
 let lastScannedId = ''
 let lastScannedAt = 0
 let clockInterval: number | undefined
+let refreshInterval: number | undefined
 
 const SCANNER_INTERVAL_MS = 40
 const DUPLICATE_SCAN_BLOCK_MS = 20000
@@ -867,11 +888,16 @@ onMounted(async () => {
   clockInterval = window.setInterval(() => {
     currentTime.value = new Date()
   }, 1000)
+
+  refreshInterval = window.setInterval(() => {
+    refreshAttendanceData()
+  }, 30000)
 })
 
 onBeforeUnmount(() => {
   if (alertTimeout.value) clearTimeout(alertTimeout.value)
   if (clockInterval) clearInterval(clockInterval)
+  if (refreshInterval) clearInterval(refreshInterval)
   resetScannerState()
 })
 </script>
