@@ -6,7 +6,9 @@
     ></div>
 
     <div class="relative z-10 flex h-full w-full flex-col overflow-hidden">
-      <div class="shrink-0 px-3 pt-3 pb-3 sm:px-4 sm:pt-4 sm:pb-4 lg:px-8 lg:pt-8 lg:pb-8 xl:px-10 xl:pt-10 xl:pb-10">
+      <div
+        class="shrink-0 px-3 pt-3 pb-3 sm:px-4 sm:pt-4 sm:pb-4 lg:px-8 lg:pt-8 lg:pb-8 xl:px-10 xl:pt-10 xl:pb-10"
+      >
         <div class="relative flex items-center justify-center">
           <div class="absolute left-0 top-1/2 -translate-y-1/2">
             <img
@@ -101,9 +103,7 @@
             <div class="text-[10px] font-bold uppercase opacity-70 sm:text-xs lg:text-sm">
               {{ formattedDate }}
             </div>
-            <div
-              class="mt-0.5 font-mono text-lg font-bold text-green-400 sm:text-xl lg:text-2xl"
-            >
+            <div class="mt-0.5 font-mono text-lg font-bold text-green-400 sm:text-xl lg:text-2xl">
               {{ formattedTime }}
             </div>
           </div>
@@ -274,9 +274,7 @@
         </div>
         <div class="already-done-body">
           <div class="already-done-title">No Active Time-In</div>
-          <div class="already-done-subtitle">
-            This ID has no active time-in record for today.
-          </div>
+          <div class="already-done-subtitle">This ID has no active time-in record for today.</div>
         </div>
       </div>
     </div>
@@ -424,9 +422,7 @@
               </div>
             </button>
 
-            <div v-if="filteredEvents.length === 0" class="event-modal-empty">
-              No events found.
-            </div>
+            <div v-if="filteredEvents.length === 0" class="event-modal-empty">No events found.</div>
           </div>
         </div>
 
@@ -581,7 +577,8 @@ const fetchLogs = async () => {
 
     const { data, error } = await supabase
       .from('attendance_logs')
-      .select(`
+      .select(
+        `
         *,
         students (
           id_number,
@@ -590,7 +587,8 @@ const fetchLogs = async () => {
           program,
           year_level
         )
-      `)
+      `,
+      )
       .eq('attendance_type', 'library')
       .gte('time_out', start)
       .lte('time_out', end)

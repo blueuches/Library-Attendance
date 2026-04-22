@@ -6,32 +6,34 @@
     ></div>
 
     <div class="relative z-10 flex h-full w-full flex-col overflow-hidden">
-      <div class="shrink-0 px-3 pt-2 pb-2 sm:px-4 lg:px-8 xl:px-10">
+      <div
+        class="shrink-0 px-3 pt-3 pb-3 sm:px-4 sm:pt-4 sm:pb-4 lg:px-8 lg:pt-8 lg:pb-8 xl:px-10 xl:pt-10 xl:pb-10"
+      >
         <div class="relative flex items-center justify-center">
           <div class="absolute left-0 top-1/2 -translate-y-1/2">
             <img
               src="/csu-logo.png"
               alt="Logo"
-              class="h-20 w-20 object-contain sm:h-24 sm:w-24 md:h-28 md:w-28 lg:h-32 lg:w-32 xl:h-36 xl:w-36"
+              class="h-28 w-28 object-contain sm:h-32 sm:w-32 md:h-36 md:w-36 lg:h-40 lg:w-40 xl:h-44 xl:w-44"
             />
           </div>
 
           <div class="absolute right-0 top-1/2 -translate-y-1/2">
             <div
-              class="flex h-20 w-20 flex-col items-center justify-center rounded-full border border-white/30 bg-white/12 text-center shadow-lg backdrop-blur-md sm:h-24 sm:w-24 md:h-28 md:w-28 lg:h-32 lg:w-32 xl:h-36 xl:w-36"
+              class="flex h-24 w-24 flex-col items-center justify-center rounded-full border border-white/30 bg-white/12 text-center shadow-lg backdrop-blur-md sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36 xl:h-40 xl:w-40"
             >
               <div
-                class="px-2 text-[7px] font-bold uppercase leading-tight tracking-wider text-white/80 sm:text-[8px] md:text-[9px]"
+                class="px-2 text-[8px] font-bold uppercase leading-tight tracking-wider text-white/80 sm:text-[9px] md:text-[10px]"
               >
-                Active Inside
+                Active Users
               </div>
               <div
-                class="mt-1 text-xl font-black leading-none text-green-300 sm:text-2xl md:text-3xl lg:text-4xl"
+                class="mt-1 text-2xl font-black leading-none text-green-300 sm:text-3xl md:text-4xl lg:text-5xl"
               >
                 {{ activeInsideCount }}
               </div>
               <div
-                class="mt-1 text-[7px] font-semibold uppercase tracking-wide text-white/60 sm:text-[8px] md:text-[9px]"
+                class="mt-1 text-[8px] font-semibold uppercase tracking-wide text-white/60 sm:text-[9px] md:text-[10px]"
               >
                 Today
               </div>
@@ -63,7 +65,7 @@
       </div>
 
       <div
-        class="grid flex-1 min-h-0 grid-cols-1 gap-3 overflow-hidden px-3 pb-3 sm:px-4 lg:grid-cols-[2.8fr_1.2fr] lg:gap-4 lg:px-8 lg:pb-4 xl:px-10 xl:pb-5"
+        class="grid flex-1 min-h-0 grid-cols-1 gap-3 overflow-hidden px-3 pb-3 sm:px-4 sm:pb-4 lg:grid-cols-[2.8fr_1.2fr] lg:gap-4 lg:px-8 lg:pb-8 xl:px-10 xl:pb-10"
       >
         <div class="flex min-h-0 flex-col overflow-hidden">
           <div
@@ -101,9 +103,7 @@
             <div class="text-[10px] font-bold uppercase opacity-70 sm:text-xs lg:text-sm">
               {{ formattedDate }}
             </div>
-            <div
-              class="mt-0.5 font-mono text-lg font-bold text-green-400 sm:text-xl lg:text-2xl"
-            >
+            <div class="mt-0.5 font-mono text-lg font-bold text-green-400 sm:text-xl lg:text-2xl">
               {{ formattedTime }}
             </div>
           </div>
@@ -135,7 +135,7 @@
           >
             <div class="flex items-center justify-between bg-white/10 px-4 py-2 shrink-0">
               <span class="text-[10px] font-black uppercase tracking-widest sm:text-xs">
-                Scan your ID here
+                Scan your ID for Time In
               </span>
             </div>
 
@@ -156,14 +156,16 @@
                   placeholder="Scan or type ID..."
                   @input="handleInputChange"
                   @keydown="handleScannerKeydown"
-                  @keyup.enter="handleEnter"
+                  @paste="handlePaste"
+                  @keyup.enter.prevent="handleEnter"
+                  @blur="keepScannerFocused"
                   class="w-full rounded border border-white/80 bg-transparent p-2 text-sm text-white placeholder:text-white/45"
                 />
                 <button
                   @click="handleLogin()"
                   class="w-full rounded-lg border border-green-500 bg-green-700 py-2.5 text-sm font-bold shadow-md transition-all hover:bg-green-600"
                 >
-                  ENTER
+                  TIME IN
                 </button>
               </div>
             </div>
@@ -184,22 +186,22 @@
                     <th
                       class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:text-xs"
                     >
+                      Name
+                    </th>
+                    <th
+                      class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:text-xs"
+                    >
                       Course
                     </th>
                     <th
                       class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:text-xs"
                     >
-                      Year Level
+                      Year
                     </th>
                     <th
                       class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:text-xs"
                     >
                       Time-In
-                    </th>
-                    <th
-                      class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:text-xs"
-                    >
-                      Time-Out
                     </th>
                   </tr>
                 </thead>
@@ -214,25 +216,24 @@
                       {{ log.student_id }}
                     </td>
                     <td class="whitespace-nowrap p-2 text-xs opacity-80 sm:text-sm">
-                      {{ log.students?.program }}
-                    </td>
-                    <td class="whitespace-nowrap p-2 text-xs opacity-80 sm:text-sm">
-                      {{ log.students?.year_level || '—' }}
-                    </td>
-                    <td class="whitespace-nowrap p-2 font-mono text-xs font-bold opacity-80 sm:text-sm">
                       {{
-                        log.time_in
-                          ? new Date(log.time_in).toLocaleTimeString([], {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })
+                        log.students?.last_name
+                          ? `${log.students.last_name}, ${log.students.first_name?.charAt(0) || ''}.`
                           : '—'
                       }}
                     </td>
-                    <td class="whitespace-nowrap p-2 font-mono text-xs font-bold opacity-80 sm:text-sm">
+                    <td class="whitespace-nowrap p-2 text-xs opacity-80 sm:text-sm">
+                      {{ log.students?.program }}
+                    </td>
+                    <td class="whitespace-nowrap p-2 text-center text-xs opacity-80 sm:text-sm">
+                      {{ log.students?.year_level || '—' }}
+                    </td>
+                    <td
+                      class="whitespace-nowrap p-2 font-mono text-xs font-bold opacity-80 sm:text-sm"
+                    >
                       {{
-                        log.time_out
-                          ? new Date(log.time_out).toLocaleTimeString([], {
+                        log.time_in
+                          ? new Date(log.time_in).toLocaleTimeString([], {
                               hour: '2-digit',
                               minute: '2-digit',
                             })
@@ -272,14 +273,8 @@
           </div>
         </div>
         <div class="already-done-body">
-          <div class="already-done-title">Already Completed</div>
-          <div class="already-done-subtitle">
-            You have already timed in and out today.<br />
-            Please come back tomorrow.
-          </div>
-        </div>
-        <div class="already-done-footer">
-          <button @click="showAlreadyDoneModal = false" class="already-done-btn">Got it</button>
+          <div class="already-done-title">Already Timed In</div>
+          <div class="already-done-subtitle">This ID already has an active time-in today.</div>
         </div>
       </div>
     </div>
@@ -324,11 +319,6 @@
         <div class="already-done-body">
           <div class="already-done-title">{{ alertModal.title }}</div>
           <div class="already-done-subtitle">{{ alertModal.message }}</div>
-        </div>
-        <div class="already-done-footer">
-          <button @click="closeAlert" class="already-done-btn">
-            {{ alertModal.buttonText || 'OK' }}
-          </button>
         </div>
       </div>
     </div>
@@ -432,9 +422,7 @@
               </div>
             </button>
 
-            <div v-if="filteredEvents.length === 0" class="event-modal-empty">
-              No events found.
-            </div>
+            <div v-if="filteredEvents.length === 0" class="event-modal-empty">No events found.</div>
           </div>
         </div>
 
@@ -468,29 +456,31 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
-import { getAttendanceLogs, handleAttendance } from '@/services/attendanceService'
+import { getAttendanceLogs, handleAttendanceIn } from '@/services/attendanceService'
 import { supabase } from '@/supabase'
+
+const MODAL_AUTO_CLOSE_MS = 1000
 
 const alertModal = ref({
   show: false,
   title: '',
   message: '',
   type: 'info',
-  buttonText: 'OK',
 })
 
 const alertTimeout = ref<any>(null)
+const alreadyDoneTimeout = ref<any>(null)
 
 const showAlert = (
   title: string,
   message: string,
   type: 'info' | 'success' | 'error' = 'info',
-  duration: number = 2500,
+  duration: number = MODAL_AUTO_CLOSE_MS,
 ) => {
   if (alertTimeout.value) clearTimeout(alertTimeout.value)
-  alertModal.value = { show: true, title, message, type, buttonText: 'OK' }
+  alertModal.value = { show: true, title, message, type }
   alertTimeout.value = setTimeout(() => {
     closeAlert()
   }, duration)
@@ -502,6 +492,24 @@ const closeAlert = () => {
     clearTimeout(alertTimeout.value)
     alertTimeout.value = null
   }
+}
+
+const scheduleAlreadyDoneAutoClose = () => {
+  if (alreadyDoneTimeout.value) clearTimeout(alreadyDoneTimeout.value)
+  alreadyDoneTimeout.value = setTimeout(() => {
+    showAlreadyDoneModal.value = false
+    alreadyDoneTimeout.value = null
+  }, MODAL_AUTO_CLOSE_MS)
+}
+
+const reopenAlreadyDoneModal = async () => {
+  if (alreadyDoneTimeout.value) {
+    clearTimeout(alreadyDoneTimeout.value)
+    alreadyDoneTimeout.value = null
+  }
+  showAlreadyDoneModal.value = false
+  await nextTick()
+  showAlreadyDoneModal.value = true
 }
 
 const ICON_LIBRARY = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 8h6M5 5.5h6M5 10.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`
@@ -550,13 +558,40 @@ const filteredEvents = computed(() => {
 
 const fetchLogs = async () => {
   try {
-    const logs = await getAttendanceLogs()
-    attendanceLogs.value = (logs || []).sort((a: any, b: any) => {
-      const aTime = new Date(a.time_out || a.time_in).getTime()
-      const bTime = new Date(b.time_out || b.time_in).getTime()
-      return bTime - aTime
-    })
-  } catch {
+    const now = new Date()
+
+    const startOfDay = new Date(now)
+    startOfDay.setHours(0, 0, 0, 0)
+
+    const endOfDay = new Date(now)
+    endOfDay.setHours(23, 59, 59, 999)
+
+    const { data, error } = await supabase
+      .from('attendance_logs')
+      .select(
+        `
+        *,
+        students (
+          id_number,
+          first_name,
+          last_name,
+          program,
+          year_level
+        )
+      `,
+      )
+      .eq('attendance_type', 'library')
+      .gte('time_in', startOfDay.toISOString())
+      .lte('time_in', endOfDay.toISOString())
+      .not('time_in', 'is', null)
+      .is('time_out', null)
+      .order('time_in', { ascending: false })
+
+    if (error) throw error
+
+    attendanceLogs.value = data || []
+  } catch (err) {
+    console.error('Failed to load time-in logs:', err)
     showAlert('Error', 'Failed to load attendance logs.', 'error')
   }
 }
@@ -616,19 +651,25 @@ const goToEvent = () => {
   showEventModal.value = false
 }
 
-let lastScanTime = 0
+let lastScannedId = ''
+let lastScannedAt = 0
 let clockInterval: number | undefined
+let refreshInterval: number | undefined
+let autoSubmitTimer: ReturnType<typeof setTimeout> | null = null
 
-const SCANNER_INTERVAL_MS = 40
-let scannerBuffer = ''
-let scannerSession = false
-let pendingScannerStart = false
-let pendingFirstChar = ''
-let pendingTimer: ReturnType<typeof setTimeout> | null = null
-let lastKeyTime = 0
+const DUPLICATE_SCAN_BLOCK_MS = 20000
+const PASTE_AUTO_SUBMIT_DELAY_MS = 80
+const MIN_SCANNED_LENGTH = 4
 
 const normalizeScannedValue = (value: string) => {
-  return value.replace(/\r/g, '').replace(/\n/g, '').trim()
+  const cleaned = value.replace(/\r/g, '').replace(/\n/g, '').trim()
+  const matches = cleaned.match(/\d{3}-\d{5}/g)
+
+  if (matches && matches.length > 0) {
+    return matches[matches.length - 1]
+  }
+
+  return cleaned
 }
 
 const clearScannerField = () => {
@@ -639,21 +680,35 @@ const focusScannerInput = () => {
   setTimeout(() => scannerInput.value?.focus(), 50)
 }
 
-const clearAndRefocusScanner = () => {
-  idInput.value = ''
-  resetScannerState()
+const keepScannerFocused = () => {
+  if (isProcessing.value) return
   focusScannerInput()
 }
 
-const resetScannerState = () => {
-  scannerBuffer = ''
-  scannerSession = false
-  pendingScannerStart = false
-  pendingFirstChar = ''
-  lastKeyTime = 0
-  if (pendingTimer) {
-    clearTimeout(pendingTimer)
-    pendingTimer = null
+const handleWindowFocus = () => {
+  keepScannerFocused()
+}
+
+const handleDocumentClick = () => {
+  keepScannerFocused()
+}
+
+const handleVisibilityChange = () => {
+  if (document.visibilityState === 'visible') {
+    keepScannerFocused()
+  }
+}
+
+const clearAndRefocusScanner = () => {
+  idInput.value = ''
+  clearAutoSubmitTimer()
+  focusScannerInput()
+}
+
+const clearAutoSubmitTimer = () => {
+  if (autoSubmitTimer) {
+    clearTimeout(autoSubmitTimer)
+    autoSubmitTimer = null
   }
 }
 
@@ -669,15 +724,16 @@ const handleInputChange = () => {
   }
 }
 
-const commitPendingManualChar = () => {
-  if (!pendingFirstChar) return
-  idInput.value = normalizeScannedValue(idInput.value + pendingFirstChar)
-  pendingFirstChar = ''
-  pendingScannerStart = false
-  if (pendingTimer) {
-    clearTimeout(pendingTimer)
-    pendingTimer = null
-  }
+const handlePaste = (e: ClipboardEvent) => {
+  if (isProcessing.value) return
+
+  const pasted = normalizeScannedValue(e.clipboardData?.getData('text') || '')
+  if (!pasted || pasted.length < MIN_SCANNED_LENGTH) return
+
+  clearAutoSubmitTimer()
+  autoSubmitTimer = setTimeout(() => {
+    handleLogin(pasted)
+  }, PASTE_AUTO_SUBMIT_DELAY_MS)
 }
 
 const handleScannerKeydown = (e: KeyboardEvent) => {
@@ -686,105 +742,18 @@ const handleScannerKeydown = (e: KeyboardEvent) => {
     return
   }
 
-  const key = e.key
-
-  if (
-    key === 'Shift' ||
-    key === 'Control' ||
-    key === 'Alt' ||
-    key === 'Meta' ||
-    key === 'CapsLock' ||
-    key === 'Tab'
-  ) {
-    return
-  }
-
-  const now = Date.now()
-  const diff = lastKeyTime ? now - lastKeyTime : 999
-  lastKeyTime = now
-
-  if (key === 'Enter') {
-    if (scannerSession && scannerBuffer) {
-      e.preventDefault()
-      const value = scannerBuffer
-      clearScannerField()
-      resetScannerState()
-      handleLogin(value)
-      return
-    }
-
-    if (pendingScannerStart) {
-      commitPendingManualChar()
-    }
-
-    return
-  }
-
-  if (key === 'Backspace' || key === 'Delete' || key.startsWith('Arrow')) {
-    resetScannerState()
-    return
-  }
-
-  if (key.length !== 1) return
-
-  if (scannerSession) {
+  if (e.key === 'Tab') {
     e.preventDefault()
-    scannerBuffer += key
-    idInput.value = scannerBuffer
-    return
-  }
-
-  if (pendingScannerStart) {
-    if (diff <= SCANNER_INTERVAL_MS) {
-      e.preventDefault()
-
-      if (pendingTimer) {
-        clearTimeout(pendingTimer)
-        pendingTimer = null
-      }
-
-      scannerSession = true
-      pendingScannerStart = false
-      scannerBuffer = pendingFirstChar + key
-      pendingFirstChar = ''
-      idInput.value = scannerBuffer
-      return
-    }
-
-    commitPendingManualChar()
-    return
-  }
-
-  if (idInput.value && diff > SCANNER_INTERVAL_MS) {
-    e.preventDefault()
-    pendingScannerStart = true
-    pendingFirstChar = key
-
-    if (pendingTimer) clearTimeout(pendingTimer)
-    pendingTimer = setTimeout(() => {
-      commitPendingManualChar()
-    }, SCANNER_INTERVAL_MS + 10)
-
-    return
   }
 }
 
 const handleLogin = async (decodedText?: string) => {
-  const now = Date.now()
-
   if (isProcessing.value) {
     clearAndRefocusScanner()
     return
   }
 
-  if (now - lastScanTime < 800) {
-    clearAndRefocusScanner()
-    return
-  }
-
-  if (pendingScannerStart) {
-    commitPendingManualChar()
-  }
+  clearAutoSubmitTimer()
 
   const rawData = normalizeScannedValue(decodedText ?? idInput.value)
   if (!rawData) {
@@ -792,21 +761,29 @@ const handleLogin = async (decodedText?: string) => {
     return
   }
 
-  lastScanTime = now
+  const now = Date.now()
+
+  if (rawData === lastScannedId && now - lastScannedAt < DUPLICATE_SCAN_BLOCK_MS) {
+    await reopenAlreadyDoneModal()
+    clearAndRefocusScanner()
+    return
+  }
+
+  lastScannedId = rawData
+  lastScannedAt = now
 
   idInput.value = ''
-  resetScannerState()
   isProcessing.value = true
 
   try {
-    const result = await handleAttendance(rawData)
+    const result = await handleAttendanceIn(rawData, true)
 
     if (result?.type === 'not_found') {
       showAlert('Student Not Found', 'Invalid ID.', 'error')
     } else if (result?.type === 'closed') {
       showAlert('Closed', 'Library is closed.', 'error')
     } else if (result?.type === 'already_done') {
-      showAlreadyDoneModal.value = true
+      await reopenAlreadyDoneModal()
     } else {
       beepAudio.play().catch(() => {})
       await refreshAttendanceData()
@@ -821,7 +798,6 @@ const handleLogin = async (decodedText?: string) => {
 }
 
 const handleEnter = () => {
-  if (scannerSession) return
   handleLogin()
 }
 
@@ -843,19 +819,42 @@ const formattedTime = computed(() =>
   }),
 )
 
+watch(showAlreadyDoneModal, (value) => {
+  if (value) {
+    scheduleAlreadyDoneAutoClose()
+  } else if (alreadyDoneTimeout.value) {
+    clearTimeout(alreadyDoneTimeout.value)
+    alreadyDoneTimeout.value = null
+  }
+})
+
 onMounted(async () => {
   await refreshAttendanceData()
   focusScannerInput()
 
+  window.addEventListener('focus', handleWindowFocus)
+  document.addEventListener('click', handleDocumentClick)
+  document.addEventListener('visibilitychange', handleVisibilityChange)
+
   clockInterval = window.setInterval(() => {
     currentTime.value = new Date()
   }, 1000)
+
+  refreshInterval = window.setInterval(() => {
+    refreshAttendanceData()
+  }, 30000)
 })
 
 onBeforeUnmount(() => {
+  window.removeEventListener('focus', handleWindowFocus)
+  document.removeEventListener('click', handleDocumentClick)
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
+
   if (alertTimeout.value) clearTimeout(alertTimeout.value)
+  if (alreadyDoneTimeout.value) clearTimeout(alreadyDoneTimeout.value)
   if (clockInterval) clearInterval(clockInterval)
-  resetScannerState()
+  if (refreshInterval) clearInterval(refreshInterval)
+  clearAutoSubmitTimer()
 })
 </script>
 
@@ -951,7 +950,7 @@ onBeforeUnmount(() => {
   border-radius: 24px;
   overflow: hidden;
   box-shadow: 0 12px 48px rgba(0, 0, 0, 0.18);
-  animation: modal-pop 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: modal-pop 0.12s ease-out;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -975,7 +974,7 @@ onBeforeUnmount(() => {
 
 .already-done-body {
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 0;
 }
 
 .already-done-title {
@@ -990,31 +989,6 @@ onBeforeUnmount(() => {
   font-size: 14px;
   color: #888;
   line-height: 1.65;
-}
-
-.already-done-footer {
-  width: 100%;
-}
-
-.already-done-btn {
-  width: 100%;
-  padding: 13px;
-  border-radius: 12px;
-  border: none;
-  background: #111;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition:
-    background 0.15s,
-    box-shadow 0.15s;
-  letter-spacing: 0.01em;
-}
-
-.already-done-btn:hover {
-  background: #333;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
 }
 
 .event-modal {
@@ -1322,17 +1296,17 @@ onBeforeUnmount(() => {
 @keyframes modal-pop {
   from {
     opacity: 0;
-    transform: scale(0.94) translateY(8px);
+    transform: scale(0.98);
   }
   to {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: scale(1);
   }
 }
 
 .modal-enter-active,
 .modal-leave-active {
-  transition: opacity 0.18s ease;
+  transition: opacity 0.12s ease;
 }
 
 .modal-enter-from,
