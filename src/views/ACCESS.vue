@@ -777,7 +777,7 @@ const handleLogin = async (decodedText?: string) => {
     return
   }
 
-  if (now - lastScanTime < 800) {
+  if (now - lastScanTime < 10000) {
     clearAndRefocusScanner()
     return
   }
