@@ -35,51 +35,79 @@ export const getAttendanceLogs = async () => {
 }
 
 /**
- * Main logic for library attendance (Multi-entry & 7PM Cutoff)
+ * Shared helpers
  */
-export const handleAttendance = async (studentId: string) => {
+const getClosingState = () => {
   const now = new Date()
-
-  // Check 7:00 PM cutoff
   const closingTime = new Date()
   closingTime.setHours(19, 0, 0, 0)
 
-  if (now > closingTime) {
-    return { type: "closed" }
+  return {
+    now,
+    isClosed: now > closingTime,
   }
+}
 
-  // Check if student exists
-  const { data: student, error: studentError } = await supabase
-    .from("students")
-    .select("id_number")
-    .eq("id_number", studentId)
-    .maybeSingle()
-
-  if (studentError) throw studentError
-
-  if (!student) {
-    return { type: "not_found" }
-  }
-
-  // Today's range
+const getTodayRange = () => {
   const todayStart = new Date()
   todayStart.setHours(0, 0, 0, 0)
 
   const todayEnd = new Date()
   todayEnd.setHours(23, 59, 59, 999)
 
-  // Get latest log for today
-  const { data: latestLog, error: fetchError } = await supabase
+  return {
+    todayStart: todayStart.toISOString(),
+    todayEnd: todayEnd.toISOString(),
+  }
+}
+
+const validateStudent = async (studentId: string) => {
+  const { data: student, error } = await supabase
+    .from("students")
+    .select("id_number")
+    .eq("id_number", studentId)
+    .maybeSingle()
+
+  if (error) throw error
+  return student
+}
+
+const getLatestLibraryLogToday = async (studentId: string) => {
+  const { todayStart, todayEnd } = getTodayRange()
+
+  const { data, error } = await supabase
     .from("attendance_logs")
     .select("*")
     .eq("student_id", studentId)
-    .gte("time_in", todayStart.toISOString())
-    .lte("time_in", todayEnd.toISOString())
+    .eq("attendance_type", "library")
+    .gte("time_in", todayStart)
+    .lte("time_in", todayEnd)
     .order("time_in", { ascending: false })
     .limit(1)
     .maybeSingle()
 
-  if (fetchError) throw fetchError
+  if (error) throw error
+  return data
+}
+
+/**
+ * Main logic for library attendance (legacy auto toggle)
+ * Kept so old pages won't break.
+ */
+export const handleAttendance = async (studentId: string) => {
+  const { now, isClosed } = getClosingState()
+
+  if (isClosed) {
+    return { type: "closed" }
+  }
+
+  const student = await validateStudent(studentId)
+
+  if (!student) {
+    return { type: "not_found" }
+  }
+
+  const latestLog = await getLatestLibraryLogToday(studentId)
 
   /**
    * Logic:
@@ -107,6 +135,84 @@ export const handleAttendance = async (studentId: string) => {
     if (error) throw error
     return { type: "time_out" }
   }
+}
+
+/**
+ * TIME-IN ONLY for Library station
+ * Rules:
+ * - closed after 7 PM
+ * - student must exist
+ * - if latest library log today has no time_out => already active, do not create another
+ * - if no latest log or latest already timed out => create new time-in
+ */
+export const handleAttendanceIn = async (studentId: string) => {
+  const { now, isClosed } = getClosingState()
+
+  if (isClosed) {
+    return { type: "closed" }
+  }
+
+  const student = await validateStudent(studentId)
+
+  if (!student) {
+    return { type: "not_found" }
+  }
+
+  const latestLog = await getLatestLibraryLogToday(studentId)
+
+  if (latestLog && !latestLog.time_out) {
+    return { type: "already_done" }
+  }
+
+  const { error } = await supabase.from("attendance_logs").insert([
+    {
+      student_id: studentId,
+      attendance_type: "library",
+      time_in: now.toISOString(),
+      time_out: null,
+    },
+  ])
+
+  if (error) throw error
+
+  return { type: "time_in" }
+}
+
+/**
+ * TIME-OUT ONLY for Library station
+ * Rules:
+ * - closed after 7 PM
+ * - student must exist
+ * - must have active/open library log today
+ * - if none found => already_done (frontend can show "No Active Time-In")
+ */
+export const handleAttendanceOut = async (studentId: string) => {
+  const { now, isClosed } = getClosingState()
+
+  if (isClosed) {
+    return { type: "closed" }
+  }
+
+  const student = await validateStudent(studentId)
+
+  if (!student) {
+    return { type: "not_found" }
+  }
+
+  const latestLog = await getLatestLibraryLogToday(studentId)
+
+  if (!latestLog || latestLog.time_out) {
+    return { type: "already_done" }
+  }
+
+  const { error } = await supabase
+    .from("attendance_logs")
+    .update({ time_out: now.toISOString() })
+    .eq("id", latestLog.id)
+
+  if (error) throw error
+
+  return { type: "time_out" }
 }
 
 /**
@@ -158,6 +264,7 @@ export const createTimeOut = async (studentId: string) => {
     .from("attendance_logs")
     .select("id")
     .eq("student_id", studentId)
+    .eq("attendance_type", "library")
     .is("time_out", null)
     .order("time_in", { ascending: false })
     .limit(1)
@@ -176,4 +283,4 @@ export const createTimeOut = async (studentId: string) => {
   }
 
   return null
-}
+} 
