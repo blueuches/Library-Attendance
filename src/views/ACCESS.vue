@@ -1,62 +1,122 @@
 <template>
-  <div
-    class="relative min-h-screen w-screen text-white flex flex-col overflow-x-hidden bg-[#0b3d1f]"
-  >
+  <div class="relative h-screen w-screen overflow-hidden bg-[#0b3d1f] text-white">
     <div
       class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-20"
       :style="backgroundStyle"
     ></div>
 
-    <div class="relative z-10 flex flex-col min-h-screen w-full">
-      <!-- Header -->
-      <div class="flex items-center justify-center pt-4 pb-2 px-10 shrink-0">
-        <div class="absolute left-10">
-          <img src="/csu-logo.png" alt="Logo" class="h-30 w-30 lg:h-50 lg:w-50 object-contain" />
-        </div>
-        <div class="text-center">
-          <h1
-            class="text-5xl lg:text-7xl uppercase leading-none font-black drop-shadow-md bg-[linear-gradient(90deg,#FFC300_0%,#ffffff_50%,#1b5e20_100%)] bg-clip-text text-transparent"
-            style="font-family: Impact"
-          >
-            CARAGA STATE UNIVERSITY
-          </h1>
-          <h2
-            class="pb-1 text-4xl lg:text-5xl uppercase text-green-100 font-bold"
-            style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
-          >
-            HERO LEARNING COMMONS
-          </h2>
-          <div
-            class="mt-2 inline-block bg-white/10 border border-white/20 px-6 py-1.5 rounded-md font-semibold text-2xl lg:text-3xl opacity-100"
-          >
-            ATTENDANCE AND CAPACITY CSU-LIBRARY ENTRY SYSTEM (ACCES)
+    <div class="relative z-10 flex h-full w-full flex-col overflow-hidden">
+      <div class="shrink-0 px-3 pt-2 pb-2 sm:px-4 lg:px-8 xl:px-10">
+        <div class="relative flex items-center justify-center">
+          <div class="absolute left-0 top-1/2 -translate-y-1/2">
+            <img
+              src="/csu-logo.png"
+              alt="Logo"
+              class="h-20 w-20 object-contain sm:h-24 sm:w-24 md:h-28 md:w-28 lg:h-32 lg:w-32 xl:h-36 xl:w-36"
+            />
+          </div>
+
+          <div class="absolute right-0 top-1/2 -translate-y-1/2">
+            <div
+              class="flex h-20 w-20 flex-col items-center justify-center rounded-full border border-white/30 bg-white/12 text-center shadow-lg backdrop-blur-md sm:h-24 sm:w-24 md:h-28 md:w-28 lg:h-32 lg:w-32 xl:h-36 xl:w-36"
+            >
+              <div
+                class="px-2 text-[7px] font-bold uppercase leading-tight tracking-wider text-white/80 sm:text-[8px] md:text-[9px]"
+              >
+                Active Users
+              </div>
+              <div
+                class="mt-1 text-xl font-black leading-none text-green-300 sm:text-2xl md:text-3xl lg:text-4xl"
+              >
+                {{ activeInsideCount }}
+              </div>
+              <div
+                class="mt-1 text-[7px] font-semibold uppercase tracking-wide text-white/60 sm:text-[8px] md:text-[9px]"
+              >
+                Today
+              </div>
+            </div>
+          </div>
+
+          <div class="px-24 text-center sm:px-28 md:px-32 lg:px-40">
+            <h1
+              class="bg-[linear-gradient(90deg,#FFC300_0%,#ffffff_50%,#1b5e20_100%)] bg-clip-text text-2xl font-black uppercase leading-none text-transparent drop-shadow-md sm:text-3xl md:text-4xl lg:text-6xl xl:text-7xl"
+              style="font-family: Impact"
+            >
+              CARAGA STATE UNIVERSITY
+            </h1>
+
+            <h2
+              class="mt-1 text-lg font-bold uppercase text-green-100 sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl"
+              style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif"
+            >
+              HERO LEARNING COMMONS
+            </h2>
+
+            <div
+              class="mt-2 inline-block rounded-md border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold sm:text-sm md:text-base lg:px-5 lg:text-xl xl:text-2xl"
+            >
+              ATTENDANCE AND CAPACITY CSU-LIBRARY ENTRY SYSTEM (ACCES)
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Body -->
-      <div class="flex flex-row-reverse px-6 lg:px-10 pb-4 lg:pb-6 gap-4 lg:gap-5 flex-1 min-h-0">
-        <!-- Right Column: Date/Time + Attendance Type + Camera + Featured Video -->
-        <div
-          class="w-[340px] lg:w-[400px] flex flex-col gap-2 shrink-0 min-h-0 overflow-y-auto hidden-scroll"
-        >
-          <!-- Date & Time -->
+      <div
+        class="grid flex-1 min-h-0 grid-cols-1 gap-3 overflow-hidden px-3 pb-3 sm:px-4 lg:grid-cols-[2.8fr_1.2fr] lg:gap-4 lg:px-8 lg:pb-4 xl:px-10 xl:pb-5"
+      >
+        <div class="flex min-h-0 flex-col overflow-hidden">
           <div
-            class="bg-white/40 border border-white/10 px-6 py-2 rounded-2xl text-center shrink-0"
+            class="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-white/20 bg-white/10 shadow-2xl"
           >
-            <div class="text-xs lg:text-sm opacity-70 uppercase font-bold">{{ formattedDate }}</div>
-            <div class="text-xl lg:text-2xl font-mono font-bold text-green-400 mt-0.5">
+            <div class="flex shrink-0 items-center justify-between bg-white/10 px-4 py-2.5">
+              <span class="text-[10px] font-black uppercase tracking-widest sm:text-xs">
+                Orientation Video
+              </span>
+              <span
+                class="text-[9px] font-semibold uppercase tracking-widest text-white/50 sm:text-[10px]"
+              >
+                CSU Hero Learning Commons
+              </span>
+            </div>
+
+            <div class="relative min-h-0 flex-1 bg-black/30">
+              <video
+                class="absolute inset-0 h-full w-full object-cover"
+                src="/videos/qr.mp4"
+                autoplay
+                muted
+                loop
+                playsinline
+                controls
+              ></video>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex min-h-0 flex-col gap-1 overflow-hidden">
+          <div
+            class="w-full shrink-0 rounded-2xl border border-white/10 bg-white/40 px-4 py-2 text-center"
+          >
+            <div class="text-[10px] font-bold uppercase opacity-70 sm:text-xs lg:text-sm">
+              {{ formattedDate }}
+            </div>
+            <div
+              class="mt-0.5 font-mono text-lg font-bold text-green-400 sm:text-xl lg:text-2xl"
+            >
               {{ formattedTime }}
             </div>
           </div>
 
-          <!-- Attendance Type -->
           <div
-            class="bg-white/10 border border-white/20 rounded-2xl px-4 py-2 flex flex-col items-center gap-2 shrink-0"
+            class="w-full shrink-0 flex flex-col items-center gap-2 rounded-2xl border border-white/20 bg-white/10 px-3 py-2"
           >
-            <span class="text-[11px] font-semibold tracking-[0.15em] uppercase text-white/40"
-              >Attendance Type</span
+            <span
+              class="text-[10px] font-semibold uppercase tracking-[0.15em] text-white/40 sm:text-[11px]"
             >
+              Attendance Type
+            </span>
+
             <div class="attendance-pill-group w-full">
               <button
                 v-for="type in attendanceTypes"
@@ -65,152 +125,136 @@
                 :class="['attendance-pill-btn', attendanceType === type.value ? 'active' : '']"
               >
                 <span class="pill-icon" v-html="type.icon"></span>
-                {{ type.label }}
+                <span class="truncate">{{ type.label }}</span>
               </button>
             </div>
           </div>
 
-          <!-- Camera + Manual Entry -->
           <div
-            class="bg-white/10 border rounded-2xl overflow-hidden flex flex-col shadow-2xl shrink-0"
+            class="w-full shrink-0 overflow-hidden rounded-2xl border border-white/20 bg-white/10 shadow-2xl"
           >
-            <div class="p-2 bg-white/10 flex justify-between items-center px-4 shrink-0">
-              <span class="text-xs font-black tracking-widest uppercase">Scan your ID here</span>
+            <div class="flex items-center justify-between bg-white/10 px-4 py-2 shrink-0">
+              <span class="text-[10px] font-black uppercase tracking-widest sm:text-xs">
+                Scan your ID here
+              </span>
             </div>
-            <div id="qr-reader" class="w-full bg-black/20" style="height: 160px"></div>
-            <div class="p-3 bg-black/40 flex flex-col gap-2 shrink-0">
-              <input
-                ref="scannerInput"
-                v-model="idInput"
-                type="text"
-                placeholder="Scan or type ID..."
-                @keyup.enter="handleEnter"
-                class="w-full p-2 rounded border border-white/80 text-white bg-transparent text-sm lg:text-base"
-              />
-              <button
-                @click="handleLogin()"
-                class="w-full py-2.5 rounded-lg font-bold transition-all bg-green-700 hover:bg-green-600 border border-green-500 shadow-md text-sm lg:text-base"
-              >
-                ENTER
-              </button>
-            </div>
-          </div>
 
-          <!-- Featured Video Card (MP4) -->
-          <div
-            class="bg-white/10 border border-white/20 rounded-2xl overflow-hidden shadow-2xl shrink-0"
-          >
-            <div class="p-2.5 bg-white/10 flex justify-between items-center px-4">
-              <span class="text-xs font-black tracking-widest uppercase">Featured Video</span>
-              <span class="text-[10px] text-white/50 font-semibold tracking-widest uppercase"
-                >CSU Hero Learning Commons</span
-              >
+            <div class="px-3 pt-3">
+              <div
+                id="qr-reader"
+                class="mx-auto w-full rounded-xl bg-black/20"
+                style="height: clamp(120px, 16vh, 170px)"
+              ></div>
             </div>
-            <div class="relative w-full" style="padding-top: 56.25%">
-              <video
-                class="absolute top-0 left-0 w-full h-full object-cover"
-                src="/videos/qr.mp4"
-                autoplay
-                muted
-                loop
-                playsinline
-              ></video>
-            </div>
-            <div class="px-4 py-2 bg-black/30">
-              <div class="text-sm font-bold text-white">CSU Library Orientation 2026</div>
-              <div class="text-[11px] text-white/50 mt-0.5">
-                Caraga State University · Hero Learning Commons
+
+            <div class="shrink-0 bg-black/40 px-3 pb-3 pt-3">
+              <div class="mx-auto flex w-full flex-col gap-2">
+                <input
+                  ref="scannerInput"
+                  v-model="idInput"
+                  type="text"
+                  placeholder="Scan or type ID..."
+                  @input="handleInputChange"
+                  @keydown="handleScannerKeydown"
+                  @keyup.enter="handleEnter"
+                  class="w-full rounded border border-white/80 bg-transparent p-2 text-sm text-white placeholder:text-white/45"
+                />
+                <button
+                  @click="handleLogin()"
+                  class="w-full rounded-lg border border-green-500 bg-green-700 py-2.5 text-sm font-bold shadow-md transition-all hover:bg-green-600"
+                >
+                  ENTER
+                </button>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Left Column: Table only — fills full height, scrolls internally -->
-        <div class="flex-1 min-h-0 overflow-hidden">
-          <div
-            class="bg-white/10 rounded-2xl border border-white/20 shadow-2xl overflow-y-auto overflow-x-auto hidden-scroll max-h-[815px]"
-          >
-            <table class="w-full text-white border-collapse">
-              <thead class="sticky top-0 z-20 bg-white/40 backdrop-blur-md">
-                <tr class="text-left">
-                  <th
-                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap"
+          <div class="flex-1 min-h-0 w-full overflow-hidden">
+            <div
+              class="hidden-scroll h-full overflow-auto rounded-2xl border border-white/20 bg-white/10 shadow-2xl"
+            >
+              <table class="w-full border-collapse text-white">
+                <thead class="sticky top-0 z-20 bg-white/40 backdrop-blur-md">
+                  <tr class="text-left">
+                    <th
+                      class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:text-xs"
+                    >
+                      ID Number
+                    </th>
+                    <th
+                      class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:text-xs"
+                    >
+                      Course
+                    </th>
+                    <th
+                      class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:text-xs"
+                    >
+                      Year Level
+                    </th>
+                    <th
+                      class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:text-xs"
+                    >
+                      Time-In
+                    </th>
+                    <th
+                      class="whitespace-nowrap border-b border-white/10 p-2 text-[10px] font-black uppercase tracking-widest sm:text-xs"
+                    >
+                      Time-Out
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody class="divide-y divide-white/5">
+                  <tr
+                    v-for="log in attendanceLogs"
+                    :key="log.id"
+                    class="transition-colors hover:bg-white/5"
                   >
-                    ID Number
-                  </th>
-                  <th
-                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap"
-                  >
-                    Name
-                  </th>
-                  <th
-                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap"
-                  >
-                    Course
-                  </th>
-                  <th
-                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap"
-                  >
-                    Year Level
-                  </th>
-                  <th
-                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap"
-                  >
-                    Time-In
-                  </th>
-                  <th
-                    class="p-3 lg:p-4 uppercase text-xs lg:text-sm font-black tracking-widest border-b border-white/10 whitespace-nowrap"
-                  >
-                    Time-Out
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-white/5">
-                <tr
-                  v-for="log in attendanceLogs"
-                  :key="log.id"
-                  class="hover:bg-white/5 transition-colors"
-                >
-                  <td class="p-3 lg:p-4 font-bold text-base lg:text-xl">{{ log.student_id }}</td>
-                  <td class="p-3 lg:p-4 font-bold text-base lg:text-xl uppercase">
-                    {{ log.students?.first_name }} {{ log.students?.last_name }}
-                  </td>
-                  <td class="p-3 lg:p-4 text-sm lg:text-lg opacity-80">
-                    {{ log.students?.program }}
-                  </td>
-                  <td class="p-3 lg:p-4 text-sm lg:text-lg opacity-80">
-                    {{ log.students?.year_level || '—' }}
-                  </td>
-                  <td class="p-3 lg:p-4 font-mono text-sm lg:text-lg opacity-80 font-bold">
-                    {{
-                      log.time_in
-                        ? new Date(log.time_in).toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })
-                        : '—'
-                    }}
-                  </td>
-                  <td class="p-3 lg:p-4 font-mono text-sm lg:text-lg opacity-80 font-bold">
-                    {{
-                      log.time_out
-                        ? new Date(log.time_out).toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })
-                        : '—'
-                    }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                    <td class="whitespace-nowrap p-2 text-sm font-bold sm:text-base">
+                      {{ log.student_id }}
+                    </td>
+                    <td class="whitespace-nowrap p-2 text-xs opacity-80 sm:text-sm">
+                      {{ log.students?.program }}
+                    </td>
+                    <td class="whitespace-nowrap p-2 text-center text-xs opacity-80 sm:text-sm">
+                      {{ log.students?.year_level || '—' }}
+                    </td>
+                    <td class="whitespace-nowrap p-2 font-mono text-xs font-bold opacity-80 sm:text-sm">
+                      {{
+                        log.time_in
+                          ? new Date(log.time_in).toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })
+                          : '—'
+                      }}
+                    </td>
+                    <td class="whitespace-nowrap p-2 font-mono text-xs font-bold opacity-80 sm:text-sm">
+                      {{
+                        log.time_out
+                          ? new Date(log.time_out).toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })
+                          : '—'
+                      }}
+                    </td>
+                  </tr>
+
+                  <tr v-if="attendanceLogs.length === 0">
+                    <td colspan="5" class="p-6 text-center text-sm text-white/70">
+                      No attendance records yet.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ── Already Done Modal ── -->
   <Transition name="modal">
     <div
       v-if="showAlreadyDoneModal"
@@ -241,7 +285,6 @@
     </div>
   </Transition>
 
-  <!-- ── Global Alert Modal ── -->
   <Transition name="modal">
     <div
       v-if="alertModal.show"
@@ -291,7 +334,6 @@
     </div>
   </Transition>
 
-  <!-- ── Event Selection Modal ── -->
   <Transition name="modal">
     <div
       v-if="showEventModal"
@@ -334,6 +376,7 @@
             </svg>
           </button>
         </div>
+
         <div class="event-modal-search-wrap">
           <svg
             class="event-modal-search-icon"
@@ -352,6 +395,7 @@
             class="event-modal-search-input"
           />
         </div>
+
         <div class="event-modal-body">
           <div class="event-modal-section-label">Available events</div>
           <div class="event-modal-list">
@@ -387,13 +431,17 @@
                 <div class="event-modal-radio-dot"></div>
               </div>
             </button>
-            <div v-if="filteredEvents.length === 0" class="event-modal-empty">No events found.</div>
+
+            <div v-if="filteredEvents.length === 0" class="event-modal-empty">
+              No events found.
+            </div>
           </div>
         </div>
+
         <div class="event-modal-footer">
-          <span class="event-modal-selection-hint">{{
-            selectedEvent ? '1 event selected' : 'No event selected'
-          }}</span>
+          <span class="event-modal-selection-hint">
+            {{ selectedEvent ? '1 event selected' : 'No event selected' }}
+          </span>
           <div class="event-modal-footer-actions">
             <button @click="showEventModal = false" class="event-modal-btn-cancel">Cancel</button>
             <button
@@ -420,15 +468,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { getAttendanceLogs, handleAttendance } from '@/services/attendanceService'
-import { getStudentById } from '@/services/studentService'
 import { supabase } from '@/supabase'
 
-/* =========================
-   GLOBAL ALERT MODAL
-========================= */
 const alertModal = ref({
   show: false,
   title: '',
@@ -460,9 +504,6 @@ const closeAlert = () => {
   }
 }
 
-/* =========================
-   ICONS
-========================= */
 const ICON_LIBRARY = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 8h6M5 5.5h6M5 10.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`
 const ICON_EVENT = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3.5l2 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`
 const ICON_VISITORS = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="5" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M2 13c0-2.21 1.79-4 4-4s4 1.79 4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="11.5" cy="5.5" r="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M13.5 13c0-1.66-1.12-3-2.5-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>`
@@ -473,25 +514,21 @@ const attendanceTypes = [
   { value: 'visitors', label: 'Visitors', icon: ICON_VISITORS },
 ]
 
-/* =========================
-   STATE
-========================= */
+const beepAudio = new Audio('/beep.mp3')
+
 const idInput = ref('')
 const scannerInput = ref<HTMLInputElement | null>(null)
-
 const attendanceLogs = ref<any[]>([])
+const activeInsideCount = ref(0)
 const isProcessing = ref(false)
-
 const currentTime = ref(new Date())
-let attendancePageChannel: any = null
-
 const attendanceType = ref('library')
 const showEventModal = ref(false)
 const showAlreadyDoneModal = ref(false)
-
 const events = ref<any[]>([])
 const selectedEvent = ref<any | null>(null)
 const eventSearch = ref('')
+const router = useRouter()
 
 const schoolInfo = ref<any>({
   school_name: '',
@@ -501,11 +538,6 @@ const schoolInfo = ref<any>({
   logo_path: '',
 })
 
-const router = useRouter()
-
-/* =========================
-   COMPUTED
-========================= */
 const backgroundStyle = computed(() => ({
   backgroundImage: `url('${schoolInfo.value.bg_path || '/hero-outside.png'}')`,
 }))
@@ -516,24 +548,10 @@ const filteredEvents = computed(() => {
   return events.value.filter((e) => e.title.toLowerCase().includes(q))
 })
 
-/* =========================
-   FETCH DATA
-========================= */
 const fetchLogs = async () => {
   try {
     const logs = await getAttendanceLogs()
-
-    const logsWithStudent = await Promise.all(
-      logs.map(async (log: any) => {
-        let studentData = null
-        try {
-          studentData = await getStudentById(log.student_id)
-        } catch {}
-        return { ...log, students: studentData }
-      }),
-    )
-
-    attendanceLogs.value = logsWithStudent.sort((a, b) => {
+    attendanceLogs.value = (logs || []).sort((a: any, b: any) => {
       const aTime = new Date(a.time_out || a.time_in).getTime()
       const bTime = new Date(b.time_out || b.time_in).getTime()
       return bTime - aTime
@@ -543,62 +561,40 @@ const fetchLogs = async () => {
   }
 }
 
-/* =========================
-   ATTENDANCE
-========================= */
-let lastScanTime = 0
-const isScannerMode = ref(true)
-
-const handleLogin = async (decodedText?: string) => {
-  const now = Date.now()
-  if (isProcessing.value) return
-  if (now - lastScanTime < 500) return
-  lastScanTime = now
-
-  const rawData = (decodedText ?? idInput.value).trim()
-  if (!rawData) return
-
-  isProcessing.value = true
-
+const fetchActiveInsideCount = async () => {
   try {
-    const result = await handleAttendance(rawData)
+    const now = new Date()
 
-    if (result?.type === 'not_found') {
-      showAlert('Student Not Found', 'Invalid ID.', 'error')
-      idInput.value = ''
-      scannerInput.value?.focus()
-      return
-    }
-    if (result?.type === 'closed') {
-      showAlert('Closed', 'Library is closed.', 'error')
-      return
-    }
-    if (result?.type === 'already_done') {
-      showAlreadyDoneModal.value = true
+    const startOfDay = new Date(now)
+    startOfDay.setHours(0, 0, 0, 0)
+
+    const endOfDay = new Date(now)
+    endOfDay.setHours(23, 59, 59, 999)
+
+    const { count, error } = await supabase
+      .from('attendance_logs')
+      .select('*', { count: 'exact', head: true })
+      .eq('attendance_type', 'library')
+      .gte('time_in', startOfDay.toISOString())
+      .lte('time_in', endOfDay.toISOString())
+      .not('time_in', 'is', null)
+      .is('time_out', null)
+
+    if (error) {
+      console.error('Failed to fetch active inside count:', error)
       return
     }
 
-    await fetchLogs()
-    const audio = new Audio('/beep.mp3')
-    audio.play().catch(() => {})
-    idInput.value = ''
-    scannerInput.value?.focus()
+    activeInsideCount.value = count || 0
   } catch (err) {
-    console.error(err)
-    showAlert('Error', 'Something went wrong.', 'error')
-  } finally {
-    isProcessing.value = false
+    console.error('Failed to fetch active inside count:', err)
   }
 }
 
-const handleEnter = () => {
-  if (!idInput.value.trim()) return
-  handleLogin()
+const refreshAttendanceData = async () => {
+  await Promise.all([fetchLogs(), fetchActiveInsideCount()])
 }
 
-/* =========================
-   EVENTS
-========================= */
 const fetchEvents = async () => {
   const { data } = await supabase.from('events').select('id, title').eq('is_active', true)
   events.value = data || []
@@ -620,26 +616,218 @@ const goToEvent = () => {
   showEventModal.value = false
 }
 
-/* =========================
-   LIFECYCLE
-========================= */
-onMounted(async () => {
-  await fetchLogs()
-  scannerInput.value?.focus()
+let lastScannedId = ''
+let lastScannedAt = 0
+let clockInterval: number | undefined
 
-  attendancePageChannel = supabase
-    .channel('attendance_page_realtime')
-    .on(
-      'postgres_changes',
-      { event: '*', schema: 'public', table: 'attendance_page' },
-      fetchSchoolInfo,
-    )
-    .subscribe()
-})
+const SCANNER_INTERVAL_MS = 40
+const DUPLICATE_SCAN_BLOCK_MS = 20000
+let scannerBuffer = ''
+let scannerSession = false
+let pendingScannerStart = false
+let pendingFirstChar = ''
+let pendingTimer: ReturnType<typeof setTimeout> | null = null
+let lastKeyTime = 0
 
-/* =========================
-   DATE/TIME
-========================= */
+const normalizeScannedValue = (value: string) => {
+  return value.replace(/\r/g, '').replace(/\n/g, '').trim()
+}
+
+const clearScannerField = () => {
+  idInput.value = ''
+}
+
+const focusScannerInput = () => {
+  setTimeout(() => scannerInput.value?.focus(), 50)
+}
+
+const clearAndRefocusScanner = () => {
+  idInput.value = ''
+  resetScannerState()
+  focusScannerInput()
+}
+
+const resetScannerState = () => {
+  scannerBuffer = ''
+  scannerSession = false
+  pendingScannerStart = false
+  pendingFirstChar = ''
+  lastKeyTime = 0
+  if (pendingTimer) {
+    clearTimeout(pendingTimer)
+    pendingTimer = null
+  }
+}
+
+const handleInputChange = () => {
+  if (isProcessing.value) {
+    clearScannerField()
+    return
+  }
+
+  const cleaned = normalizeScannedValue(idInput.value)
+  if (cleaned !== idInput.value) {
+    idInput.value = cleaned
+  }
+}
+
+const commitPendingManualChar = () => {
+  if (!pendingFirstChar) return
+  idInput.value = normalizeScannedValue(idInput.value + pendingFirstChar)
+  pendingFirstChar = ''
+  pendingScannerStart = false
+  if (pendingTimer) {
+    clearTimeout(pendingTimer)
+    pendingTimer = null
+  }
+}
+
+const handleScannerKeydown = (e: KeyboardEvent) => {
+  if (isProcessing.value) {
+    e.preventDefault()
+    return
+  }
+
+  const key = e.key
+
+  if (
+    key === 'Shift' ||
+    key === 'Control' ||
+    key === 'Alt' ||
+    key === 'Meta' ||
+    key === 'CapsLock' ||
+    key === 'Tab'
+  ) {
+    return
+  }
+
+  const now = Date.now()
+  const diff = lastKeyTime ? now - lastKeyTime : 999
+  lastKeyTime = now
+
+  if (key === 'Enter') {
+    if (scannerSession && scannerBuffer) {
+      e.preventDefault()
+      const value = scannerBuffer
+      clearScannerField()
+      resetScannerState()
+      handleLogin(value)
+      return
+    }
+
+    if (pendingScannerStart) {
+      commitPendingManualChar()
+    }
+
+    return
+  }
+
+  if (key === 'Backspace' || key === 'Delete' || key.startsWith('Arrow')) {
+    resetScannerState()
+    return
+  }
+
+  if (key.length !== 1) return
+
+  if (scannerSession) {
+    e.preventDefault()
+    scannerBuffer += key
+    idInput.value = scannerBuffer
+    return
+  }
+
+  if (pendingScannerStart) {
+    if (diff <= SCANNER_INTERVAL_MS) {
+      e.preventDefault()
+
+      if (pendingTimer) {
+        clearTimeout(pendingTimer)
+        pendingTimer = null
+      }
+
+      scannerSession = true
+      pendingScannerStart = false
+      scannerBuffer = pendingFirstChar + key
+      pendingFirstChar = ''
+      idInput.value = scannerBuffer
+      return
+    }
+
+    commitPendingManualChar()
+    return
+  }
+
+  if (idInput.value && diff > SCANNER_INTERVAL_MS) {
+    e.preventDefault()
+    pendingScannerStart = true
+    pendingFirstChar = key
+
+    if (pendingTimer) clearTimeout(pendingTimer)
+    pendingTimer = setTimeout(() => {
+      commitPendingManualChar()
+    }, SCANNER_INTERVAL_MS + 10)
+
+    return
+  }
+}
+
+const handleLogin = async (decodedText?: string) => {
+  if (isProcessing.value) {
+    clearAndRefocusScanner()
+    return
+  }
+
+  if (pendingScannerStart) {
+    commitPendingManualChar()
+  }
+
+  const rawData = normalizeScannedValue(decodedText ?? idInput.value)
+  if (!rawData) {
+    clearAndRefocusScanner()
+    return
+  }
+
+  const now = Date.now()
+
+  if (rawData === lastScannedId && now - lastScannedAt < DUPLICATE_SCAN_BLOCK_MS) {
+    clearAndRefocusScanner()
+    return
+  }
+
+  lastScannedId = rawData
+  lastScannedAt = now
+
+  idInput.value = ''
+  resetScannerState()
+  isProcessing.value = true
+
+  try {
+    const result = await handleAttendance(rawData)
+
+    if (result?.type === 'not_found') {
+      showAlert('Student Not Found', 'Invalid ID.', 'error')
+    } else if (result?.type === 'closed') {
+      showAlert('Closed', 'Library is closed.', 'error')
+    } else if (result?.type === 'already_done') {
+      showAlreadyDoneModal.value = true
+    } else {
+      beepAudio.play().catch(() => {})
+      await refreshAttendanceData()
+    }
+  } catch (err) {
+    console.error(err)
+    showAlert('Error', 'Something went wrong.', 'error')
+  } finally {
+    isProcessing.value = false
+    clearAndRefocusScanner()
+  }
+}
+
+const handleEnter = () => {
+  if (scannerSession) return
+  handleLogin()
+}
+
 const formattedDate = computed(() =>
   currentTime.value.toLocaleDateString('en-US', {
     weekday: 'long',
@@ -653,9 +841,25 @@ const formattedTime = computed(() =>
   currentTime.value.toLocaleTimeString('en-US', {
     hour: '2-digit',
     minute: '2-digit',
+    second: '2-digit',
     hour12: true,
   }),
 )
+
+onMounted(async () => {
+  await refreshAttendanceData()
+  focusScannerInput()
+
+  clockInterval = window.setInterval(() => {
+    currentTime.value = new Date()
+  }, 1000)
+})
+
+onBeforeUnmount(() => {
+  if (alertTimeout.value) clearTimeout(alertTimeout.value)
+  if (clockInterval) clearInterval(clockInterval)
+  resetScannerState()
+})
 </script>
 
 <style>
@@ -679,7 +883,6 @@ const formattedTime = computed(() =>
   display: none;
 }
 
-/* ── Pill Group ── */
 .attendance-pill-group {
   display: flex;
   background: rgba(255, 255, 255, 0.08);
@@ -687,6 +890,7 @@ const formattedTime = computed(() =>
   border-radius: 14px;
   padding: 4px;
   gap: 4px;
+  overflow: hidden;
 }
 
 .attendance-pill-btn {
@@ -695,12 +899,13 @@ const formattedTime = computed(() =>
   justify-content: center;
   gap: 7px;
   flex: 1;
-  padding: 8px 12px;
+  min-width: 0;
+  padding: 8px 10px;
   border-radius: 10px;
   border: none;
   background: transparent;
   color: rgba(255, 255, 255, 0.55);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.02em;
   cursor: pointer;
@@ -710,6 +915,13 @@ const formattedTime = computed(() =>
     transform 0.12s ease;
   white-space: nowrap;
   outline: none;
+}
+
+@media (min-width: 640px) {
+  .attendance-pill-btn {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
 }
 
 .attendance-pill-btn:hover {
@@ -731,11 +943,12 @@ const formattedTime = computed(() =>
   display: flex;
   align-items: center;
   line-height: 0;
+  flex-shrink: 0;
 }
 
-/* ── Already Done Modal ── */
 .already-done-modal {
   width: 380px;
+  max-width: calc(100vw - 24px);
   background: #ffffff;
   border: 1px solid #e5e5e5;
   border-radius: 24px;
@@ -807,9 +1020,9 @@ const formattedTime = computed(() =>
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
 }
 
-/* ── Event Modal ── */
 .event-modal {
   width: 480px;
+  max-width: calc(100vw - 24px);
   background: #ffffff;
   border: 1px solid #e5e5e5;
   border-radius: 24px;
