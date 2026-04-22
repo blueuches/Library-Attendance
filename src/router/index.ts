@@ -4,6 +4,7 @@ import TestView from '../views/TestView.vue'
 import ACCESS from '../views/ACCESS.vue' 
 import ACCESSEVENT from '@/views/ACCESS-EVENT.vue'
 import ACCESSVISITORS from '@/views/ACCESS-VISITORS.vue'
+import ACCESSOUT from '@/views/ACCESS-OUT.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,11 @@ const router = createRouter({
       path: '/visitors',
       name: 'visitors',
       component: ACCESSVISITORS,
+    },
+    {
+      path: '/out',
+      name: 'out',
+      component: ACCESSOUT,
     },
   ],
 })
