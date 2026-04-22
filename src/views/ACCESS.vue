@@ -23,7 +23,7 @@
               <div
                 class="px-2 text-[7px] font-bold uppercase leading-tight tracking-wider text-white/80 sm:text-[8px] md:text-[9px]"
               >
-                Active Inside
+                Active Users
               </div>
               <div
                 class="mt-1 text-xl font-black leading-none text-green-300 sm:text-2xl md:text-3xl lg:text-4xl"
@@ -101,9 +101,7 @@
             <div class="text-[10px] font-bold uppercase opacity-70 sm:text-xs lg:text-sm">
               {{ formattedDate }}
             </div>
-            <div
-              class="mt-0.5 font-mono text-lg font-bold text-green-400 sm:text-xl lg:text-2xl"
-            >
+            <div class="mt-0.5 font-mono text-lg font-bold text-green-400 sm:text-xl lg:text-2xl">
               {{ formattedTime }}
             </div>
           </div>
@@ -216,10 +214,12 @@
                     <td class="whitespace-nowrap p-2 text-xs opacity-80 sm:text-sm">
                       {{ log.students?.program }}
                     </td>
-                    <td class="whitespace-nowrap p-2 text-xs opacity-80 sm:text-sm">
+                    <td class="whitespace-nowrap p-2 text-center text-xs opacity-80 sm:text-sm">
                       {{ log.students?.year_level || '—' }}
                     </td>
-                    <td class="whitespace-nowrap p-2 font-mono text-xs font-bold opacity-80 sm:text-sm">
+                    <td
+                      class="whitespace-nowrap p-2 font-mono text-xs font-bold opacity-80 sm:text-sm"
+                    >
                       {{
                         log.time_in
                           ? new Date(log.time_in).toLocaleTimeString([], {
@@ -229,7 +229,9 @@
                           : '—'
                       }}
                     </td>
-                    <td class="whitespace-nowrap p-2 font-mono text-xs font-bold opacity-80 sm:text-sm">
+                    <td
+                      class="whitespace-nowrap p-2 font-mono text-xs font-bold opacity-80 sm:text-sm"
+                    >
                       {{
                         log.time_out
                           ? new Date(log.time_out).toLocaleTimeString([], {
@@ -432,9 +434,7 @@
               </div>
             </button>
 
-            <div v-if="filteredEvents.length === 0" class="event-modal-empty">
-              No events found.
-            </div>
+            <div v-if="filteredEvents.length === 0" class="event-modal-empty">No events found.</div>
           </div>
         </div>
 
@@ -779,10 +779,10 @@ const handleLogin = async (decodedText?: string) => {
 
   const DUPLICATE_SCAN_BLOCK_MS = 20000
 
-if (now - lastScanTime < DUPLICATE_SCAN_BLOCK_MS) {
-  clearAndRefocusScanner()
-  return
-}
+  if (now - lastScanTime < DUPLICATE_SCAN_BLOCK_MS) {
+    clearAndRefocusScanner()
+    return
+  }
 
   if (pendingScannerStart) {
     commitPendingManualChar()

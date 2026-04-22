@@ -95,7 +95,9 @@
             </div>
           </div>
 
-          <div class="bg-white/10 border rounded-2xl overflow-hidden flex flex-col shadow-2xl shrink-0">
+          <div
+            class="bg-white/10 border rounded-2xl overflow-hidden flex flex-col shadow-2xl shrink-0"
+          >
             <div class="p-3 bg-white/10 flex justify-between items-center px-4 shrink-0">
               <span class="text-xs font-black tracking-widest uppercase">Visitor Details</span>
             </div>
@@ -124,7 +126,9 @@
                     placeholder="Email address"
                     class="p-3 rounded border border-white/80 text-white bg-transparent text-sm lg:text-base w-full"
                   />
-                  <span class="text-white/60 font-semibold text-sm uppercase whitespace-nowrap">OR</span>
+                  <span class="text-white/60 font-semibold text-sm uppercase whitespace-nowrap"
+                    >OR</span
+                  >
                   <input
                     v-model="cellphoneInput"
                     type="text"
@@ -191,7 +195,12 @@
                 >
                   <td class="p-4 font-bold text-xl uppercase">{{ log.full_name }}</td>
                   <td class="p-4 text-base opacity-80">
-                    {{ log.institution_school || log.institution || pendingMeta[log.id]?.institution || '—' }}
+                    {{
+                      log.institution_school ||
+                      log.institution ||
+                      pendingMeta[log.id]?.institution ||
+                      '—'
+                    }}
                   </td>
                   <td class="p-4 text-base opacity-80 font-mono font-semibold">
                     {{
@@ -407,7 +416,9 @@ const attendanceLogs = ref<any[]>([])
 const activeInsideCount = ref(0)
 const isProcessing = ref(false)
 const optionalTimeOutMap = ref<Record<string, string>>({})
-const pendingMeta = ref<Record<string, { email: string; cellphone: string; institution: string }>>({})
+const pendingMeta = ref<Record<string, { email: string; cellphone: string; institution: string }>>(
+  {},
+)
 const currentTime = ref(new Date())
 let timer: any
 let schoolInfoTimer: any
@@ -445,11 +456,7 @@ const filteredEvents = computed(() => {
 
 const canAddVisitor = computed(() => {
   const hasContact = emailInput.value.trim().length > 0 || cellphoneInput.value.trim().length > 0
-  return (
-    idInput.value.trim().length > 0 &&
-    hasContact &&
-    institutionInput.value.trim().length > 0
-  )
+  return idInput.value.trim().length > 0 && hasContact && institutionInput.value.trim().length > 0
 })
 
 const fetchVisitorLogs = async () => {
@@ -506,7 +513,7 @@ const handleLogin = async () => {
   const submittedContact =
     submittedEmail && submittedCellphone
       ? `${submittedEmail}/${submittedCellphone}`
-      : (submittedCellphone || submittedEmail)
+      : submittedCellphone || submittedEmail
 
   if (!submittedName || !submittedContact || !submittedInstitution) return
 
