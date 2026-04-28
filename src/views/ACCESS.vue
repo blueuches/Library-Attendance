@@ -82,8 +82,10 @@
 
             <div class="relative min-h-0 flex-1 bg-black/30">
               <video
+                ref="orientationVideoRef"
+                :key="orientationVideoSrc"
                 class="absolute inset-0 h-full w-full object-cover"
-                src="/videos/qr.mp4"
+                :src="orientationVideoSrc"
                 autoplay
                 muted
                 loop
@@ -462,7 +464,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
-import { getAttendanceLogs, handleAttendanceIn } from '@/services/attendanceService'
+import { handleAttendanceIn } from '@/services/attendanceService'
 import { supabase } from '@/supabase'
 
 const MODAL_AUTO_CLOSE_MS = 1000
@@ -550,9 +552,120 @@ const schoolInfo = ref<any>({
   logo_path: '',
 })
 
+const attendancePageSettings = ref({
+  bg_path: '',
+  video_path: '',
+})
+
+const orientationVideoRef = ref<HTMLVideoElement | null>(null)
+
+const orientationVideoSrc = computed(() => {
+  return attendancePageSettings.value.video_path || '/videos/qr.mp4'
+})
+
 const backgroundStyle = computed(() => ({
-  backgroundImage: `url('${schoolInfo.value.bg_path || '/hero-outside.png'}')`,
+  backgroundImage: `url('${attendancePageSettings.value.bg_path || schoolInfo.value.bg_path || '/hero-outside.png'}')`,
 }))
+
+const ATTENDANCE_PAGE_TABLE = 'attendance_page'
+const ATTENDANCE_PAGE_ELEMENT_NAME = 'school_info'
+const ATTENDANCE_STORAGE_BUCKET = 'attendance_video'
+
+let attendancePageRealtimeChannel: any = null
+
+const parseAttendancePageForm = (value: any) => {
+  if (!value || value === 'EMPTY') return {}
+
+  if (typeof value === 'object') return value
+
+  if (typeof value === 'string') {
+    try {
+      return JSON.parse(value)
+    } catch {
+      return {}
+    }
+  }
+
+  return {}
+}
+
+const getStorageFileUrl = async (storagePath: string) => {
+  if (!storagePath) return ''
+
+  const { data, error } = await supabase.storage
+    .from(ATTENDANCE_STORAGE_BUCKET)
+    .createSignedUrl(storagePath, 60 * 60)
+
+  if (!error && data?.signedUrl) {
+    return data.signedUrl
+  }
+
+  const { data: publicData } = supabase.storage
+    .from(ATTENDANCE_STORAGE_BUCKET)
+    .getPublicUrl(storagePath)
+
+  return publicData.publicUrl
+}
+
+const fetchAttendancePageSettings = async () => {
+  try {
+    const { data, error } = await supabase
+      .from(ATTENDANCE_PAGE_TABLE)
+      .select('id, element_name, element_form, edited_at')
+      .eq('element_name', ATTENDANCE_PAGE_ELEMENT_NAME)
+      .maybeSingle()
+
+    if (error) throw error
+
+    if (!data?.element_form) {
+      console.warn('No attendance_page element_form found.')
+      attendancePageSettings.value = {
+        bg_path: '',
+        video_path: '',
+      }
+      return
+    }
+
+    const parsed = parseAttendancePageForm(data.element_form)
+
+    // Prefer storage paths so the Attendance UI always creates a fresh playable URL.
+    // If storage path is not available, use the direct saved URL as fallback.
+    const backgroundUrl = parsed.bg_storage_path
+      ? await getStorageFileUrl(parsed.bg_storage_path)
+      : parsed.bg_path || ''
+
+    const videoUrl = parsed.video_storage_path
+      ? await getStorageFileUrl(parsed.video_storage_path)
+      : parsed.video_path || ''
+
+    attendancePageSettings.value = {
+      bg_path: backgroundUrl || '',
+      video_path: videoUrl || '',
+    }
+
+    console.log('Attendance page settings applied:', attendancePageSettings.value)
+  } catch (error) {
+    console.error('Failed to fetch attendance_page settings:', error)
+  }
+}
+
+watch(
+  () => orientationVideoSrc.value,
+  async (newSrc) => {
+    console.log('Orientation video source changed:', newSrc)
+
+    await nextTick()
+
+    if (!orientationVideoRef.value) return
+
+    orientationVideoRef.value.pause()
+    orientationVideoRef.value.load()
+
+    orientationVideoRef.value.play().catch((error) => {
+      console.warn('Video autoplay was blocked or failed:', error)
+    })
+  },
+)
 
 const filteredEvents = computed(() => {
   const q = eventSearch.value.toLowerCase().trim()
@@ -831,7 +944,8 @@ watch(showAlreadyDoneModal, (value) => {
 })
 
 onMounted(async () => {
-  await refreshAttendanceData()
+  await Promise.all([refreshAttendanceData(), fetchAttendancePageSettings()])
+
   focusScannerInput()
 
   window.addEventListener('focus', handleWindowFocus)
@@ -845,6 +959,22 @@ onMounted(async () => {
   refreshInterval = window.setInterval(() => {
     refreshAttendanceData()
   }, 30000)
+
+  attendancePageRealtimeChannel = supabase
+    .channel('attendance-page-settings-realtime-access')
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: ATTENDANCE_PAGE_TABLE,
+        filter: `element_name=eq.${ATTENDANCE_PAGE_ELEMENT_NAME}`,
+      },
+      async () => {
+        await fetchAttendancePageSettings()
+      },
+    )
+    .subscribe()
 })
 
 onBeforeUnmount(() => {
@@ -856,6 +986,12 @@ onBeforeUnmount(() => {
   if (alreadyDoneTimeout.value) clearTimeout(alreadyDoneTimeout.value)
   if (clockInterval) clearInterval(clockInterval)
   if (refreshInterval) clearInterval(refreshInterval)
+
+  if (attendancePageRealtimeChannel) {
+    supabase.removeChannel(attendancePageRealtimeChannel)
+    attendancePageRealtimeChannel = null
+  }
+
   clearAutoSubmitTimer()
 })
 </script>
