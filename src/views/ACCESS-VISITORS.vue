@@ -464,20 +464,13 @@ const fetchVisitorLogs = async () => {
 const fetchActiveInsideCount = async () => {
   try {
     const now = new Date()
-
-    const startOfDay = new Date(now)
-    startOfDay.setHours(0, 0, 0, 0)
-
-    const endOfDay = new Date(now)
-    endOfDay.setHours(23, 59, 59, 999)
+    const today = now.toISOString().split('T')[0]
 
     const { data, error } = await supabase
       .from('attendance_logs_visitors')
-      .select('id, time_in, time_out')
-      .gte('time_in', startOfDay.toISOString())
-      .lte('time_in', endOfDay.toISOString())
-      .not('time_in', 'is', null)
-      .is('time_out', null)
+      .select('id, time_in')
+      .gte('time_in', `${today}T00:00:00`)
+      .lte('time_in', `${today}T23:59:59`)
 
     if (error) {
       console.error('Failed to fetch active visitor count:', error)
@@ -486,6 +479,7 @@ const fetchActiveInsideCount = async () => {
     }
 
     activeInsideCount.value = data?.length || 0
+    console.log('Active visitors count updated:', activeInsideCount.value, 'Records:', data)
   } catch (err) {
     console.error('Failed to fetch active visitor count:', err)
     activeInsideCount.value = 0
@@ -617,6 +611,23 @@ const goToLibrary = () => {
 onMounted(async () => {
   await refreshAttendanceData()
   timer = setInterval(() => (currentTime.value = new Date()), 1000)
+
+  // Set up real-time subscription for visitor logs
+  attendancePageChannel = supabase
+    .channel('attendance_logs_visitors_channel')
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'attendance_logs_visitors',
+      },
+      () => {
+        console.log('Visitor data changed, refreshing...')
+        refreshAttendanceData()
+      }
+    )
+    .subscribe()
 })
 
 onUnmounted(() => {
